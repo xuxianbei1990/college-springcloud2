@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="college.springcloud.order.mapper.OrderMapper">
+    <resultMap id="BaseResultMap" type="college.springcloud.order.po.Order">
+		<id column="forder_id" property="forderId" jdbcType="VARCHAR"/> 
+		<result column="forder_payment_id" property="forderPaymentId" jdbcType="VARCHAR"/>
+		<result column="forder_status" property="forderStatus" jdbcType="TINYINT"/>
+		<result column="fcancel_type" property="fcancelType" jdbcType="TINYINT"/>
+		<result column="forder_amount" property="forderAmount" jdbcType="BIGINT"/>
+		<result column="ftax_amount" property="ftaxAmount" jdbcType="BIGINT"/>
+		<result column="ffreight_amount" property="ffreightAmount" jdbcType="BIGINT"/>
+		<result column="fis_delete" property="fisDelete" jdbcType="TINYINT"/>
+		<result column="fcreate_time" property="fcreateTime" jdbcType="TIMESTAMP"/>
+		<result column="fmodify_time" property="fmodifyTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+</mapper>

@@ -1,0 +1,41 @@
+allprojects {
+	repositories {
+		maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
+		maven { url 'https://repo.spring.io/release/' }
+//		maven { url "http://repo.spring.io/libs-snapshot-local" }
+//		maven { url "http://repo.spring.io/libs-milestone-local" }
+//		maven { url "http://repo.spring.io/libs-release-local" }
+//		maven {
+//			url "http://119.23.162.80:18081/repository/maven-public/"
+//			credentials {
+//				username 'xingyun'
+//				password 'xy123ns'
+//			}
+//		}
+
+		jcenter()
+	}
+}
+
+ext {
+	springBootVersion = '2.1.0.RELEASE'
+	springCloudVersion = 'Greenwich.RELEASE'
+	springframework = '5.1.2.RELEASE'
+	seataVersion = '0.8.0'
+	springCloudAlibabaSeata = '2.1.0.RELEASE'
+	//如果不加tkMybatis 会如何？
+//	tkMybatis = '2.1.5'
+	mybatisBoot = '2.1.0'
+}
+
+//指定编译的编码
+// 这个tasks 不是很明白，那么我需要马上知道吗？或者价值多少？
+tasks.withType(JavaCompile){
+	options.encoding = "UTF-8"
+}
+
+
+
+subprojects {
+	version = '1.0'
+}

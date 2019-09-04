@@ -1,0 +1,69 @@
+plugins {
+    id "maven"
+    id "java-library"
+    id 'maven-publish'
+}
+
+dependencies {
+    //为什么这里没有定义统一的名称？？？
+    compile("org.springframework.cloud:spring-cloud-starter-openfeign:2.1.0.RELEASE")
+    compile project(":college-service-common")
+//    compile : 'college', name: 'college-service-common', version: '1.0'
+}
+
+[compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
+
+task sourceJar(type: Jar) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+    from javadoc
+}
+
+artifacts {
+    archives sourceJar
+}
+
+//下面代码应该是做将来打算。
+//uploadArchives {
+//    repositories {
+//        mavenDeployer {
+//            // 本地仓库路径
+//            repository(url: 'http://119.23.162.80:18081/repository/maven-releases/') {
+//                //用户名，密码
+//                authentication(userName: 'xingyun', password: 'xy123ns')
+//            }
+//            // 唯一标识
+//            pom.groupId = 'com.xingyun.bbc'
+//            // 项目名称
+//            pom.artifactId = 'xybbc-core-helper-api'
+//            // 版本号
+//            pom.version = '1.0.1'
+//
+//            pom.project {
+//                name = project.name
+//                packaging = 'jar'
+//                description = 'xybbc-core-helper-api'
+//                developers {
+//                    developer {
+//                        id 'bond'
+//                        name 'bond'
+//                        email 'zhan.peng@xyb2b.com'
+//                    }
+//                }
+//            }
+//        }
+//    }
+//}
+//
+//publishing {
+//    publications {
+//        maven(MavenPublication) {
+//            groupId = 'com.xingyun.bbc'
+//            artifactId = 'xybbc-core-helper-api'
+//            version = '1.0.1'
+//
+//            from components.java
+//            artifact sourceJar
+//        }
+//    }
+//}

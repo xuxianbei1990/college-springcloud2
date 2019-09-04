@@ -1,0 +1,38 @@
+server:
+  port: 8583
+
+# Eureka
+eureka:
+  instance:
+    # 是否用ip注册
+    prefer-ip-address: false
+    # 实例id
+    instance-id: ${spring.cloud.client.ip-address}:${server.port}
+    # 服务调用的ip地址
+    ip-address: ${spring.cloud.client.ip-address}
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8571/eureka/
+
+# 从Eureka中找到Config服务并读取配置
+#spring:
+#  application:
+#    # 配置名称, 注意顺序：后面配置的相同内容部分会替换前面的配置
+#    # common_*要排在前面
+#    name: common_db, common_bbc, core_order
+#  # 允许覆盖Bean实例
+#  main:
+#    allow-bean-definition-overriding: true
+#  cloud:
+#    config:
+#      discovery:
+#        enabled: true
+#        service-id: xybbc-config-server
+#      label: local
+#      profile: dev
+#      retry:
+#        initial-interval: 1000
+#        max-attempts: 6
+#        max-interval: 2000
+#        multiplier: 1.1
+

@@ -1,0 +1,64 @@
+server:
+  port: 8084
+
+# Eureka
+eureka:
+  instance:
+    # 是否用ip注册
+    prefer-ip-address: false
+    # 实例id
+    instance-id: ${spring.cloud.client.ip-address}:${server.port}
+    # 服务调用的ip地址
+    ip-address: ${spring.cloud.client.ip-address}
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8571/eureka/
+
+# 从Eureka中找到Config服务并读取配置
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/college?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=GMT%2B8
+    username: root
+    password: 1qaz!QAZ
+#    driverClassName: com.mysql.cj.jdbc.Driver
+#    testWhileIdle: true
+#    validationQuery: select 1
+#    testOnBorrow: false
+#    validationInterval: 1000
+#    minIdle: 10
+#    maxIdle: 15
+#    maxActive: 8
+#    initialSize: 8
+#    testOnConnect: true
+#    initSQL: select 1
+  application:
+    name: order-service
+#  # 允许覆盖Bean实例  spring.cloud.alibaba.seata.tx-service-group=my_test_tx_group
+#  main:
+#    allow-bean-definition-overriding: true
+  cloud:
+    alibaba:
+      seata:
+        tx-service-group: my_test_tx_group
+#    config:
+#      discovery:
+#        enabled: true
+#        service-id: xybbc-config-server
+#      label: local
+#      profile: dev
+#      retry:
+#        initial-interval: 1000
+#        max-attempts: 6
+#        max-interval: 2000
+#        multiplier: 1.1
+logging:
+  level:
+    org:
+    io:
+      seata: debug
+      springframework:
+        cloud:
+        alibaba:
+          seata:
+            web: debug
+

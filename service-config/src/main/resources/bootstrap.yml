@@ -1,0 +1,48 @@
+server:
+  port: 8572
+
+#当前版本Edgware.SR3,需对属性进行加密解密的功能有效
+#1.加下encrypt:key配置. 2.工程配置文件名必须为bootstrap.yml(application.yml无效).
+#3.下载oracle 官网下载local_policy.jar和US_export_policy.jar(JCE功能在JRE中自带，但是默认使用的是有长度限制的版本)
+#/encrypt/status：查看加密功能状态的端点
+#/key：查看密钥的端点
+#/encrypt：对请求的body内容进行加密的端点
+#decrypt：对请求的body内容进行解密的端点
+encrypt:
+  key: bond
+#对应svn路径/{label}/{application}{profile}
+spring:
+  application:
+    name: xybbc-config-server
+  profiles:
+    # 决定哪个配置生效：native/subversion
+    active: subversion
+  cloud:
+    config:
+      server:
+        # 本地配置, spring-cloud-config2.1.0,本地配置下label不生效！！
+        native:
+          search-locations: file:///G:/Project/Config/xybbc-config
+          add-label-locations: true
+          default-label: tito
+        # SVN配置
+        svn:
+          uri: svn://119.23.162.80/xybbc/service/xybbc-config
+          username: zhan.peng
+          password: '{cipher}43e1ec2128f92014e86ef55500a9616dd7fab37386453c6aa060bbb4581bae1e'
+          search-paths: {application}
+          default-label: trunk
+
+#        bootstrap: true
+
+eureka:
+  instance:
+    # 是否用ip注册
+    prefer-ip-address: true
+    # 实例id
+    instance-id: ${spring.cloud.client.ip-address}:${server.port}
+    # 服务调用的ip地址   说明没有配置默认取本机地址
+    ip-address: ${spring.cloud.client.ip-address}
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8571/eureka/

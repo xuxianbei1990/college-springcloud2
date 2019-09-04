@@ -1,0 +1,22 @@
+plugins {
+    id "maven"
+    id "java-library"
+    id 'maven-publish'
+}
+
+dependencies {
+    compile("org.springframework.cloud:spring-cloud-starter-openfeign:2.1.0.RELEASE")
+    compile project(":college-service-common")
+}
+
+[compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
+
+task sourceJar(type: Jar) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+    from javadoc
+}
+
+artifacts {
+    archives sourceJar
+}

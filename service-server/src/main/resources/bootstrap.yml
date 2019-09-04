@@ -1,0 +1,32 @@
+server:
+  port: 8571
+  
+spring:
+  application:
+    name: xybbc-server
+    
+eureka:
+  instance:
+    hostname: server1
+    #false:禁止Eureka Server相互注册时hostname使用IP地址, 设置false 可用的复制副本 hostname available-replicas 成功
+#    springcloud 1.5时候无效  springcloud 2.1实测无效
+    prefer-ip-address: false
+    #心跳间隔5秒
+    leaseRenewalIntervalInSeconds: 5
+    #没有心跳的淘汰时间10秒
+    leaseExpirationDurationInSeconds: 10
+  client:
+    # 如果不做Eureka集群，就不需要相互注册。
+    registerWithEureka: true
+    fetchRegistry: false
+    service-url:
+      defaultZone: http://localhost:${server.port}/eureka/
+    server:
+      #中小规模下，自我保护模式坑比好处多，所以关闭它
+      enableSelfPreservation: false
+      # 心跳阈值计算周期，如果开启自我保护模式，可以改一下这个配置
+      renewalThresholdUpdateIntervalMs: 120000
+      # 主动失效检测间隔,配置成5秒
+      evictionIntervalTimerInMs: 5000
+      #禁用readOnlyCacheMap
+      useReadOnlyResponseCache: false
