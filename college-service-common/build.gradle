@@ -12,7 +12,6 @@ repositories {
 
 dependencies {
     compile("io.swagger:swagger-annotations:1.5.9")
-    compile("org.springframework.boot:spring-boot-starter-web")
     compile("tk.mybatis:mapper-spring-boot-starter:2.1.5")
     compile('org.projectlombok:lombok:1.18.8')
     compile('io.springfox:springfox-swagger2:2.5.0')

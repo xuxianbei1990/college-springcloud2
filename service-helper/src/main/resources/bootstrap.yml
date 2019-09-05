@@ -1,0 +1,60 @@
+server:
+  port: 8574
+
+eureka:
+  instance:
+    # 是否用ip注册
+    prefer-ip-address: true
+    # 实例id
+    instance-id: ${spring.cloud.client.ip-address}:${server.port}
+    # 服务调用的ip地址
+    ip-address: ${spring.cloud.client.ip-address}
+    # 重定义/actuator，处理context-path
+    health-check-url: http://${spring.cloud.client.ip-address}:${server.port}${server.servlet.context-path:}/actuator/health
+    status-page-url: http://${spring.cloud.client.ip-address}:${server.port}${server.servlet.context-path:}/actuator/info
+    home-page-url: http://${spring.cloud.client.ip-address}:${server.port}${server.servlet.context-path:}/
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8571/eureka/
+
+# 从Eureka中找到Config服务并读取配置
+spring:
+  application:
+    name: service-helper
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 1000MB
+      enabled: true
+
+mail:
+  mailAccount: he.kaijin@xyb2b.com
+  serverAddress: smtp.xyb2b.com
+  mailPassword: hekaijin@2019
+  recipient: liang.zehua@xyb2b.com
+
+# 分布式文件系统FDFS配置
+fdfs:
+  soTimeout: 1501
+  connectTimeout: 601
+  #缩略图生成参数
+  thumbImage.width: 150
+  thumbImage.height: 150
+  #TrackerList参数,支持多个
+  trackerList: 192.168.2.103:22122
+  # 分组
+  xy_group: group1
+sms:
+  url: sdf
+  usernameKey: ddd
+  usernameValue: xxb
+  passwordKey: sdf
+  passwordValue: ssdf
+  mobileKey: xxr
+  contentKey: eer
+  sendTimeKey: teete
+  reportKey: xdrr
+  needstatusKey: reer
+  extendkey: erer
+
+

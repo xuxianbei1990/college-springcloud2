@@ -11,4 +11,6 @@ include 'service-seata-order'
 include 'service-seata-storage'
 include 'service-seata-account'
 include 'service-seata-business'
+include 'service-helper'
+include 'service-helper-api'
 
