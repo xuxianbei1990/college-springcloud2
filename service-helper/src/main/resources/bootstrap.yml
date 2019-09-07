@@ -3,7 +3,7 @@ server:
 
 eureka:
   instance:
-    # 是否用ip注册
+    # 是否用ip注册 这个配合 health-check-url  status-page-url home-page-url 配合使用主要和健康检查有关
     prefer-ip-address: true
     # 实例id
     instance-id: ${spring.cloud.client.ip-address}:${server.port}

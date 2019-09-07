@@ -44,7 +44,7 @@ public abstract class AbstractJwtManager {
         try {
             return (Claims)Jwts.parser().setSigningKey(DatatypeConverter.parseBase64Binary(sercret)).parseClaimsJws(jwt).getBody();
         } catch (Exception var4) {
-            log.error("token解析失败", var4);
+//            log.error("token解析失败", var4);
             return null;
         }
     }
