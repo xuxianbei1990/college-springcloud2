@@ -16,7 +16,6 @@ import java.util.List;
  */
 public interface BbcMapper<T> extends Mapper<T>, MySqlMapper<T> {
 
-    //下面两个代码不知道干嘛用的
     @Select({"${sql}"})
     List<T> selectBySql(@Param("sql") String var1);
 

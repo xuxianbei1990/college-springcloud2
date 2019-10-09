@@ -20,6 +20,7 @@ public abstract class BaseService<T> implements IService<T> {
     @Autowired
     BbcMapper mapper;
 
+    @Override
     public List<T> queryAll() {
         if (mapper == null) {
             return new ArrayList<>();

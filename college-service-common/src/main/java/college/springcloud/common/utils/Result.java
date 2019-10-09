@@ -2,6 +2,7 @@ package college.springcloud.common.utils;
 
 import college.springcloud.common.enums.IResultStatus;
 import college.springcloud.common.enums.ResultStatus;
+import college.springcloud.common.exception.BizException;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.io.Serializable;
@@ -41,7 +42,7 @@ public class Result<T> implements Serializable {
     }
 
     public Result<T> addExtra(String key, Object value) {
-        this.extra = (Map)(this.extra == null ? new HashMap(16) : this.extra);
+        this.extra = (Map) (this.extra == null ? new HashMap(16) : this.extra);
         this.extra.put(key, value);
         return this;
     }
@@ -77,6 +78,35 @@ public class Result<T> implements Serializable {
         return this.data;
     }
 
+    /**
+     * 从result中获取data
+     *
+     * @return
+     */
+    public T getDataException() {
+        return getData(ResultStatus.DATA_EXCEPTION, null);
+    }
+
+    /**
+     * 从result中获取data
+     * 数据不存在, 报指定异常, 返回自己定义的
+     *
+     * @return
+     */
+    public T getData(IResultStatus resultStatus, T t) {
+        if (!isSuccess()) {
+            throw new BizException(ResultStatus.INTERNAL_SERVER_ERROR);
+        }
+        T data = this.data;
+        if (data == null) {
+            if (t != null) {
+                return t;
+            }
+            throw new BizException(resultStatus);
+        }
+        return data;
+    }
+
     public Result<T> setData(T data) {
         this.data = data;
         return this;
@@ -92,7 +122,7 @@ public class Result<T> implements Serializable {
     }
 
     public static <T> Result<T> success() {
-        return success((T)null);
+        return success((T) null);
     }
 
     public static Result failure(IResultStatus resultStatus) {
@@ -111,7 +141,7 @@ public class Result<T> implements Serializable {
         if (this.isSuccess()) {
             return this.getData();
         } else {
-            throw (X)s.get();
+            throw (X) s.get();
         }
     }
 }

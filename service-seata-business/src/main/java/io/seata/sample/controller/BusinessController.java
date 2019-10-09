@@ -23,6 +23,7 @@ public class BusinessController {
      */
     @RequestMapping(value = "/purchase/commit", produces = "application/json")
     public String purchaseCommit() {
+//        throw new RuntimeException("test");
         try {
             businessService.purchase("U100000", "C100000", 30);
         } catch (Exception exx) {

@@ -2,9 +2,11 @@ package college.springcloud.student.controller;
 
 import college.springcloud.common.utils.Reflection;
 import college.springcloud.common.utils.Result;
+import college.springcloud.student.annotation.TeacherRole;
 import college.springcloud.student.api.StudentApi;
 import college.springcloud.student.po.Student;
 import com.google.common.collect.Lists;
+import org.junit.Test;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -14,10 +16,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
+import java.util.function.*;
 import java.util.stream.Collectors;
 
 /**
@@ -28,8 +27,14 @@ import java.util.stream.Collectors;
  */
 
 @RequestMapping("/student")
-public class StudentController implements StudentApi {
+public class StudentController<T> implements StudentApi {
 
+    @TeacherRole("鬼神降世")
+    @TeacherRole("百八式")
+    @TeacherRole("必杀")
+    private String role;
+
+    @Override
     @GetMapping("/get")
     public Result get() {
         return Result.success(new Student());
@@ -40,12 +45,13 @@ public class StudentController implements StudentApi {
         return Result.success(param);
     }
 
-    private static void timeTest(){
+    @Test
+    public void timeTest() {
         //时间戳
-        Instant instant =  Instant.now();
+        Instant instant = Instant.now();
 
         //格式化
-        DateTimeFormatter dateTimeFormatter =  DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
         //系统时间转换日本时间
         LocalDateTime localDateTime = LocalDateTime.ofInstant(instant, ZoneId.of("Asia/Tokyo"));
         System.out.println(localDateTime.format(dateTimeFormatter));
@@ -65,6 +71,11 @@ public class StudentController implements StudentApi {
         //仅仅代表和标准时间差9小时
         System.out.println(zonedDateTime);
 //        2019-09-07T09:45:17.857+09:00[Asia/Tokyo]
+
+        //上海时间
+        localDateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(1567440000000L), ZoneId.of("Asia/Shanghai"));
+        dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        System.out.println(dateTimeFormatter.format(localDateTime));
     }
 
     public static void main(String[] args) {
@@ -84,13 +95,37 @@ public class StudentController implements StudentApi {
         testJava8Consumer(list, student);
 
 //        Map<String, Student> map = new HashMap<>();
-//        list.stream().collect(Collectors.toMap(Student::getName, student1 -> student1));
         list = null;
         Map<String, Student> countryNameMap = Optional.ofNullable(list).orElse(Lists.newArrayList()).
-                stream().collect(Collectors.toMap(Student::getName, student1 -> student1));
+                stream().collect(Collectors.toMap(Student::getName, student1 -> student1, (key1, key2) -> key2));
         System.out.println(countryNameMap);
 
-        timeTest();
+    }
+
+    @Test
+    public void testGetStudents() {
+        List<Student> students = getStudents("xx");
+        System.out.println(Arrays.toString(students.toArray()));
+        Java8Function<Student> java8Function = new Java8Function<>();
+        students =java8Function.getStudents(Student::new, Student::setName, "xx");
+        System.out.println(Arrays.toString(students.toArray()));
+    }
+
+    private List<Student> getStudents(String name) {
+        //一般查询都会写这样的代码
+        Student student = new Student();
+        student.setName(name);
+        List<Student> listResult = queryList(student);
+        return listResult;
+    }
+
+
+
+    //模拟数据库查询
+    private List<Student> queryList(Student student){
+        List list = new ArrayList<>();
+        list.add(student);
+        return list;
     }
 
     private static void testJava8Consumer(List<Student> list, Student student) {
@@ -110,7 +145,7 @@ public class StudentController implements StudentApi {
         String str = Reflection.fnToFieldName(Student::getAge);
         System.out.println(str);
         System.out.println("Predicate============");
-        Predicate<Student> predicate = student1 ->  {
+        Predicate<Student> predicate = student1 -> {
             if (student1.getAge().equals(1)) {
                 student1.setName("xxb");
             }

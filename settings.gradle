@@ -13,4 +13,6 @@ include 'service-seata-account'
 include 'service-seata-business'
 include 'service-helper'
 include 'service-helper-api'
+include 'service-job'
+include 'service-design-supplier-order'
 

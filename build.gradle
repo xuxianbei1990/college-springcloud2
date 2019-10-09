@@ -5,13 +5,13 @@ allprojects {
 //		maven { url "http://repo.spring.io/libs-snapshot-local" }
 //		maven { url "http://repo.spring.io/libs-milestone-local" }
 //		maven { url "http://repo.spring.io/libs-release-local" }
-//		maven {
-//			url "http://119.23.162.80:18081/repository/maven-public/"
-//			credentials {
-//				username 'xingyun'
-//				password 'xy123ns'
-//			}
-//		}
+		maven {
+			url "http://192.168.2.110:8081/repository/maven-public/"
+			credentials {
+				username 'xingyun'
+				password 'xy123ns'
+			}
+		}
 
 		jcenter()
 	}
@@ -29,12 +29,9 @@ ext {
 }
 
 //指定编译的编码
-// 这个tasks 不是很明白，那么我需要马上知道吗？或者价值多少？
 tasks.withType(JavaCompile){
 	options.encoding = "UTF-8"
 }
-
-
 
 subprojects {
 	version = '1.0'

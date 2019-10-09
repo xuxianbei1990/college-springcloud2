@@ -2,6 +2,7 @@ package college.springcloud.common.query;
 
 import college.springcloud.common.utils.Reflection;
 import lombok.Data;
+import org.apache.commons.lang3.StringUtils;
 import tk.mybatis.mapper.code.Style;
 import tk.mybatis.mapper.util.StringUtil;
 import tk.mybatis.mapper.weekend.Fn;
@@ -90,16 +91,18 @@ public class Criteria<A, B> {
     //我比较好奇为什么参数不是Criteria
     //因为参数是 Order::getForderPaymentId 其中Order必须实现serializable
     //其实是通过参数的方法名作为字段名
+
     /**
      * 作者的设计思路是这样，通过对象的属性名，来确定数据库字段对应的对象的值简单来说
-     * @Column(name = "forder_payment_id")
-     *  private String forderPaymentId;
-     *  其中：forderPaymentId就是对象的属性名称。
-     *  其实就是为了优化这样类似的代码：andIsNotNull("orderPaymentId", "1")
-     *  criteria1.andGreaterThan()
-     *  这样如果对象的属性名称发生变化，这个值就自动变化了，符合设计思想
+     *
      * @param fn
      * @return
+     * @Column(name = "forder_payment_id")
+     * private String forderPaymentId;
+     * 其中：forderPaymentId就是对象的属性名称。
+     * 其实就是为了优化这样类似的代码：andIsNotNull("orderPaymentId", "1")
+     * criteria1.andGreaterThan()
+     * 这样如果对象的属性名称发生变化，这个值就自动变化了，符合设计思想
      */
     public Criteria<A, B> andIsNotNull(Fn<A, B> fn) {
         this.statement.criterions.add(new Criteria.Criterion(Reflection.fnToFieldName(fn), "is not null", "and"));
@@ -153,6 +156,11 @@ public class Criteria<A, B> {
 
     public Criteria<A, B> andLike(Fn<A, B> fn, String value) {
         this.statement.criterions.add(new Criteria.Criterion(Reflection.fnToFieldName(fn), value, "like", "and"));
+        return this;
+    }
+
+    public Criteria<A, B> andLikeAll(Fn<A, B> fn, String value) {
+        this.statement.criterions.add(new Criteria.Criterion(Reflection.fnToFieldName(fn), StringUtils.join("%", value, "%"), "like", "and"));
         return this;
     }
 

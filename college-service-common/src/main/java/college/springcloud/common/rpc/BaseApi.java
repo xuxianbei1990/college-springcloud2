@@ -16,6 +16,7 @@ public abstract class BaseApi<T> implements Api<T> {
     @Autowired
     protected IService<T> service;
 
+    @Override
     public Result<String> sayHello(String name) {
         return Result.success("Hello " + name);
     }

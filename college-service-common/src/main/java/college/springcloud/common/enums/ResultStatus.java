@@ -13,7 +13,8 @@ public enum ResultStatus implements IResultStatus {
     PARAMS_MISS("602", "缺少接口中必填参数"),
     PARAM_ERROR("603", "参数非法"),
     INTERNAL_SERVER_ERROR("604", "服务器内部错误"),
-    NOT_IMPLEMENTED("605", "业务异常");
+    NOT_IMPLEMENTED("605", "业务异常"),
+    DATA_EXCEPTION("606", "数据异常");
 
     private String code;
     private String msg;
