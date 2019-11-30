@@ -33,6 +33,35 @@ public class BusinessController {
     }
 
     /**
+     * 购买下单，模拟全局多个事务提交
+     *
+     * @return
+     */
+    @RequestMapping(value = "/purchase/Multi", produces = "application/json")
+    public String purchaseCommitMulti() {
+//        throw new RuntimeException("test");
+        try {
+            for (int i = 0; i < 30; i++)
+                businessService.purchaseMulti();
+        } catch (Exception exx) {
+            return exx.getMessage();
+        }
+        return "全局事务提交1";
+    }
+
+    @RequestMapping(value = "/purchase/Multi2", produces = "application/json")
+    public String purchaseCommitMulti2() {
+//        throw new RuntimeException("test");
+        try {
+            for (int i = 0; i < 30; i++)
+                businessService.purchaseMulti2();
+        } catch (Exception exx) {
+            return exx.getMessage();
+        }
+        return "全局事务提交2";
+    }
+
+    /**
      * 购买下单，模拟全局事务回滚
      * 账户或库存不足
      *
@@ -42,6 +71,22 @@ public class BusinessController {
     public String purchaseRollback() {
         try {
             businessService.purchase("U100000", "C100000", 99999);
+        } catch (Exception exx) {
+            return exx.getMessage();
+        }
+        return "全局事务提交";
+    }
+
+    /**
+     * seata多次更新
+     * 账户或库存不足
+     *
+     * @return
+     */
+    @RequestMapping("/multi/update")
+    public String multiUpdate() {
+        try {
+            businessService.multiUpdate();
         } catch (Exception exx) {
             return exx.getMessage();
         }

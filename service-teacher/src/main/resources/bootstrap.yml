@@ -16,6 +16,12 @@ eureka:
 spring:
   application:
     name: college-service-teacher
+  zipkin:
+    baseUrl: http://localhost:9411
+    enabled: true
+  sleuth:
+    sampler:
+      percentage: 1
 
 
 #mapper:

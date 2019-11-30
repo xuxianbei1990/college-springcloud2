@@ -57,10 +57,10 @@ logging:
   level:
     org:
     io:
-      seata: debug
+      seata: info
       springframework:
         cloud:
         alibaba:
           seata:
-            web: debug
+            web: info
 

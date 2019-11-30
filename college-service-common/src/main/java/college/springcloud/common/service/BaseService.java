@@ -18,7 +18,7 @@ import java.util.List;
 public abstract class BaseService<T> implements IService<T> {
 
     @Autowired
-    BbcMapper mapper;
+    protected BbcMapper<T> mapper;
 
     @Override
     public List<T> queryAll() {

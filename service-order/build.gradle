@@ -9,6 +9,9 @@ dependencyManagement {
         mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
     }
 }
+//这个一定要放到dependencies之前
+sourceSets.main.resources.srcDirs = ["src/main/java","src/main/resources"]
+
 
 dependencies {
     compile("org.springframework.boot:spring-boot-starter-web")
@@ -17,6 +20,7 @@ dependencies {
     compile("org.springframework.cloud:spring-cloud-config-client")
     //只是在fegin基础上增加了对springmvc支持，简单的说支持rest风格代码
     compile("org.springframework.cloud:spring-cloud-starter-openfeign")
+    compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.3.5'
     implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.1.0'
     runtimeOnly 'mysql:mysql-connector-java'
 //    compile("org.springframework.cloud:spring-cloud-starter-sleuth")
@@ -26,6 +30,7 @@ dependencies {
     compile project(":service-order-api")
 }
 
+
 //jar {
 //    baseName = 'xybbc-core-helper'
 //    version = '1.0'
@@ -34,6 +39,6 @@ dependencies {
 //    }
 //}
 //我猜从这里把配置文件加载到config中
-applicationDistribution.from('src/main/resources/application.yml') {
-    into "config"
-}
+//applicationDistribution.from('src/main/resources/application.yml') {
+//    into "config"
+//}

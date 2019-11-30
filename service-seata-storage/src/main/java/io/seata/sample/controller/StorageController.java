@@ -20,4 +20,15 @@ public class StorageController {
         storageService.deduct(commodityCode, count);
         return true;
     }
+
+    @RequestMapping(value = "/update", produces = "application/json")
+    public Boolean update(String commodityCode, Integer count) {
+        storageService.update(commodityCode, count);
+        return true;
+    }
+
+    @RequestMapping(value = "/query", produces = "application/json")
+    public String query(String commodityCode) {
+        return storageService.query(commodityCode);
+    }
 }

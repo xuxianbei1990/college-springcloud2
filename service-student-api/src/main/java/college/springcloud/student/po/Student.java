@@ -1,6 +1,9 @@
 package college.springcloud.student.po;
 
+import lombok.Data;
+
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * User: EDZ
@@ -8,10 +11,25 @@ import java.io.Serializable;
  * Time: 14:21
  * Version:V1.0
  */
+@Data
 public class Student implements Serializable {
     private static final long serialVersionUID = -2874944596724304275L;
     private String name;
     private Integer age;
+    private Long key;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Student student = (Student) o;
+        return Objects.equals(key, student.key);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(key);
+    }
 
     @Override
     public String toString() {

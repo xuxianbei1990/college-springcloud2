@@ -1,0 +1,32 @@
+plugins {
+    id "io.spring.dependency-management" version "1.0.8.RELEASE"
+    id "org.springframework.boot" version "2.1.0.RELEASE"
+    id "java"
+    id "application"
+}
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
+}
+//这个一定要放到dependencies之前
+sourceSets.main.resources.srcDirs = ["src/main/java","src/main/resources"]
+
+
+dependencies {
+    compile("io.zipkin.java:zipkin-autoconfigure-ui:2.9.4")
+    compile("io.zipkin.java:zipkin-server:2.9.4")
+}
+
+
+//jar {
+//    baseName = 'xybbc-core-helper'
+//    version = '1.0'
+//    from('src/main/java') {
+//        include 'com/xingyun/xybbc/*/mapper/*.xml'
+//    }
+//}
+//我猜从这里把配置文件加载到config中
+//applicationDistribution.from('src/main/resources/application.yml') {
+//    into "config"
+//}

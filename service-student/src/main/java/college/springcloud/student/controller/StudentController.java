@@ -1,22 +1,34 @@
 package college.springcloud.student.controller;
 
+import college.springcloud.common.utils.ExcelUtils;
 import college.springcloud.common.utils.Reflection;
 import college.springcloud.common.utils.Result;
 import college.springcloud.student.annotation.TeacherRole;
 import college.springcloud.student.api.StudentApi;
+import college.springcloud.student.dto.ExportVo;
+import college.springcloud.student.dto.StudentDto;
 import college.springcloud.student.po.Student;
+import college.springcloud.student.service.StudentServiceImpl;
 import com.google.common.collect.Lists;
+import io.swagger.annotations.ApiOperation;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletResponse;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.function.*;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 /**
@@ -26,6 +38,7 @@ import java.util.stream.Collectors;
  * Version:V1.0
  */
 
+@RestController
 @RequestMapping("/student")
 public class StudentController<T> implements StudentApi {
 
@@ -33,6 +46,9 @@ public class StudentController<T> implements StudentApi {
     @TeacherRole("百八式")
     @TeacherRole("必杀")
     private String role;
+
+    @Autowired
+    private StudentServiceImpl studentService;
 
     @Override
     @GetMapping("/get")
@@ -107,7 +123,7 @@ public class StudentController<T> implements StudentApi {
         List<Student> students = getStudents("xx");
         System.out.println(Arrays.toString(students.toArray()));
         Java8Function<Student> java8Function = new Java8Function<>();
-        students =java8Function.getStudents(Student::new, Student::setName, "xx");
+        students = java8Function.getStudents(Student::new, Student::setName, "xx");
         System.out.println(Arrays.toString(students.toArray()));
     }
 
@@ -120,9 +136,8 @@ public class StudentController<T> implements StudentApi {
     }
 
 
-
     //模拟数据库查询
-    private List<Student> queryList(Student student){
+    private List<Student> queryList(Student student) {
         List list = new ArrayList<>();
         list.add(student);
         return list;
@@ -153,5 +168,11 @@ public class StudentController<T> implements StudentApi {
         };
         student.setAge(1);
         System.out.println(predicate.test(student));
+    }
+
+    @ApiOperation("导出")
+    @GetMapping("/export")
+    public void export(@Validated StudentDto studentDto, HttpServletResponse response) {
+        ExcelUtils.exportExcelByEasyPoi("采购单", studentDto, ExportVo.class, studentService, response);
     }
 }

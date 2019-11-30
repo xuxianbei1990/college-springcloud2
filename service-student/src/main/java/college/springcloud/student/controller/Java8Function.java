@@ -1,7 +1,11 @@
 package college.springcloud.student.controller;
 
+import college.springcloud.student.po.Student;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
@@ -21,6 +25,16 @@ public class Java8Function<T> {
         biConsumer.accept(t, name);
         List<T> listResult = queryList(t);
         return listResult;
+    }
+
+    public static void main(String[] args) {
+        Student student = new Student();
+        student.setKey(1L);
+        Map<Student, String> map =new HashMap<>();
+        map.put(student, "2");
+        Student students = new Student();
+        students.setKey(1L);
+        System.out.println(map.get(students));
     }
 
     //模拟数据库查询

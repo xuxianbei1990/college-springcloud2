@@ -22,6 +22,10 @@ dependencies {
     compile('org.apache.commons:commons-lang3:3.8.1')
     compile('org.aspectj:aspectjrt:1.9.2')
     compile('org.aspectj:aspectjweaver:1.9.2')
+    //excel 导出
+    compile group: 'cn.afterturn', name: 'easypoi-base', version: '4.1.0'
+    compile group: 'cn.afterturn', name: 'easypoi-web', version: '4.1.0'
+    compile group: 'cn.afterturn', name: 'easypoi-annotation', version: '4.1.0'
     //我猜这句话意思，添加注解进程。有时间再看吧
     annotationProcessor 'org.projectlombok:lombok:1.18.8'
     testCompile group: 'junit', name: 'junit', version: '4.12'

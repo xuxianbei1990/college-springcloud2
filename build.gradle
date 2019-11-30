@@ -17,6 +17,7 @@ allprojects {
 	}
 }
 
+
 ext {
 	springBootVersion = '2.1.0.RELEASE'
 	springCloudVersion = 'Greenwich.RELEASE'
@@ -32,6 +33,8 @@ ext {
 tasks.withType(JavaCompile){
 	options.encoding = "UTF-8"
 }
+
+
 
 subprojects {
 	version = '1.0'

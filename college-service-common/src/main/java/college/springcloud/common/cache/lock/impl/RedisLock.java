@@ -55,7 +55,7 @@ public class RedisLock implements CacheLock {
             try {
                 TimeUnit.MILLISECONDS.sleep(RandomUtils.nextInt(0, 100) + 1);
             } catch (InterruptedException e) {
-                log.error("tryLockTimes sleep error...", e);
+//                log.error("tryLockTimes sleep error...", e);
             }
         }
         return false;

@@ -1,0 +1,57 @@
+server:
+  port: 8012
+
+spring:
+  application:
+    name: college-service-order
+  datasource:
+#    url: jdbc:mysql://192.168.2.72:3306/bbc?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8&useSSL=false
+#    username: xybbc
+#    password: xybbctest
+    url: jdbc:mysql://localhost:3306/college?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=GMT%2B8
+    username: root
+    password: 1qaz!QAZ
+    driverClassName: com.mysql.cj.jdbc.Driver
+    testWhileIdle: true
+    validationQuery: select 1
+    testOnBorrow: false
+    validationInterval: 1000
+    minIdle: 10
+    maxIdle: 15
+    maxActive: 8
+    initialSize: 8
+    testOnConnect: true
+    initSQL: select 1
+#    mybatis 自动驼峰
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+
+
+#mapper:
+#  mappers: college.springcloud.order.mapper
+#  not-empty: false
+#  identity: MYSQL
+
+# 从Eureka中找到Config服务并读取配置
+#spring:
+#  application:
+#    # 配置名称, 注意顺序：后面配置的相同内容部分会替换前面的配置
+#    # common_*要排在前面
+#    name: common_db, common_bbc, core_order
+#  # 允许覆盖Bean实例
+#  main:
+#    allow-bean-definition-overriding: true
+#  cloud:
+#    config:
+#      discovery:
+#        enabled: true
+#        service-id: xybbc-config-server
+#      label: local
+#      profile: dev
+#      retry:
+#        initial-interval: 1000
+#        max-attempts: 6
+#        max-interval: 2000
+#        multiplier: 1.1
+

@@ -1,0 +1,80 @@
+#########################################
+# \u6D88\u606F\u961F\u5217spring-cloud-stream\u914D\u7F6E
+#########################################
+#spring:
+#  rabbitmq:
+#    host: 192.168.2.145
+#    port: 5672
+#    username: xybbc
+#    password: xybbc_dev
+#    publisher-confirms: true
+server:
+  port: 8556
+  servlet:
+    context-path: /stream
+
+spring:
+  cloud:
+    stream:
+#    表示默认 bindings.person_input 默认绑定 xxb_rabbit
+      default-binder: xxb_rabbit
+      binders:
+        xxb_rabbit:
+          type: rabbit
+          environment:
+            spring:
+              rabbitmq:
+                host: 192.168.2.145
+                port: 5672
+                username: xybbc
+                password: xybbc_dev
+                publisher-confirms: true
+      rabbit:
+        bindings:
+          person_delay_output:
+            producer:
+              delayedExchange: true
+#              delayExpression: headers['x-delay'] = 5000
+          person_delay_input:
+            consumer:
+#             是延迟交换机
+              delayedExchange: true
+#      这个必须和stream bindings 下的某一个是一样的,其实就是设置他的rabbit属性
+#      那么大概我就可以推算出他的技术架构了，以stream为一套标准，各自差异。结束。
+          rperson_input:
+            consumer:
+#              手动消费
+              acknowledgeMode: manual
+#              交换机类型
+              exchangeType: direct
+      bindings:
+#      对应代码IPersonConsumer 的 这个常量 person
+        person:
+#        对应的是交换机
+          destination: person_can_delete
+          content-type: application/json
+#          对应的是队列
+          group: person_input
+#   这里还有一个约束，就是一个channel对应一个@Input 或者 @Output
+        person_name_input:
+          destination: person_can_delete
+          content-type: application/json
+          group: person_name_input
+        person_output:
+          destination: person_output_can_delete
+          content-type: application/json
+        person_intput:
+          destination: person_output_can_delete
+          content-type: application/json
+          group: test_person
+        rperson_input:
+          destination: rperson_input_exchange
+          content-type: application/json
+          group: person-queue
+        person_delay_input:
+          destination: person_delay_exchange
+          group: pereson_delay_queue
+        person_delay_output:
+          destination: person_delay_exchange
+
+

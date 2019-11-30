@@ -160,7 +160,8 @@ public class Criteria<A, B> {
     }
 
     public Criteria<A, B> andLikeAll(Fn<A, B> fn, String value) {
-        this.statement.criterions.add(new Criteria.Criterion(Reflection.fnToFieldName(fn), StringUtils.join("%", value, "%"), "like", "and"));
+        this.statement.criterions.add(new Criteria.Criterion(Reflection.fnToFieldName(fn),
+                StringUtils.join("%", value.replaceAll("%", "\\%"), "%"), "like", "and"));
         return this;
     }
 

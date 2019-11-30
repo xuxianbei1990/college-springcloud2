@@ -15,4 +15,11 @@ public interface StorageFeignClient {
     void deduct(@RequestParam("commodityCode") String commodityCode,
                 @RequestParam("count") Integer count);
 
+    @GetMapping("/update")
+    void update(@RequestParam("commodityCode") String commodityCode,
+                @RequestParam("count") Integer count);
+
+    @GetMapping("/query")
+    String query(@RequestParam("commodityCode") String commodityCode);
+
 }

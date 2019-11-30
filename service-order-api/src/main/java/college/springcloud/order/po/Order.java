@@ -1,6 +1,8 @@
 package college.springcloud.order.po;
 
+import college.springcloud.common.db.XyNextVersion;
 import lombok.Data;
+import tk.mybatis.mapper.annotation.Version;
 
 import javax.persistence.Column;
 import javax.persistence.Id;
@@ -53,5 +55,6 @@ public class Order implements Serializable{
 
     /** 修改时间 */
 	@Column(name = "fmodify_time")
+    @Version(nextVersion = XyNextVersion.class)
     private Date fmodifyTime;
 }

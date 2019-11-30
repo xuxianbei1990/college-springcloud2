@@ -1,0 +1,20 @@
+server:
+  port: 9411
+spring:
+  main:
+    allow-bean-definition-overriding: true
+
+# Eureka
+eureka:
+  instance:
+    # 是否用ip注册
+    prefer-ip-address: false
+    # 实例id
+    instance-id: ${spring.cloud.client.ip-address}:${server.port}
+    # 服务调用的ip地址
+    ip-address: ${spring.cloud.client.ip-address}
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8571/eureka/
+
+

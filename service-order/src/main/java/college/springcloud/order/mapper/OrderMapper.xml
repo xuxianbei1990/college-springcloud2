@@ -9,8 +9,11 @@
 		<result column="forder_amount" property="forderAmount" jdbcType="BIGINT"/>
 		<result column="ftax_amount" property="ftaxAmount" jdbcType="BIGINT"/>
 		<result column="ffreight_amount" property="ffreightAmount" jdbcType="BIGINT"/>
-		<result column="fis_delete" property="fisDelete" jdbcType="TINYINT"/>
 		<result column="fcreate_time" property="fcreateTime" jdbcType="TIMESTAMP"/>
 		<result column="fmodify_time" property="fmodifyTime" jdbcType="TIMESTAMP"/>
     </resultMap>
+
+	<update id="updateOrderStatus" parameterType="college.springcloud.order.po.Order">
+		update t_bbc_order set forder_status = #{forderStatus} where forder_id = #{forderId}
+	</update>
 </mapper>
