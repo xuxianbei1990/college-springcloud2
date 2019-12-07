@@ -3,6 +3,11 @@ server:
 spring:
   main:
     allow-bean-definition-overriding: true
+management:
+  metrics:
+    web:
+      server:
+        auto-time-requests: false
 
 # Eureka
 eureka:
@@ -16,5 +21,4 @@ eureka:
   client:
     serviceUrl:
       defaultZone: http://localhost:8571/eureka/
-
-
+#      defaultZone: http://192.168.2.122:8571/eureka/, http://192.168.2.121:8571/eureka/

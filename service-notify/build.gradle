@@ -19,8 +19,9 @@ dependencies {
     compile("org.springframework.cloud:spring-cloud-starter-openfeign")
     compile('com.alibaba:fastjson:1.2.58')
     compile('org.apache.httpcomponents:httpclient:4.3.5')
+    compile 'com.alibaba.otter:canal.client:1.1.4'
     implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.1.0'
-    runtimeOnly 'mysql:mysql-connector-java'
+    compile 'mysql:mysql-connector-java'
 //    compile("org.springframework.cloud:spring-cloud-starter-sleuth")
 //    compile group: 'com.github.tobato', name: 'fastdfs-client', version: '1.26.6'
 //    compile group: 'com.xingyun.bbc', name: 'xybbc-core-common', version: '1.0'
