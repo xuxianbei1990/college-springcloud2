@@ -8,6 +8,7 @@ import college.springcloud.student.api.StudentApi;
 import college.springcloud.student.dto.ExportVo;
 import college.springcloud.student.dto.StudentDto;
 import college.springcloud.student.po.Student;
+import college.springcloud.student.service.AsyncThreadTest;
 import college.springcloud.student.service.StudentServiceImpl;
 import com.google.common.collect.Lists;
 import io.swagger.annotations.ApiOperation;
@@ -25,6 +26,8 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -49,6 +52,9 @@ public class StudentController<T> implements StudentApi {
 
     @Autowired
     private StudentServiceImpl studentService;
+
+    @Autowired
+    private AsyncThreadTest asyncThreadTest;
 
     @Override
     @GetMapping("/get")
@@ -174,5 +180,19 @@ public class StudentController<T> implements StudentApi {
     @GetMapping("/export")
     public void export(@Validated StudentDto studentDto, HttpServletResponse response) {
         ExcelUtils.exportExcelByEasyPoi("采购单", studentDto, ExportVo.class, studentService, response);
+    }
+
+
+    @GetMapping("/async")
+    public String async() {
+        asyncThreadTest.asycTest("xxy", "a yi a yi e king", 1);
+        return "";
+    }
+
+    @GetMapping("/async/future")
+    public String asyncFuture() throws ExecutionException, InterruptedException {
+        Future<String> future = asyncThreadTest.asycTestFuture("xxy", "a yi a yi e king", 1);
+        System.out.println("ba la ba 一顿操作");
+        return future.get();
     }
 }

@@ -28,6 +28,18 @@ public class BatchUpdateProvider extends MapperTemplate {
     }
 
     //    使用是case when 方式更新的。
+
+    /**
+     * UPDATE mytable SET
+     *     myfield = CASE id
+     *         WHEN 1 THEN 'value'
+     *         WHEN 2 THEN 'value'
+     *         WHEN 3 THEN 'value'
+     *     END
+     * WHERE id IN (1,2,3)
+     * @param ms
+     * @return
+     */
     public String updateBatchNotNullBySinglePrimaryKey(MappedStatement ms) {
         final Class<?> entityClass = getEntityClass(ms);
 
