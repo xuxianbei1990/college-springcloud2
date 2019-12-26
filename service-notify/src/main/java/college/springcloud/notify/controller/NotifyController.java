@@ -2,9 +2,8 @@ package college.springcloud.notify.controller;
 
 import college.springcloud.notify.mapper.OrderAftersaleMapper;
 import college.springcloud.notify.mapper.UserAccountMapper;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import college.springcloud.notify.model.AccountPostDto;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
@@ -32,5 +31,10 @@ public class NotifyController {
     @GetMapping("/account")
     public Object selectUserAccount() {
         return userAccountMapper.selectByPrimaryKey(1);
+    }
+
+    @PostMapping("/account/post/register")
+    public Object selectUserAccountPost(@RequestBody AccountPostDto accountPostDto) {
+        return userAccountMapper.selectByPrimaryKey(accountPostDto.getBodyId());
     }
 }
