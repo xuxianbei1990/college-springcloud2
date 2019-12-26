@@ -20,4 +20,7 @@ include 'service-sleuth'
 include 'service-spring'
 include 'service-job'
 include 'service-notify'
+include 'service-mq'
+include 'service-mq-producer'
+include 'service-mq-consumer'
 
