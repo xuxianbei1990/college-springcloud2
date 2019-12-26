@@ -1,6 +1,7 @@
-package college.springcloud.common.interceptor.message.business;
+package college.springcloud.common.interceptor.message.business.impl;
 
-import college.springcloud.common.interceptor.message.NotifyBusinessInterface;
+import college.springcloud.common.interceptor.message.business.NotifyBusinessInterface;
+import college.springcloud.common.interceptor.message.business.WaitSendInfo;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.servlet.http.HttpServletRequest;
@@ -14,6 +15,7 @@ import java.util.Map;
  */
 public abstract class AbstractNotifyBusiness implements NotifyBusinessInterface {
 
+    protected WaitSendInfo waitSendInfo = new WaitSendInfo();
     /**
      * 在springframework  2.1.0.RELEASE 不可以删除
      */
@@ -46,14 +48,24 @@ public abstract class AbstractNotifyBusiness implements NotifyBusinessInterface 
     @Override
     public void setRequestMethod(RequestMethod requestMethod) {
         this.requestMethod = requestMethod;
-        doSetOldKey();
+        doSetKey();
+        afterSetKey();
+    }
+
+    private void afterSetKey() {
+        beforControllerSetKey();
+        waitSendInfo.setTargetId(getTargetId());
+        waitSendInfo.setBusinessId(getBusinessId());
+        waitSendInfo.setNewKey(getNewKey());
+        waitSendInfo.setObject(getOldKey());
     }
 
 
     @Override
     public void setRequestBody(String requestBody) {
         this.requestBody = requestBody;
-        doSetOldKey();
+        doSetKey();
+        afterSetKey();
     }
 
     @Override
@@ -61,6 +73,30 @@ public abstract class AbstractNotifyBusiness implements NotifyBusinessInterface 
         this.map = map;
     }
 
-    protected abstract void doSetOldKey();
 
+    /**
+     * 作废理由名字不好  改为beforControllerSetKey
+     */
+    @Deprecated
+    protected void doSetKey() {
+
+    }
+
+    protected void beforControllerSetKey() {
+
+    }
+
+     public void afterControllerSetKey() {
+
+    }
+
+    @Override
+
+    public String getUri() {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (String uris : getUris()) {
+            stringBuilder.append(uris).append(",");
+        }
+        return stringBuilder.toString();
+    }
 }

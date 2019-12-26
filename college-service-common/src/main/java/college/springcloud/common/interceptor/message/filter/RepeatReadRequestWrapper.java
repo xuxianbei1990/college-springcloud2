@@ -1,4 +1,4 @@
-package college.springcloud.common.interceptor.message;
+package college.springcloud.common.interceptor.message.filter;
 
 import lombok.extern.slf4j.Slf4j;
 

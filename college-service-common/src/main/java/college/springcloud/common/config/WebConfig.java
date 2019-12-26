@@ -1,14 +1,12 @@
 package college.springcloud.common.config;
 
-import college.springcloud.common.interceptor.message.MessageInterceptor;
-import college.springcloud.common.interceptor.message.RepeatReadFilter;
 import college.springcloud.common.interceptor.TokenInterceptor;
+import college.springcloud.common.interceptor.message.MessageInterceptor;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -89,15 +87,6 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new TokenInterceptor()).addPathPatterns("/**");
-        registry.addInterceptor(messageInterceptor).addPathPatterns("/**");
     }
 
-    @Bean
-    public FilterRegistrationBean repeatedlyReadFilter() {
-        FilterRegistrationBean registration = new FilterRegistrationBean();
-        RepeatReadFilter repeatedlyReadFilter = new RepeatReadFilter();
-        registration.setFilter(repeatedlyReadFilter);
-        registration.addUrlPatterns("/*");
-        return registration;
-    }
 }

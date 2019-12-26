@@ -1,6 +1,5 @@
 package college.springcloud.common.interceptor.message.business;
 
-import college.springcloud.common.interceptor.message.NotifyBusinessInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;

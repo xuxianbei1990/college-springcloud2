@@ -1,4 +1,6 @@
-package college.springcloud.common.interceptor.message;
+package college.springcloud.common.interceptor.message.filter;
+
+import college.springcloud.common.interceptor.message.MessageInterceptor;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
@@ -23,7 +25,6 @@ public class RepeatReadFilter implements Filter {
             if (MessageInterceptor.CheckoutMethod((HttpServletRequest) request)) {
                 requestWrapper = new RepeatReadRequestWrapper((HttpServletRequest) request);
             }
-
         }
         if (null == requestWrapper) {
             chain.doFilter(request, response);
