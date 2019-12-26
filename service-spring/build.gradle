@@ -1,0 +1,20 @@
+plugins {
+    id "io.spring.dependency-management" version "1.0.8.RELEASE"
+    id "org.springframework.boot" version "2.1.0.RELEASE"
+    id "java"
+    id "application"
+}
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
+}
+
+dependencies {
+    compile("org.springframework.boot:spring-boot-starter-web")
+}
+
+//我猜从这里把配置文件加载到config中
+applicationDistribution.from('src/main/resources/application.yml') {
+    into "config"
+}
