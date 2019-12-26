@@ -2,6 +2,7 @@ package io.seata.sample.controller;
 
 import io.seata.sample.service.BusinessService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -92,4 +93,23 @@ public class BusinessController {
         }
         return "全局事务提交";
     }
+
+    /**
+     * 线程安全
+     * @return
+     */
+    @GetMapping("/thread/safe")
+    public String threadSafe() {
+        return businessService.threadSafe();
+    }
+
+    /**
+     * 作用域安全
+     * @return
+     */
+    @GetMapping("/scope/safe")
+    public String scopeSafe() {
+        return businessService.scopeSafe();
+    }
+
 }

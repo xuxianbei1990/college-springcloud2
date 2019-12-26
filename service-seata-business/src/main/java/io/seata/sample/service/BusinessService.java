@@ -12,6 +12,8 @@ import org.springframework.util.Assert;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 /**
  * @author jimin.jm@alibaba-inc.com
@@ -20,8 +22,12 @@ import java.util.Map;
 @Service
 public class BusinessService {
 
+    @Autowired
+    private StorageThreadSafe storageThreadSafe;
+
     @Resource
     private StorageFeignClient storageFeignClient;
+
     @Resource
     private OrderFeignClient orderFeignClient;
 
@@ -105,4 +111,35 @@ public class BusinessService {
         storageFeignClient.update("C100001", 30);
         storageFeignClient.update("C100001", 40);
     }
+
+    /**
+     * 证明：在多线程，子线程环境下，如果子线程报错，seata回滚，则证明seata支持多线程环境
+     * 结论：多线下，如果生效seata 需要@Async 下面添加 @GlobalTransactional
+     *
+     * @return
+     */
+    @GlobalTransactional
+    public String threadSafe() {
+        String value = storageFeignClient.query("C100001");
+        orderFeignClient.create("xuxianbei", "test", 10);
+        Future<Integer> future = storageThreadSafe.deductThread(1);
+        try {
+            Assert.isTrue(future.get() == 1, "123");
+        } catch (InterruptedException | ExecutionException e) {
+            throw new RuntimeException(e);
+        }
+        return value;
+    }
+
+    /**
+     * 结论：seata 的作用域是当前方法，且当前包含所有的方法引用，也就是说最外层加一个就可以了
+     */
+    @GlobalTransactional
+    public String scopeSafe() {
+        String value = storageFeignClient.query("C100001");
+        orderFeignClient.create("xuxianbei", "test", 20);
+        storageThreadSafe.deductScope(1);
+        return value;
+    }
+
 }
