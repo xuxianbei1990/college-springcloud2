@@ -2,7 +2,9 @@ package college.springcloud.common.interceptor.message.business;
 
 import lombok.Data;
 
-/** 待发送信息
+/**
+ * 待发送信息
+ *
  * @author: xuxianbei
  * Date: 2019/12/24
  * Time: 16:45
@@ -24,12 +26,24 @@ public class WaitSendInfo {
     /**
      * 旧key
      */
+    @Deprecated
     private String oldKey;
+
+    /**
+     * 就状态
+     */
+    private String oldStatus;
 
     /**
      * 新key
      */
+    @Deprecated
     private String newKey;
+
+    /**
+     * 新状态
+     */
+    private String newStatus;
 
     /**
      * 额外参数

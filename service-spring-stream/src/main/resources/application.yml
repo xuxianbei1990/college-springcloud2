@@ -47,6 +47,9 @@ spring:
               acknowledgeMode: manual
 #              交换机类型
               exchangeType: direct
+          system_notice_out:
+            producer:
+              exchangeType: topic
       bindings:
 #      对应代码IPersonConsumer 的 这个常量 person
         person:
@@ -76,5 +79,12 @@ spring:
           group: pereson_delay_queue
         person_delay_output:
           destination: person_delay_exchange
+        system_notice_out:
+          destination: system_notice
+          group: system_notice_group
+        # 模板设置模块
+        system_notice_input:
+          destination: system_notice
+          group: system_notice_group
 
 

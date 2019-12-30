@@ -1,11 +1,8 @@
 package college.springcloud.common.interceptor.message.business.impl;
 
 import college.springcloud.common.interceptor.message.business.NotifyBusinessInterface;
-import college.springcloud.common.interceptor.message.business.WaitSendInfo;
-import org.springframework.web.bind.annotation.RequestMethod;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.Map;
+import college.springcloud.common.interceptor.message.business.NotifyHttpServletWrapper;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author: xuxianbei
@@ -13,85 +10,36 @@ import java.util.Map;
  * Time: 10:05
  * Version:V1.0
  */
+@Slf4j
 public abstract class AbstractNotifyBusiness implements NotifyBusinessInterface {
 
-    protected WaitSendInfo waitSendInfo = new WaitSendInfo();
     /**
      * 在springframework  2.1.0.RELEASE 不可以删除
      */
     private String springKey = "主要针对spring框架，无实际用处，版本2.1.0.RELEASE";
 
-    /**
-     * 原始请求
-     */
-    protected HttpServletRequest request;
-    /**
-     * http动作
-     */
-    protected RequestMethod requestMethod;
-
-    /**
-     * 请求体
-     */
-    protected String requestBody;
-
-    /**
-     * 请求参数
-     */
-    protected Map<String, String[]> map;
-
-    @Override
-    public void setRequest(HttpServletRequest request) {
-        this.request = request;
+    public void beforControllerSetKey(NotifyHttpServletWrapper notifyHttpServletWrapper) {
+        try {
+            doBeforeControllerSetKey(notifyHttpServletWrapper);
+        } catch (Exception e) {
+            log.info("beforControllerSetKey Exception:", e);
+        }
     }
 
-    @Override
-    public void setRequestMethod(RequestMethod requestMethod) {
-        this.requestMethod = requestMethod;
-        doSetKey();
-        afterSetKey();
+    public void afterControllerSetKey(NotifyHttpServletWrapper notifyHttpServletWrapper) {
+        try {
+            doAfterControllerSetKey(notifyHttpServletWrapper);
+        } catch (Exception e) {
+            log.info("afterControllerSetKey Exception:", e);
+        }
     }
 
-    private void afterSetKey() {
-        beforControllerSetKey();
-        waitSendInfo.setTargetId(getTargetId());
-        waitSendInfo.setBusinessId(getBusinessId());
-        waitSendInfo.setNewKey(getNewKey());
-        waitSendInfo.setObject(getOldKey());
-    }
+    protected abstract void doAfterControllerSetKey(NotifyHttpServletWrapper notifyHttpServletWrapper);
+
+    protected abstract void doBeforeControllerSetKey(NotifyHttpServletWrapper notifyHttpServletWrapper);
 
 
     @Override
-    public void setRequestBody(String requestBody) {
-        this.requestBody = requestBody;
-        doSetKey();
-        afterSetKey();
-    }
-
-    @Override
-    public void setGetParameterMap(Map<String, String[]> map) {
-        this.map = map;
-    }
-
-
-    /**
-     * 作废理由名字不好  改为beforControllerSetKey
-     */
-    @Deprecated
-    protected void doSetKey() {
-
-    }
-
-    protected void beforControllerSetKey() {
-
-    }
-
-     public void afterControllerSetKey() {
-
-    }
-
-    @Override
-
     public String getUri() {
         StringBuilder stringBuilder = new StringBuilder();
         for (String uris : getUris()) {

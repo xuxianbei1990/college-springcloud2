@@ -22,6 +22,7 @@ dependencies {
     compile('org.apache.commons:commons-lang3:3.8.1')
     compile('org.aspectj:aspectjrt:1.9.2')
     compile('org.aspectj:aspectjweaver:1.9.2')
+    compile("com.squareup.okhttp3:okhttp:4.2.0")
     //excel 导出
     compile group: 'cn.afterturn', name: 'easypoi-base', version: '4.1.0'
     compile group: 'cn.afterturn', name: 'easypoi-web', version: '4.1.0'

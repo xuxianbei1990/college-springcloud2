@@ -1,12 +1,15 @@
 package college.springcloud.common.interceptor.message.business;
 
 import org.springframework.context.ApplicationEvent;
-import org.springframework.web.bind.annotation.RequestMethod;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.Map;
 
 /**
+ * * 一期问题罗列：1.幂等问题。2.结果取值问题。3.没有key问题。4.自定义扩展参数问题。
+ * * 6.多个url拦截，难以匹配问题
+ *  ; 10. 前端调用，没有拦截；11.主从问题
+ *
+ * 解决问题：
+ * 9。多个请求问题 多线程问题  7.从结果拿数据。。8.异常处理  5.不能影响主业务（如果调用了抛异常的工具类）
+ * <p>
  * 通知业务接口
  *
  * @author: xuxianbei
@@ -17,74 +20,34 @@ import java.util.Map;
 public interface NotifyBusinessInterface {
 
     /**
-     * 保留原始请求
-     * @param request
-     */
-    void setRequest(HttpServletRequest request);
-
-    /**
-     * 请求方式
-     * @param requestMethod
-     */
-    void setRequestMethod(RequestMethod requestMethod);
-
-    /**
-     * 请求体
-     * @param requestBody
-     */
-    void setRequestBody(String requestBody);
-
-    /**
-     * 请求参数
-     * @param map
-     */
-    void setGetParameterMap(Map<String, String[]> map);
-
-    /**
-     * 业务ID
-     * @return
-     */
-    String getBusinessId();
-
-    /**
-     * 目标对象id 供应商/用户
-     * @return
-     */
-    Long getTargetId();
-
-    /**
-     * 旧key
-     * @return
-     */
-    String getOldKey();
-
-    /**
-     * 新key
-     * @return
-     */
-    String getNewKey();
-
-
-    /**
      * controller的URL
+     *
      * @return
      */
     String[] getUris();
 
     /**
      * 合并url
+     *
      * @return
      */
     String getUri();
 
     /**
-     * 请求之后设置key  主要用于一些场景从reques拿不到新的状态
+     * 请求之后设置状态  主要用于一些场景从reques拿不到新的状态
      */
-    void afterControllerSetKey();
+    void afterControllerSetKey(NotifyHttpServletWrapper notifyHttpServletWrapper);
+
+
+    /**
+     * 在请求之前设置状态
+     */
+    void beforControllerSetKey(NotifyHttpServletWrapper notifyHttpServletWrapper);
 
     /**
      * 定义事件
+     *
      * @return
      */
-    ApplicationEvent getApplicationEvent();
+    ApplicationEvent getApplicationEvent(WaitSendInfo waitSendInfo);
 }

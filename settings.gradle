@@ -23,4 +23,5 @@ include 'service-notify'
 include 'service-mq'
 include 'service-mq-producer'
 include 'service-mq-consumer'
+include 'service-transport'
 

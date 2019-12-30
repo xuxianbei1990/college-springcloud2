@@ -1,10 +1,10 @@
 package college.springcloud.common.interceptor.message.filter;
 
-import college.springcloud.common.interceptor.message.MessageInterceptor;
-
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Objects;
 
 /**
  * @author: xuxianbei
@@ -18,18 +18,31 @@ public class RepeatReadFilter implements Filter {
 
     }
 
+    /**
+     * 校验合法
+     *
+     * @param request
+     * @return
+     */
+    public static boolean CheckoutMethod(HttpServletRequest request) {
+        return Objects.equals(request.getContentType(), "application/json") ||
+                Objects.equals(request.getContentType(), "text/xml");
+    }
+
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         ServletRequest requestWrapper = null;
+        ServletResponse responseWrapper = null;
         if (request instanceof HttpServletRequest) {
-            if (MessageInterceptor.CheckoutMethod((HttpServletRequest) request)) {
+            if (CheckoutMethod((HttpServletRequest) request)) {
                 requestWrapper = new RepeatReadRequestWrapper((HttpServletRequest) request);
+                responseWrapper = new RepeatWriteResponseWrapper((HttpServletResponse) response);
             }
         }
         if (null == requestWrapper) {
             chain.doFilter(request, response);
         } else {
-            chain.doFilter(requestWrapper, response);
+            chain.doFilter(requestWrapper, responseWrapper);
         }
     }
 

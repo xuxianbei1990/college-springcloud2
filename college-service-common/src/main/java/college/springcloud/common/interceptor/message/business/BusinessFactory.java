@@ -1,11 +1,11 @@
 package college.springcloud.common.interceptor.message.business;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -25,7 +25,7 @@ public class BusinessFactory {
     public NotifyBusinessInterface getByUrI(String uri) {
         Map<String, NotifyBusinessInterface> map = applicationContext.getBeansOfType(NotifyBusinessInterface.class);
         Optional<NotifyBusinessInterface> optionalvalue = map.entrySet().stream().
-                filter(t -> (Objects.equals(t.getValue().getUri(), uri))).map(entry -> entry.getValue()).findFirst();
+                filter(t -> ArrayUtils.contains(t.getValue().getUris(), uri)).map(entry -> entry.getValue()).findFirst();
         if (optionalvalue.isPresent()) {
             return optionalvalue.get();
         } else {

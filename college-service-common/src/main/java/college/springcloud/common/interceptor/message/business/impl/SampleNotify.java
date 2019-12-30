@@ -1,6 +1,8 @@
 package college.springcloud.common.interceptor.message.business.impl;
 
 import college.springcloud.common.interceptor.message.business.NotifyBusinessInterface;
+import college.springcloud.common.interceptor.message.business.NotifyHttpServletWrapper;
+import college.springcloud.common.interceptor.message.business.WaitSendInfo;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.stereotype.Component;
 
@@ -16,29 +18,6 @@ public class SampleNotify extends AbstractNotifyBusiness implements NotifyBusine
 
     private String[] urls = new String[]{"/mallpc/user/modifiyMobile"};
 
-    @Override
-    public String getBusinessId() {
-        //存放唯一标识：例如：用户id
-        return null;
-    }
-
-    @Override
-    public Long getTargetId() {
-        return null;
-    }
-
-    //可以优化为从request 获取 减少IO请求
-    @Override
-    public String getOldKey() {
-        //存放老的key;例如手机号码
-        return null;
-    }
-
-    @Override
-    public String getNewKey() {
-        //存放新的key;例如:手机号码
-        return null;
-    }
 
     @Override
     public String[] getUris() {
@@ -46,12 +25,20 @@ public class SampleNotify extends AbstractNotifyBusiness implements NotifyBusine
     }
 
     @Override
-    public ApplicationEvent getApplicationEvent() {
+    public ApplicationEvent getApplicationEvent(WaitSendInfo waitSendInfo) {
         return new SampleEvent(waitSendInfo);
     }
 
     @Override
-    protected void doSetKey() {
-        //执行数据库操作
+    protected void doAfterControllerSetKey(NotifyHttpServletWrapper notifyHttpServletWrapper) {
+        //执行
+    }
+
+    @Override
+    protected void doBeforeControllerSetKey(NotifyHttpServletWrapper notifyHttpServletWrapper) {
+        //执行数据库操作，放入业务代码
+       //然后在这里放入 oldStatus newStatus notifyHttpServletWrapper
+        //这样虽然解决了 多线程问题，但是还有一个问题
+        notifyHttpServletWrapper.getWaitSendInfo();
     }
 }

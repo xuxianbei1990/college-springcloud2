@@ -18,10 +18,10 @@ import lombok.Data;
  */
 public class YouMengDemo {
 
-//    private String appkey = "57d771e367e58e027c00326b";
-//    private String appMasterSecret = "at8jkkc0gcomnehlinerhfnyme14hsaq";
-    private String appkey = "57cfdd2767e58e2c260034ba";
-    private String appMasterSecret = "oqwvanciersg2ouozmxkn9swh7bbsr76";
+    private String appkey = "57d771e367e58e027c00326b";
+    private String appMasterSecret = "at8jkkc0gcomnehlinerhfnyme14hsaq";
+//    private String appkey = "57cfdd2767e58e2c260034ba";
+//    private String appMasterSecret = "oqwvanciersg2ouozmxkn9swh7bbsr76";
     private String timestamp = null;
     private PushClient client = new PushClient();
 
@@ -29,7 +29,7 @@ public class YouMengDemo {
         AndroidUnicast unicast = new AndroidUnicast(appkey,appMasterSecret);
         // TODO Set your device token
 //        unicast.setDeviceToken("An1Y1j8li-ZbxHwCHntmHk1uXIWIgP7P-y8L-vKX-uop");
-        unicast.setDeviceToken("AvxBWIKPVnNmzmLohQR-kb9LrkSqeU-yRHPdeypuqSUq");
+        unicast.setDeviceToken("Aiy0Cpr9kfsTuTvGe4GjSL4NqKppEXxAeOWoPUDLztAo");
 
         unicast.setTicker("Android unicast ticker");
         unicast.setTitle(  "中文的title");
@@ -175,10 +175,10 @@ public class YouMengDemo {
 
     public static void main(String[] args) throws Exception {
         YouMengDemo youMengDemo = new YouMengDemo();
-//        youMengDemo.sendAndroidUnicast();
+        youMengDemo.sendAndroidUnicast();
 //        youMengDemo.sendAndroidListcast();
 //        youMengDemo.sendIOSUnicast();
-        youMengDemo.sendIOSListcast();
+//        youMengDemo.sendIOSListcast();
 //        youMengDemo.sendIOSBroadcast();
     }
 }

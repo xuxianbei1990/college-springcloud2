@@ -1,0 +1,10 @@
+server:
+  port: 6032
+
+spring:
+  application:
+    name: college-service-order
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+
