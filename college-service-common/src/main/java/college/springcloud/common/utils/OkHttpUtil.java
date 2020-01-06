@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
+import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -26,7 +28,11 @@ public class OkHttpUtil {
 
     @Bean
     public OkHttpClient okHttpClient() {
-        return new OkHttpClient();
+        return new OkHttpClient.Builder().build();
+    }
+
+    public OkHttpUtil() {
+        okHttpClient = new OkHttpClient();
     }
 
     /**
@@ -153,25 +159,45 @@ public class OkHttpUtil {
         return responseBody;
     }
 
+    RequestBody requestBody = null;
+    Request request = null;
+
     /**
-     * Post请求发送JSON数据....{"name":"zhangsan","pwd":"123456"}
-     * 参数一：请求Url
-     * 参数二：请求的JSON
-     * 参数三：请求回调
+     * post Json格式带 header
+     *
+     * @param url
+     * @param jsonParams
+     * @param headers
+     * @return
      */
-    public String postJsonParams(String url, String jsonParams) {
+    public String postJsonParams(String url, String jsonParams, Map<String, String> headers) {
         String responseBody = "";
-        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), jsonParams);
-        Request request = new Request.Builder()
-                .url(url)
-                .post(requestBody)
-                .build();
+        if (requestBody == null) {
+            try {
+                requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), jsonParams.getBytes("UTF-8"));
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+        }
+        Request.Builder builder = new Request.Builder();
+        if (headers != null && headers.size() > 0) {
+            headers.entrySet().forEach(t -> builder.addHeader(t.getKey(), t.getValue()));
+        }
+        if (request == null) {
+            request = builder
+                    .url(url)
+                    .post(requestBody)
+                    .build();
+        }
         Response response = null;
         try {
             response = okHttpClient.newCall(request).execute();
-            int status = response.code();
+            responseBody = response.body().string();
+            log.info("结果：" + response.protocol() + " " + response.code() + " " + response.message() + " " + responseBody);
             if (response.isSuccessful()) {
-                return response.body().string();
+                return responseBody;
+            } else {
+                return "";
             }
         } catch (Exception e) {
             log.error("okhttp3 post error >> ex = {}", ExceptionUtils.getStackTrace(e));
@@ -181,6 +207,23 @@ public class OkHttpUtil {
             }
         }
         return responseBody;
+    }
+
+    public String postJsonParams(String url, String jsonParams) {
+        return postJsonParams(url, jsonParams, null);
+    }
+
+    /**
+     * Post请求发送JSON数据....{"name":"zhangsan","pwd":"123456"}
+     * 参数一：请求Url
+     * 参数二：请求的JSON  application/json; charset=utf-8
+     * text/plain; charset=UTF-8
+     * 参数三：请求回调
+     */
+    public String postJsonParams(String url, String jsonParams, String headerKey, String headerValue) {
+        Map<String, String> headers = new HashMap<>();
+        headers.put(headerKey, headerValue);
+        return postJsonParams(url, jsonParams, headers);
     }
 
     /**
@@ -202,6 +245,8 @@ public class OkHttpUtil {
             int status = response.code();
             if (response.isSuccessful()) {
                 return response.body().string();
+            } else {
+                return "";
             }
         } catch (Exception e) {
             log.error("okhttp3 post error >> ex = {}", ExceptionUtils.getStackTrace(e));

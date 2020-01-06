@@ -18,8 +18,10 @@ import lombok.Data;
  */
 public class YouMengDemo {
 
+    //安卓
     private String appkey = "57d771e367e58e027c00326b";
     private String appMasterSecret = "at8jkkc0gcomnehlinerhfnyme14hsaq";
+    //ios
 //    private String appkey = "57cfdd2767e58e2c260034ba";
 //    private String appMasterSecret = "oqwvanciersg2ouozmxkn9swh7bbsr76";
     private String timestamp = null;
@@ -29,7 +31,7 @@ public class YouMengDemo {
         AndroidUnicast unicast = new AndroidUnicast(appkey,appMasterSecret);
         // TODO Set your device token
 //        unicast.setDeviceToken("An1Y1j8li-ZbxHwCHntmHk1uXIWIgP7P-y8L-vKX-uop");
-        unicast.setDeviceToken("Aiy0Cpr9kfsTuTvGe4GjSL4NqKppEXxAeOWoPUDLztAo");
+        unicast.setDeviceToken("AvxBWIKPVnNmzmLohQR-kb9LrkSqeU-yRHPdeypuqSUq");
 
         unicast.setTicker("Android unicast ticker");
         unicast.setTitle(  "中文的title");
@@ -90,7 +92,7 @@ public class YouMengDemo {
      */
     public boolean sendIOSUnicast() throws Exception {
         IOSUnicast unicast = new IOSUnicast(appkey, appMasterSecret);
-        unicast.setDeviceToken("5e87a794c16b082de27c5f8fa4abc4caa30e618f0da98e02d382aceb4ec8f6bd");
+        unicast.setDeviceToken("4cd9cfe8d2165a118b68a2bef8804e9ed5b2b6faf2ab063a8405d9e22430a6ea");
         Alert alert = new Alert();
         alert.setTitle("IOS 单播测试");
         alert.setSubtitle("IOS broadcast Subtitle");
@@ -162,7 +164,6 @@ public class YouMengDemo {
      */
     public void sendIOSBroadcast() throws Exception {
         IOSBroadcast broadcast = new IOSBroadcast(appkey,appMasterSecret);
-
         broadcast.setAlert("IOS 广播测试");
         broadcast.setBadge( 0);
         broadcast.setSound( "default");
@@ -180,5 +181,6 @@ public class YouMengDemo {
 //        youMengDemo.sendIOSUnicast();
 //        youMengDemo.sendIOSListcast();
 //        youMengDemo.sendIOSBroadcast();
+//        youMengDemo.sendAndroidBroadcast();
     }
 }

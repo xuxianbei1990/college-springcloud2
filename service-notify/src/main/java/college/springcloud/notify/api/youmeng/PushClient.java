@@ -1,7 +1,10 @@
 package college.springcloud.notify.api.youmeng;
 
+import college.springcloud.common.utils.OkHttpUtil;
 import com.alibaba.fastjson.JSONObject;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
@@ -11,6 +14,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
+@Slf4j
 public class PushClient {
 
     // The user agent
@@ -18,6 +22,8 @@ public class PushClient {
 
     // This object is used for sending the post request to Umeng
     protected HttpClient client = new DefaultHttpClient();
+
+    private OkHttpUtil okHttpUtil = new OkHttpUtil();
 
     // The host
     protected static final String host = "http://msg.umeng.com";
@@ -28,7 +34,22 @@ public class PushClient {
     // The post path
     protected static final String postPath = "/api/send";
 
-    public boolean send(UmengNotification msg) throws Exception {
+    private boolean sendOkhttp(UmengNotification msg) {
+        try {
+            String timestamp = Integer.toString((int) (System.currentTimeMillis() / 1000));
+            msg.setPredefinedKeyValue("timestamp", timestamp);
+            String url = host + postPath;
+            String postBody = msg.getPostBody();
+            String sign = DigestUtils.md5Hex(("POST" + url + postBody + msg.getAppMasterSecret()).getBytes("utf8"));
+            url = url + "?sign=" + sign;
+            return StringUtils.isNotBlank(okHttpUtil.postJsonParams(url, postBody, "User-Agent", USER_AGENT));
+        } catch (Exception e) {
+            log.error("sendOkhttp 错误", e);
+            return false;
+        }
+    }
+
+    private boolean sendHttpClient(UmengNotification msg) throws Exception {
         String timestamp = Integer.toString((int) (System.currentTimeMillis() / 1000));
         msg.setPredefinedKeyValue("timestamp", timestamp);
         String url = host + postPath;
@@ -61,6 +82,11 @@ public class PushClient {
             response.getEntity().getContent().close();
         }
         return true;
+    }
+
+
+    public boolean send(UmengNotification msg) throws Exception {
+        return sendOkhttp(msg);
     }
 
     // Upload file with device_tokens to Umeng
