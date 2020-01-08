@@ -71,20 +71,43 @@ public class Criteria<A, B> {
     }
 
     //总感觉这里有问题，如果有升序，又有降序怎么处理？
-    public Criteria<A, B> sortDesc(Fn... fns) {
+    public Criteria<A, B> sortDesc(Fn<A, B>... fns) {
         this.statement.sortNames = college.springcloud.common.utils.Reflection.fnToFieldName(fns);
         this.statement.sortOrder = "desc";
         return this;
     }
 
-    public Criteria<A, B> sort(Fn... fns) {
+    public Criteria<A, B> sort(Fn<A, B>... fns) {
         // 看来 Reflection.fnToFieldName 才是核心代码
         this.statement.sortNames = Reflection.fnToFieldName(fns);
         return this;
     }
 
-    public Criteria<A, B> fields(Fn... fns) {
+    public Criteria<A, B> fields(Fn<A, B>... fns) {
         this.statement.fields = Reflection.fnToFieldName(fns);
+        return this;
+    }
+
+    public Criteria<A, B> fieldsExcept(Fn<A, B>... fns) {
+        Class clazz = this.statement.clazz;
+        //这里有一个优化思路，就是先排序，减少循环次数；不过意义不大，除非达到百万级别调用次数
+        //考研算法时候到了
+        Field[] fields = clazz.getDeclaredFields();
+        String[] exceptNames = Reflection.fnToFieldName(fns);
+        List<String> list = new LinkedList<>();
+        for (Field field : fields) {
+            boolean notMatch = true;
+            for (String exceptName : exceptNames) {
+                if (field.getName().equals(exceptName)) {
+                    notMatch = false;
+                    break;
+                }
+            }
+            if (notMatch) {
+                list.add(field.getName());
+            }
+        }
+        this.statement.fields = list.toArray(new String[]{});
         return this;
     }
 
@@ -246,6 +269,9 @@ public class Criteria<A, B> {
         return this;
     }
 
+
+
+
     public String buildSql() {
         //解析Po把对象和表一一绑定;
         //把表名和字段名存储到entityTable中
@@ -358,14 +384,21 @@ public class Criteria<A, B> {
         public static String selectColumns(Criteria.Statement statement) {
             StringBuilder selectColumns = new StringBuilder("select ");
             Criteria.EntityTable entityTable = Criteria.entityTableCache.get(statement.clazz);
+            //处理工具类生成多余的属性
+            if (entityTable.fieldsMap.containsKey("serialVersionUID")) {
+                entityTable.fieldsMap.remove("serialVersionUID");
+            }
             if (statement.getFields() != null && statement.getFields().length > 0) {
-
-                return null;
-            } else {
-                //处理工具类生成多余的属性
-                if (entityTable.fieldsMap.containsKey("serialVersionUID")) {
-                    entityTable.fieldsMap.remove("serialVersionUID");
+                List<String> columns = new ArrayList();
+                String[] fields = statement.fields;
+                for (String field : fields) {
+                    if (StringUtils.isNotBlank(entityTable.fieldsMap.get(field))) {
+                        columns.add(entityTable.fieldsMap.get(field));
+                    }
                 }
+                return selectColumns.append(String.join(",", columns)).toString();
+            } else {
+
                 Map<String, String> fieldsMap = entityTable.fieldsMap;
                 return selectColumns.append(fieldsMap.entrySet().stream().map(Map.Entry::getValue)
                         .collect(Collectors.joining(","))).toString();

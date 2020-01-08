@@ -29,7 +29,10 @@ public class Reflection {
         return arr;
     }
 
-    //下面的方法就是为了拿到传入方法的去掉get，is的名称
+    /**
+     * 下面的方法就是为了拿到传入方法的去掉get，is的名称
+     * 例如getStudent 变成 student
+     */
     public static <A, B> String fnToFieldName(Fn<A, B> fn) {
         try {
             SerializedLambda serializedLambda = getSerializedLambda(fn);

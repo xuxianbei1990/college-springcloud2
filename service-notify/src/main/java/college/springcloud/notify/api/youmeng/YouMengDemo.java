@@ -26,6 +26,7 @@ public class YouMengDemo {
 //    private String appMasterSecret = "oqwvanciersg2ouozmxkn9swh7bbsr76";
     private String timestamp = null;
     private PushClient client = new PushClient();
+    private String MI_ACTIVITY = "com.xyh.commerce.ui.splash.SplashActivity";
 
     public void sendAndroidUnicast() throws Exception {
         AndroidUnicast unicast = new AndroidUnicast(appkey,appMasterSecret);
@@ -37,10 +38,11 @@ public class YouMengDemo {
         unicast.setTitle(  "中文的title");
         unicast.setText(   "Android unicast text");
         unicast.goAppAfterOpen();
+        unicast.setOffLine(MI_ACTIVITY);
         unicast.setDisplayType(AndroidNotification.DisplayType.NOTIFICATION);
         // TODO Set 'production_mode' to 'false' if it's a test device.
         // For how to register a test device, please see the developer doc.
-        unicast.setProductionMode();
+        unicast.setTestMode();
         // Set customized fields
         unicast.setExtraField("test", "helloworld");
         client.send(unicast);
@@ -92,7 +94,7 @@ public class YouMengDemo {
      */
     public boolean sendIOSUnicast() throws Exception {
         IOSUnicast unicast = new IOSUnicast(appkey, appMasterSecret);
-        unicast.setDeviceToken("4cd9cfe8d2165a118b68a2bef8804e9ed5b2b6faf2ab063a8405d9e22430a6ea");
+        unicast.setDeviceToken("a3fa30bdf38061befd7a97037f54264737dcf369ff68986b8aad886f85d6f2ca");
         Alert alert = new Alert();
         alert.setTitle("IOS 单播测试");
         alert.setSubtitle("IOS broadcast Subtitle");

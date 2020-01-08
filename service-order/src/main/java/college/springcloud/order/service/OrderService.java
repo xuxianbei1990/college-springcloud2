@@ -6,6 +6,8 @@ import college.springcloud.common.service.IService;
 import college.springcloud.order.dto.OrderDto;
 import college.springcloud.order.po.Order;
 
+import java.util.List;
+
 public interface OrderService extends IService<Order> {
 
    PageVo<Order> queryOrders(OrderDto orderDto);
@@ -21,4 +23,8 @@ public interface OrderService extends IService<Order> {
     Object query();
 
     Integer createBatch();
+
+    List<Order> criteriaExcept();
+
+    List<Order> criteria();
 }

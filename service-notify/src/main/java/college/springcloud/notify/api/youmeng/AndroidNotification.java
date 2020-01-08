@@ -103,7 +103,12 @@ public abstract class AndroidNotification extends UmengNotification {
 		extraJson.put(key, value);
 		return true;
 	}
-	
+
+
+	public void setOffLine(String activity) throws Exception {
+		setPredefinedKeyValue("mipush", true);
+		setPredefinedKeyValue("mi_activity", activity);
+	}
 	//
 	public void setDisplayType(DisplayType d) throws Exception {
 		setPredefinedKeyValue("display_type", d.getValue());

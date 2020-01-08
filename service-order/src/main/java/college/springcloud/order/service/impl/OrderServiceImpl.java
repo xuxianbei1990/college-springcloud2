@@ -117,4 +117,18 @@ public class OrderServiceImpl extends BaseService<Order> implements OrderService
         Integer result = orderMapper.insertList(orderList);
         return result;
     }
+
+    @Override
+    public List<Order> criteriaExcept() {
+        Criteria<Order, Object> criteria = Criteria.of(Order.class)
+                .fieldsExcept(Order::getFcreateTime, Order::getFmodifyTime).page(1, 10);
+        return queryByCriteria(criteria);
+    }
+
+    @Override
+    public List<Order> criteria() {
+        Criteria<Order, Object> criteria = Criteria.of(Order.class);
+        criteria.andEqualTo(Order::getForderId, "XS571123922261005");
+        return queryByCriteria(criteria);
+    }
 }

@@ -189,10 +189,17 @@ public class StudentController<T> implements StudentApi {
         return "";
     }
 
+    /**
+     * 异步再同步数据
+     * @return
+     * @throws ExecutionException
+     * @throws InterruptedException
+     */
     @GetMapping("/async/future")
     public String asyncFuture() throws ExecutionException, InterruptedException {
         Future<String> future = asyncThreadTest.asycTestFuture("xxy", "a yi a yi e king", 1);
         System.out.println("ba la ba 一顿操作");
         return future.get();
     }
+
 }
