@@ -12,7 +12,6 @@ import javax.persistence.Table;
 import java.lang.reflect.Field;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 /**
  * User: xuxianbei
@@ -32,7 +31,8 @@ public class Criteria<A, B> {
     private void cacheEntityTable(Class<A> entityClass) {
         if (!entityTableCache.containsKey(entityClass)) {
             Table table = entityClass.getAnnotation(Table.class);
-            Map<String, String> fieldsMap = new LinkedHashMap<>();
+            Map<String, String> fieldsMap = new ConcurrentHashMap<>();
+            Map<String, String> fieldsMapDisplay = new LinkedHashMap<>();
             Field[] declareFields = entityClass.getDeclaredFields();
             //把对象的属性和表字段一一对应
             for (Field field : declareFields) {
@@ -40,15 +40,18 @@ public class Criteria<A, B> {
                     Column column = field.getAnnotation(Column.class);
                     //这里没有约定
                     fieldsMap.put(field.getName(), column.name());
+                    fieldsMapDisplay.put(field.getName(), column.name());
                 } else {
                     // 驼峰命名
                     String s = StringUtil.convertByStyle(field.getName(), Style.camelhump);
                     fieldsMap.put(field.getName(), s);
+                    fieldsMapDisplay.put(field.getName(), s);
                 }
             }
             Criteria.EntityTable entityTable = new Criteria.EntityTable();
             entityTable.setTableName(table.name());
             entityTable.setFieldsMap(fieldsMap);
+            entityTable.setFieldsMapDisplay(fieldsMapDisplay);
             entityTableCache.put(entityClass, entityTable);
         }
     }
@@ -270,8 +273,6 @@ public class Criteria<A, B> {
     }
 
 
-
-
     public String buildSql() {
         //解析Po把对象和表一一绑定;
         //把表名和字段名存储到entityTable中
@@ -377,31 +378,37 @@ public class Criteria<A, B> {
     public static class EntityTable {
         private String tableName;
         private Map<String, String> fieldsMap;
+        private Map<String, String> fieldsMapDisplay;
     }
 
 
     public static class SqlHelper {
         public static String selectColumns(Criteria.Statement statement) {
             StringBuilder selectColumns = new StringBuilder("select ");
-            Criteria.EntityTable entityTable = Criteria.entityTableCache.get(statement.clazz);
+            Criteria.EntityTable entityTable = entityTableCache.get(statement.clazz);
             //处理工具类生成多余的属性
-            if (entityTable.fieldsMap.containsKey("serialVersionUID")) {
-                entityTable.fieldsMap.remove("serialVersionUID");
+            if (entityTable.getFieldsMap().containsKey("serialVersionUID")) {
+                entityTable.getFieldsMap().remove("serialVersionUID");
             }
             if (statement.getFields() != null && statement.getFields().length > 0) {
                 List<String> columns = new ArrayList();
                 String[] fields = statement.fields;
                 for (String field : fields) {
-                    if (StringUtils.isNotBlank(entityTable.fieldsMap.get(field))) {
-                        columns.add(entityTable.fieldsMap.get(field));
+                    if (StringUtils.isNotBlank(entityTable.getFieldsMap().get(field))) {
+                        columns.add(entityTable.getFieldsMap().get(field));
                     }
                 }
                 return selectColumns.append(String.join(",", columns)).toString();
             } else {
 
-                Map<String, String> fieldsMap = entityTable.fieldsMap;
-                return selectColumns.append(fieldsMap.entrySet().stream().map(Map.Entry::getValue)
-                        .collect(Collectors.joining(","))).toString();
+                Map<String, String> fieldsMap = entityTable.getFieldsMap();
+
+                Iterator<Map.Entry<String, String>> iterator = fieldsMap.entrySet().iterator();
+                List<String> columns = new LinkedList<>();
+                while (iterator.hasNext()) {
+                    columns.add(iterator.next().getValue());
+                }
+                return selectColumns.append(String.join(",", columns)).toString();
             }
         }
 
@@ -427,7 +434,7 @@ public class Criteria<A, B> {
                     }
                     //这段代码有问题 如果多个字段 这段代码完全失效，而且有点多余
                     // 我觉得用来校验更加好些  todo
-                    stringBuilder.append(entityTable.fieldsMap.get(statement.sortNames[i])).append(",");
+                    stringBuilder.append(entityTable.getFieldsMap().get(statement.sortNames[i])).append(",");
                 }
 
                 if (stringBuilder.length() > 0) {
@@ -455,14 +462,14 @@ public class Criteria<A, B> {
                     }
 
                     if (criterion.valueType == Criteria.Criterion.ValueType.noValue) {
-                        resultSB.append(entityTable.fieldsMap.get(criterion.property) + " " + criterion.condition);
+                        resultSB.append(entityTable.getFieldsMap().get(criterion.property) + " " + criterion.condition);
                     }
 
                     if (criterion.valueType == Criteria.Criterion.ValueType.singleValue) {
                         if (!(criterion.value instanceof Number) && !(criterion.value instanceof Boolean)) {
                             criterion.value = "'".concat(criterion.value.toString()).concat("'");
                         }
-                        resultSB.append(entityTable.fieldsMap.get(criterion.property) + " " + criterion.condition + " " + criterion.value);
+                        resultSB.append(entityTable.getFieldsMap().get(criterion.property) + " " + criterion.condition + " " + criterion.value);
                     }
 
                     if (criterion.valueType == Criteria.Criterion.ValueType.betweenValue) {
@@ -474,7 +481,7 @@ public class Criteria<A, B> {
                             criterion.secondValue = "'".concat(criterion.secondValue.toString()).concat("'");
                         }
 
-                        resultSB.append(entityTable.fieldsMap.get(criterion.property) + " " + criterion.condition + " " + criterion.value + " AND " + criterion.secondValue);
+                        resultSB.append(entityTable.getFieldsMap().get(criterion.property) + " " + criterion.condition + " " + criterion.value + " AND " + criterion.secondValue);
                     }
 
                     if (criterion.valueType == Criteria.Criterion.ValueType.listValue) {
@@ -492,7 +499,7 @@ public class Criteria<A, B> {
                         if (listItem.length() > 0) {
                             listItem.deleteCharAt(listItem.length() - 1);
                         }
-                        resultSB.append(entityTable.fieldsMap.get(criterion.property) + " " + criterion.condition + " (" + listItem + ")");
+                        resultSB.append(entityTable.getFieldsMap().get(criterion.property) + " " + criterion.condition + " (" + listItem + ")");
                     }
                 }
             }
