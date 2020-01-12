@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="college.springcloud.order.mapper.SupplierTransportSkuMapper">
+    <resultMap id="BaseResultMap" type="college.springcloud.order.po.SupplierTransportSku">
+		<id column="ftransport_sku_id" property="ftransportSkuId" jdbcType="BIGINT"/>
+		<result column="ftransport_order_id" property="ftransportOrderId" jdbcType="VARCHAR"/>
+		<result column="fbatch_id" property="fbatchId" jdbcType="VARCHAR"/>
+		<result column="fbatch_package_id" property="fbatchPackageId" jdbcType="BIGINT"/>
+		<result column="fbatch_package_val" property="fbatchPackageNum" jdbcType="VARCHAR"/>
+		<result column="fsku_code" property="fskuCode" jdbcType="VARCHAR"/>
+		<result column="fsku_name" property="fskuName" jdbcType="VARCHAR"/>
+		<result column="fsku_num" property="fskuNum" jdbcType="INTEGER"/>
+		<result column="fsku_price" property="fskuPrice" jdbcType="BIGINT"/>
+		<result column="fcreate_time" property="fcreateTime" jdbcType="TIMESTAMP"/>
+		<result column="fmodify_time" property="fmodifyTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+</mapper>

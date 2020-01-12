@@ -38,6 +38,7 @@ public class YouMengDemo {
         unicast.setTitle(  "中文的title");
         unicast.setText(   "Android unicast text");
         unicast.goAppAfterOpen();
+        unicast.goActivityAfterOpen(MI_ACTIVITY);
         unicast.setOffLine(MI_ACTIVITY);
         unicast.setDisplayType(AndroidNotification.DisplayType.NOTIFICATION);
         // TODO Set 'production_mode' to 'false' if it's a test device.

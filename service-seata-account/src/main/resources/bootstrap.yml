@@ -12,8 +12,8 @@ eureka:
     ip-address: ${spring.cloud.client.ip-address}
   client:
     serviceUrl:
-#      defaultZone: http://localhost:8571/eureka/
-      defaultZone: http://192.168.2.145:8880/eureka/,http://192.168.2.220:8880/eureka/
+      defaultZone: http://localhost:8571/eureka/
+#      defaultZone: http://192.168.2.145:8880/eureka/,http://192.168.2.220:8880/eureka/
 
 # 从Eureka中找到Config服务并读取配置
 spring:
