@@ -16,8 +16,10 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.time.Instant;
@@ -183,6 +185,20 @@ public class StudentController<T> implements StudentApi {
     }
 
 
+
+    @ApiOperation("导入模板下载")
+    @GetMapping("/download/template")
+    public void downloadTemplate(HttpServletResponse response) {
+        studentService.downloadTemplate(response);
+    }
+
+    @ApiOperation("导入")
+    @GetMapping("/import")
+    public List<ExportVo> importData(@RequestBody MultipartFile file) {
+       return studentService.importData(file);
+    }
+
+
     @GetMapping("/async")
     public String async() {
         asyncThreadTest.asycTest("xxy", "a yi a yi e king", 1);
@@ -191,6 +207,7 @@ public class StudentController<T> implements StudentApi {
 
     /**
      * 异步再同步数据
+     *
      * @return
      * @throws ExecutionException
      * @throws InterruptedException

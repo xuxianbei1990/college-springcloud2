@@ -3,7 +3,7 @@ package college.springcloud.common.interceptor.message.business;
 import org.springframework.context.ApplicationEvent;
 
 /**
- * * 一期问题罗列：1.幂等问题。2.结果取值问题。3.没有key问题。4.自定义扩展参数问题。
+ * * 一期问题罗列：1.幂等问题。3.没有key问题。4.自定义扩展参数问题。
  * * 6.多个url拦截，难以匹配问题
  *  ; 10. 前端调用，没有拦截；11.主从问题
  *

@@ -11,6 +11,7 @@ import lombok.Data;
  */
 @Data
 public class CollegeExceptionCode implements IResultStatus {
+    public static final CollegeExceptionCode SYSTEM_ERROR = new CollegeExceptionCode("9999", "系统异常");
     public static final CollegeExceptionCode DATA_EXCEPTION = new CollegeExceptionCode("9994", "数据异常");
     public static final CollegeExceptionCode INTERNAL_SERVER_ERROR = new CollegeExceptionCode("604", "服务器内部错误");
     private String code;

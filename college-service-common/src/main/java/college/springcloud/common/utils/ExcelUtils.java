@@ -4,6 +4,8 @@ import cn.afterturn.easypoi.excel.ExcelExportUtil;
 import cn.afterturn.easypoi.excel.entity.ExportParams;
 import cn.afterturn.easypoi.handler.inter.IExcelExportServer;
 import college.springcloud.common.dto.PageDto;
+import college.springcloud.common.exception.BizException;
+import college.springcloud.common.exception.CollegeExceptionCode;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.*;
@@ -310,8 +312,6 @@ public class ExcelUtils {
     public static void exportExcelByEasyPoi(String fileName, PageDto pageDto, Class<?> voClass,
                                             IExcelExportServer excelExportServer, HttpServletResponse response) {
         try {
-            //每次查询1千的数据量
-            pageDto.setPageSize(EASYPOI_EXPORT_EXCEL_APPEND_OFFSET);
             try (Workbook workbook = ExcelExportUtil.exportBigExcel(new ExportParams(null, fileName), voClass, excelExportServer, pageDto)) {
                 response.setHeader("content-Type", "application/vnd.ms-excel;charset=utf-8");
                 response.setHeader("Content-Disposition", StringUtils.join("attachment;filename=",
@@ -323,6 +323,32 @@ public class ExcelUtils {
         } catch (Throwable e) {
             log.error("导出{}出错", fileName, e);
             throw new RuntimeException("系统异常");
+        }
+    }
+
+    /**
+     * 导出一个空内容的Excel
+     *
+     * @param response
+     * @param workbook excel对象
+     * @param fileName 文件名入参时不包含后缀
+     * @throws Exception
+     */
+    public static void exportEmptyContentExcel(HttpServletResponse response, Workbook workbook, String fileName) {
+        try {
+            //response重置之前需要判断是否已经committed，避免response throw new IllegalStateException("Committed")
+            if (!response.isCommitted()) {
+                response.reset();
+            }
+            response.setHeader("content-Type", "application/vnd.ms-excel;charset=utf-8");
+            response.setHeader("Content-Disposition", StringUtils.join("attachment;filename=",
+                    new String(fileName.getBytes("utf-8"), "iso8859-1"), ".xls"));
+            try (ServletOutputStream outputStream = response.getOutputStream()) {
+                workbook.write(outputStream);
+            }
+        } catch (Throwable e) {
+            log.error("导出{}出错", fileName, e);
+            throw new BizException(CollegeExceptionCode.SYSTEM_ERROR);
         }
     }
 
