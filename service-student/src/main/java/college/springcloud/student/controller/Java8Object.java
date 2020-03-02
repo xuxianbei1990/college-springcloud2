@@ -1,8 +1,5 @@
 package college.springcloud.student.controller;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * @author: xuxianbei
  * Date: 2019/12/31
@@ -22,9 +19,10 @@ public class Java8Object {
 //        System.out.println(Integer.toHexString(objectStudent.hashCode()));
 //        System.out.println(ClassLayout.parseInstance(objectStudent).toPrintable());
 
-        Map<String, Integer> map = new HashMap<>();
-        map.put("the", 1);
-        map.put("xxb", 1);
-        System.out.println(map);
+//        Map<String, Integer> map = new HashMap<>();
+//        map.put("the", 1);
+//        map.put("xxb", 1);
+//        System.out.println(map);
     }
+
 }

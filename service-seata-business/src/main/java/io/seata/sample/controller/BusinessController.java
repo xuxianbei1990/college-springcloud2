@@ -95,6 +95,23 @@ public class BusinessController {
     }
 
     /**
+     * seata多次更新 失败滚回测试
+     * 账户或库存不足
+     *
+     * @return
+     */
+    @GetMapping("/multi/update/rollback")
+    public String multiUpdateRollback(Integer error) {
+        try {
+            businessService.multiUpdateRollback(error);
+        } catch (Exception exx) {
+            return exx.getMessage();
+        }
+        return "全局事务提交";
+    }
+
+
+    /**
      * 线程安全
      * @return
      */

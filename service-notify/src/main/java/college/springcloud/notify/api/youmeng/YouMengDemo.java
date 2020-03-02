@@ -19,11 +19,11 @@ import lombok.Data;
 public class YouMengDemo {
 
     //安卓
-    private String appkey = "57d771e367e58e027c00326b";
-    private String appMasterSecret = "at8jkkc0gcomnehlinerhfnyme14hsaq";
-    //ios
-//    private String appkey = "57cfdd2767e58e2c260034ba";
-//    private String appMasterSecret = "oqwvanciersg2ouozmxkn9swh7bbsr76";
+//    private String appkey = "57d771e367e58e027c00326b";
+//    private String appMasterSecret = "at8jkkc0gcomnehlinerhfnyme14hsaq";
+//    ios
+    private String appkey = "57cfdd2767e58e2c260034ba";
+    private String appMasterSecret = "oqwvanciersg2ouozmxkn9swh7bbsr76";
     private String timestamp = null;
     private PushClient client = new PushClient();
     private String MI_ACTIVITY = "com.xyh.commerce.ui.splash.SplashActivity";
@@ -32,7 +32,7 @@ public class YouMengDemo {
         AndroidUnicast unicast = new AndroidUnicast(appkey,appMasterSecret);
         // TODO Set your device token
 //        unicast.setDeviceToken("An1Y1j8li-ZbxHwCHntmHk1uXIWIgP7P-y8L-vKX-uop");
-        unicast.setDeviceToken("AvxBWIKPVnNmzmLohQR-kb9LrkSqeU-yRHPdeypuqSUq");
+        unicast.setDeviceToken("ApMR2f_Aad17uir23HRwq-prZ8ocqATZ4TJWu2MwYRlR");
 
         unicast.setTicker("Android unicast ticker");
         unicast.setTitle(  "中文的title");
@@ -80,7 +80,7 @@ public class YouMengDemo {
         broadcast.setDisplayType(AndroidNotification.DisplayType.NOTIFICATION);
         // TODO Set 'production_mode' to 'false' if it's a test device.
         // For how to register a test device, please see the developer doc.
-        broadcast.setProductionMode();
+        broadcast.setTestMode();
         // Set customized fields
         broadcast.setExtraField("test", "helloworld");
         client.send(broadcast);
@@ -95,7 +95,7 @@ public class YouMengDemo {
      */
     public boolean sendIOSUnicast() throws Exception {
         IOSUnicast unicast = new IOSUnicast(appkey, appMasterSecret);
-        unicast.setDeviceToken("a3fa30bdf38061befd7a97037f54264737dcf369ff68986b8aad886f85d6f2ca");
+        unicast.setDeviceToken("cdb4cfe57064f71759291f6b7fee195a51dd304e6d26b3d045c6f8b8d285190b");
         Alert alert = new Alert();
         alert.setTitle("IOS 单播测试");
         alert.setSubtitle("IOS broadcast Subtitle");
@@ -179,9 +179,9 @@ public class YouMengDemo {
 
     public static void main(String[] args) throws Exception {
         YouMengDemo youMengDemo = new YouMengDemo();
-        youMengDemo.sendAndroidUnicast();
+//        youMengDemo.sendAndroidUnicast();
 //        youMengDemo.sendAndroidListcast();
-//        youMengDemo.sendIOSUnicast();
+        youMengDemo.sendIOSUnicast();
 //        youMengDemo.sendIOSListcast();
 //        youMengDemo.sendIOSBroadcast();
 //        youMengDemo.sendAndroidBroadcast();

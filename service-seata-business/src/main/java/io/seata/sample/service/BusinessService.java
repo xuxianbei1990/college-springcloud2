@@ -142,4 +142,13 @@ public class BusinessService {
         return value;
     }
 
+    @GlobalTransactional
+    public void multiUpdateRollback(Integer error) {
+        storageFeignClient.update("C100001", 20);
+        storageFeignClient.update("C100001", 30);
+        if (error == 2) {
+            throw new RuntimeException();
+        }
+        storageFeignClient.update("C100001", 40);
+    }
 }

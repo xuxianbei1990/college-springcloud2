@@ -12,8 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * 公共类测试
@@ -57,11 +55,8 @@ public class CommonCriteriaController {
      * 测试 queryByCriteria in 问题
      */
     @GetMapping("/criteria/in")
-    public List<SupplierTransportSku> criteriaIn(@RequestParam(required = false, defaultValue = "10")Integer count) {
-        ExecutorService executorService = Executors.newFixedThreadPool(100);
-        for (int i = 0; i < count; i++) {
-            executorService.execute(() -> supplierTransportSkuService.criteriaIn());
-        }
+    public List<SupplierTransportSku> criteriaIn(@RequestParam(required = false, defaultValue = "10") Integer count) {
+        supplierTransportSkuService.criteriaIn();
         return new ArrayList<>();
     }
 

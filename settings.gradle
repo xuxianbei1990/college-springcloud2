@@ -24,4 +24,6 @@ include 'service-mq'
 include 'service-mq-producer'
 include 'service-mq-consumer'
 include 'service-transport'
+include 'service-seata-server'
+include 'service-seata-client'
 

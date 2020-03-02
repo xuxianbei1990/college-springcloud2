@@ -27,7 +27,12 @@ public class Criteria<A, B> {
     //缓存对象类型和表实体的
     private static final Map<Class<?>, EntityTable> entityTableCache = new ConcurrentHashMap<>();
 
-
+    /**
+     * 这个方法在实际使用中会遇到多线程访问问题；很简单多个供应商并发这个对象，即造成多线程并发情况
+     *
+     * 可以参考1.8 concurrentHashMap initTable
+     * @param entityClass
+     */
     private void cacheEntityTable(Class<A> entityClass) {
         if (!entityTableCache.containsKey(entityClass)) {
             Table table = entityClass.getAnnotation(Table.class);

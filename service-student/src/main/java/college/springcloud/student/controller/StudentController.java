@@ -14,6 +14,7 @@ import com.google.common.collect.Lists;
 import io.swagger.annotations.ApiOperation;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.task.AsyncTaskExecutor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -57,6 +58,9 @@ public class StudentController<T> implements StudentApi {
 
     @Autowired
     private AsyncThreadTest asyncThreadTest;
+
+    @Autowired
+    private AsyncTaskExecutor asyncTaskExecutor;
 
     @Override
     @GetMapping("/get")
@@ -215,6 +219,9 @@ public class StudentController<T> implements StudentApi {
     @GetMapping("/async/future")
     public String asyncFuture() throws ExecutionException, InterruptedException {
         Future<String> future = asyncThreadTest.asycTestFuture("xxy", "a yi a yi e king", 1);
+        asyncTaskExecutor.execute(() ->{
+            throw new RuntimeException("xxb");
+        });
         System.out.println("ba la ba 一顿操作");
         return future.get();
     }
