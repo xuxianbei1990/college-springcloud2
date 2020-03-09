@@ -2,7 +2,7 @@ plugins {
     id 'java'
 }
 
-version 'unspecified'
+version '1.0'
 
 sourceCompatibility = 1.8
 
@@ -11,5 +11,8 @@ repositories {
 }
 
 dependencies {
+    compile project(":college-service-common")
+    compile project(":service-seata-server")
+    compile('org.apache.commons:commons-lang:2.6')
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }

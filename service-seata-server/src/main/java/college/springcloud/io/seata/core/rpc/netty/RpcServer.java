@@ -17,24 +17,9 @@ import java.util.concurrent.TimeoutException;
 @ChannelHandler.Sharable
 public class RpcServer extends AbstractRpcRemotingServer implements ServerMessageSender {
 
-    private int listenPort;
 
     public RpcServer(NettyServerConfig nettyServerConfig) {
         super(nettyServerConfig);
-    }
-
-
-    /**
-     * Sets listen port.
-     *
-     * @param listenPort the listen port
-     */
-    public void setListenPort(int listenPort) {
-
-        if (listenPort <= 0) {
-            throw new IllegalArgumentException("listen port: " + listenPort + " is invalid!");
-        }
-        this.listenPort = listenPort;
     }
 
 

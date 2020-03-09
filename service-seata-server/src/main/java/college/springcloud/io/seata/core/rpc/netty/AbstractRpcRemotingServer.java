@@ -59,7 +59,6 @@ public abstract class AbstractRpcRemotingServer extends AbstractRpcRemoting impl
      * @param listenPort the listen port
      */
     public void setListenPort(int listenPort) {
-
         if (listenPort <= 0) {
             throw new IllegalArgumentException("listen port: " + listenPort + " is invalid!");
         }
