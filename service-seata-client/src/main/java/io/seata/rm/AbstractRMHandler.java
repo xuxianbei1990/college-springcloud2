@@ -1,8 +1,11 @@
 package io.seata.rm;
 
-import college.springcloud.io.seata.core.exception.AbstractExceptionHandler.Callback;
 import college.springcloud.io.seata.core.exception.AbstractExceptionHandler.AbstractCallback;
+import college.springcloud.io.seata.core.exception.AbstractExceptionHandler.Callback;
 import college.springcloud.io.seata.core.exception.TransactionException;
+import college.springcloud.io.seata.core.model.BranchStatus;
+import college.springcloud.io.seata.core.model.BranchType;
+import college.springcloud.io.seata.core.model.ResourceManager;
 import college.springcloud.io.seata.core.protocol.AbstractMessage;
 import college.springcloud.io.seata.core.protocol.AbstractResultMessage;
 import college.springcloud.io.seata.core.protocol.transaction.*;
@@ -67,5 +70,20 @@ public abstract class AbstractRMHandler implements TransactionMessageHandler, RM
     protected void doBranchCommit(BranchCommitRequest request, BranchCommitResponse response)
             throws TransactionException {
         String xid = request.getXid();
+        long branchId = request.getBranchId();
+        //这个是数据库？
+        String resourceId = request.getResourceId();
+        String applicationData = request.getApplicationData();
+        log.info("Branch committing: " + xid + " " + branchId + " " + resourceId + " " + applicationData);
+        //这里调用的是RMHandleAT 的 getResourceManager() 最终调用 DataSourceManager
+        BranchStatus status = getResourceManager().branchCommit(request.getBranchType(), xid, branchId, resourceId,
+                applicationData);
+        response.setXid(xid);
+        response.setBranchId(branchId);
+        response.setBranchStatus(status);
     }
+
+    protected abstract ResourceManager getResourceManager();
+
+    public abstract BranchType getBranchType();
 }

@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -59,7 +60,7 @@ public class StudentController<T> implements StudentApi {
     @Autowired
     private AsyncThreadTest asyncThreadTest;
 
-    @Autowired
+    @Resource
     private AsyncTaskExecutor asyncTaskExecutor;
 
     @Override
@@ -167,11 +168,13 @@ public class StudentController<T> implements StudentApi {
         System.out.println("Consumer============");
         Function<Student, Student> studentFunction = student1 -> student1.fun(student1);
         Function<Student, Student> studentFunction2 = student1 -> student1.fun2(student1);
+        System.out.println("studentFunction===" + studentFunction.apply(student));
         System.out.println(studentFunction2.getClass());
+        //先执行studentFunction 再执行了 studentFunction2
         System.out.println(studentFunction.andThen(studentFunction2).apply(student));
         String str = Reflection.fnToFieldName(Student::getAge);
         System.out.println(str);
-        System.out.println("Predicate============");
+        System.out.println("Function============");
         Predicate<Student> predicate = student1 -> {
             if (student1.getAge().equals(1)) {
                 student1.setName("xxb");
@@ -189,7 +192,6 @@ public class StudentController<T> implements StudentApi {
     }
 
 
-
     @ApiOperation("导入模板下载")
     @GetMapping("/download/template")
     public void downloadTemplate(HttpServletResponse response) {
@@ -199,7 +201,7 @@ public class StudentController<T> implements StudentApi {
     @ApiOperation("导入")
     @GetMapping("/import")
     public List<ExportVo> importData(@RequestBody MultipartFile file) {
-       return studentService.importData(file);
+        return studentService.importData(file);
     }
 
 
@@ -219,7 +221,7 @@ public class StudentController<T> implements StudentApi {
     @GetMapping("/async/future")
     public String asyncFuture() throws ExecutionException, InterruptedException {
         Future<String> future = asyncThreadTest.asycTestFuture("xxy", "a yi a yi e king", 1);
-        asyncTaskExecutor.execute(() ->{
+        asyncTaskExecutor.execute(() -> {
             throw new RuntimeException("xxb");
         });
         System.out.println("ba la ba 一顿操作");

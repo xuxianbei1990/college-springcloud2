@@ -1,16 +1,23 @@
 package college.springcloud.io.seata.core.rpc.netty;
 
 import college.springcloud.io.seata.common.thread.NamedThreadFactory;
+import college.springcloud.io.seata.core.model.Resource;
 import college.springcloud.io.seata.core.model.ResourceManager;
-import college.springcloud.io.seata.core.rpc.ClientMessageListener;
+import college.springcloud.io.seata.core.protocol.RegisterRMRequest;
+import college.springcloud.io.seata.core.protocol.RpcMessage;
 import io.netty.util.concurrent.EventExecutorGroup;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
+
+import static io.seata.common.Constants.DBKEYS_SPLIT_CHAR;
 
 /**
  * @author: xuxianbei
@@ -20,6 +27,7 @@ import java.util.function.Function;
  */
 
 @Data
+@Slf4j
 public class RmRpcClient extends AbstractRpcRemotingClient {
 
     private String applicationId;
@@ -62,9 +70,21 @@ public class RmRpcClient extends AbstractRpcRemotingClient {
         return instance;
     }
 
+    /**
+     * 这里为了拿到资源管理（即数据库管理）
+     * @return
+     */
     @Override
     protected Function<String, NettyPoolKey> getPoolKeyFunction() {
-        return null;
+        return (serverAddress) -> {
+            String resourceIds = getMergedResourceKeys();
+            if (null != resourceIds && log.isInfoEnabled()) {
+                log.info("RM will register :{}", resourceIds);
+            }
+            RegisterRMRequest message = new RegisterRMRequest(applicationId, transactionServiceGroup);
+            message.setResourceIds(resourceIds);
+            return new NettyPoolKey(NettyPoolKey.TransactionRole.RMROLE, serverAddress, message);
+        };
     }
 
     @Override
@@ -72,5 +92,29 @@ public class RmRpcClient extends AbstractRpcRemotingClient {
         if (initialized.compareAndSet(false, true)) {
             super.init();
         }
+    }
+
+    @Override
+    public void sendResponse(RpcMessage request, String serverAddress, Object msg) {
+
+    }
+
+    private String getMergedResourceKeys() {
+        Map<String, Resource> managedResources = resourceManager.getManagedResources();
+        Set<String> resourceIds = managedResources.keySet();
+        if (!resourceIds.isEmpty()) {
+            StringBuilder sb = new StringBuilder();
+            boolean first = true;
+            for (String resourceId : resourceIds) {
+                if (first) {
+                    first = false;
+                } else {
+                    sb.append(DBKEYS_SPLIT_CHAR);
+                }
+                sb.append(resourceId);
+            }
+            return sb.toString();
+        }
+        return null;
     }
 }

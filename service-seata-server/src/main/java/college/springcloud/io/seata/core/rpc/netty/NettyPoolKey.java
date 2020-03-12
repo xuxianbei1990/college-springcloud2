@@ -16,6 +16,8 @@
 package college.springcloud.io.seata.core.rpc.netty;
 
 
+import college.springcloud.io.seata.core.protocol.AbstractMessage;
+
 /**
  * The type Netty pool key.
  *
@@ -25,6 +27,7 @@ public class NettyPoolKey {
 
     private TransactionRole transactionRole;
     private String address;
+    private AbstractMessage message;
 
     /**
      * Instantiates a new Netty pool key.
@@ -35,6 +38,12 @@ public class NettyPoolKey {
     public NettyPoolKey(TransactionRole transactionRole, String address) {
         this.transactionRole = transactionRole;
         this.address = address;
+    }
+
+    public NettyPoolKey(TransactionRole transactionRole, String address, AbstractMessage message) {
+        this.transactionRole = transactionRole;
+        this.address = address;
+        this.message = message;
     }
 
     /**

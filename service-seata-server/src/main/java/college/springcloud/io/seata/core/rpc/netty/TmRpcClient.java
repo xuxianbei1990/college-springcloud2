@@ -2,8 +2,10 @@ package college.springcloud.io.seata.core.rpc.netty;
 
 import college.springcloud.io.seata.common.thread.NamedThreadFactory;
 import college.springcloud.io.seata.common.thread.RejectedPolicies;
+import college.springcloud.io.seata.core.protocol.RpcMessage;
 import io.netty.channel.ChannelHandler;
 import io.netty.util.concurrent.EventExecutorGroup;
+import lombok.Data;
 
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -18,7 +20,12 @@ import java.util.function.Function;
  * Version:V1.0
  */
 @ChannelHandler.Sharable
+@Data
 public class TmRpcClient extends AbstractRpcRemotingClient {
+
+    private String applicationId;
+    private String transactionServiceGroup;
+
     private static final long KEEP_ALIVE_TIME = Integer.MAX_VALUE;
     private static final int MAX_QUEUE_SIZE = 2000;
     private final AtomicBoolean initialized = new AtomicBoolean(false);
@@ -29,6 +36,8 @@ public class TmRpcClient extends AbstractRpcRemotingClient {
 
     public static TmRpcClient getInstance(String applicationId, String transactionServiceGroup) {
         TmRpcClient tmRpcClient = getInstance();
+        tmRpcClient.setApplicationId(applicationId);
+        tmRpcClient.setTransactionServiceGroup(transactionServiceGroup);
         return tmRpcClient;
     }
 
@@ -73,5 +82,10 @@ public class TmRpcClient extends AbstractRpcRemotingClient {
     @Override
     protected String getTransactionServiceGroup() {
         return null;
+    }
+
+    @Override
+    public void sendResponse(RpcMessage request, String serverAddress, Object msg) {
+
     }
 }

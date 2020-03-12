@@ -1,5 +1,6 @@
 package college.springcloud.io.seata.core.protocol.transaction;
 
+import college.springcloud.io.seata.core.model.BranchType;
 import lombok.Data;
 
 /**
@@ -14,4 +15,19 @@ public abstract class AbstractBranchEndRequest extends AbstractTransactionReques
      * The Xid.
      */
     protected String xid;
+
+    /**
+     * The Branch id.
+     */
+    protected long branchId;
+
+    protected BranchType branchType = BranchType.AT;
+
+    /**
+     * 数据库？
+     * The Resource id.
+     */
+    protected String resourceId;
+
+    protected String applicationData;
 }

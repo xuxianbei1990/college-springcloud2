@@ -11,7 +11,7 @@ import college.springcloud.io.seata.core.rpc.netty.TmRpcClient;
 public class TMClient {
 
     public static void init(String applicaitonId, String transactionServiceGroup) {
-        TmRpcClient tmRpcClient = TmRpcClient.getInstance();
+        TmRpcClient tmRpcClient = TmRpcClient.getInstance(applicaitonId, transactionServiceGroup);
         tmRpcClient.init();
     }
 }
