@@ -419,4 +419,8 @@ public class NettyClientConfig {
     public String getRmDispatchThreadPrefix() {
         return RPC_DISPATCH_THREAD_PREFIX + "_" + NettyPoolKey.TransactionRole.RMROLE.name();
     }
+
+    public static boolean isEnableClientBatchSendRequest() {
+        return true;
+    }
 }

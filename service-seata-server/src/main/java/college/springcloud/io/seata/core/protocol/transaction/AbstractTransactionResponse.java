@@ -1,7 +1,7 @@
 package college.springcloud.io.seata.core.protocol.transaction;
 
+import college.springcloud.io.seata.core.exception.TransactionExceptionCode;
 import college.springcloud.io.seata.core.protocol.AbstractResultMessage;
-import io.seata.core.exception.TransactionExceptionCode;
 import lombok.Data;
 
 /**

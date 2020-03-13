@@ -22,7 +22,7 @@ ext {
 	springBootVersion = '2.1.0.RELEASE'
 	springCloudVersion = 'Greenwich.RELEASE'
 	springframework = '5.1.2.RELEASE'
-	seataVersion = '0.8.0'
+	seataVersion = '1.0.0'
 	springCloudAlibabaSeata = '2.1.0.RELEASE'
 	//如果不加tkMybatis 会如何？
 //	tkMybatis = '2.1.5'

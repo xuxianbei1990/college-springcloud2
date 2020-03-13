@@ -3,6 +3,7 @@ package college.springcloud.io.seata.core.exception;
 import college.springcloud.io.seata.core.protocol.ResultCode;
 import college.springcloud.io.seata.core.protocol.transaction.AbstractTransactionRequest;
 import college.springcloud.io.seata.core.protocol.transaction.AbstractTransactionResponse;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 这里是不是主要触发回滚的，所以干脆把这些类放到异常里处理
@@ -13,7 +14,8 @@ import college.springcloud.io.seata.core.protocol.transaction.AbstractTransactio
  * Time: 11:29
  * Version:V1.0
  */
-public class AbstractExceptionHandler {
+@Slf4j
+public abstract class AbstractExceptionHandler {
 
     public abstract static class AbstractCallback<T extends AbstractTransactionRequest, S extends AbstractTransactionResponse>
             implements Callback<T, S> {
@@ -35,6 +37,27 @@ public class AbstractExceptionHandler {
         public void onException(T request, S response, Exception rex) {
             response.setResultCode(ResultCode.Failed);
             response.setMsg("RuntimeException[" + rex.getMessage() + "]");
+        }
+    }
+
+    /**
+     * Exception handle template.
+     *
+     * @param callback the callback
+     * @param request  the request
+     * @param response the response
+     */
+    public void exceptionHandleTemplate(Callback callback, AbstractTransactionRequest request,
+                                        AbstractTransactionResponse response) {
+        try {
+            callback.execute(request, response);
+            callback.onSuccess(request, response);
+        } catch (TransactionException tex) {
+            log.error("Catch TransactionException while do RPC, request: {}", request, tex);
+            callback.onTransactionException(request, response, tex);
+        } catch (RuntimeException rex) {
+            log.error("Catch RuntimeException while do RPC, request: {}", request, rex);
+            callback.onException(request, response, rex);
         }
     }
 

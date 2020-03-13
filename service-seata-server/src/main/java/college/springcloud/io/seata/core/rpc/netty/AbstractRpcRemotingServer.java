@@ -13,6 +13,7 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 import java.net.InetSocketAddress;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -42,7 +43,8 @@ public abstract class AbstractRpcRemotingServer extends AbstractRpcRemoting impl
         this.channelHandlers = handlers;
     }
 
-    public AbstractRpcRemotingServer(final NettyServerConfig nettyServerConfig) {
+    public AbstractRpcRemotingServer(final NettyServerConfig nettyServerConfig, final ThreadPoolExecutor messageExecutor) {
+        super(messageExecutor);
         this.nettyServerConfig = nettyServerConfig;
         this.serverBootstrap = new ServerBootstrap();
         //netty epoll 模式。这个可以放下

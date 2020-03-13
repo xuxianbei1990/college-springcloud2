@@ -1,7 +1,10 @@
 package college.springcloud;
 
+import college.springcloud.io.seata.common.util.NetUtil;
+import college.springcloud.io.seata.common.util.XID;
 import college.springcloud.io.seata.core.rpc.netty.NettyServerConfig;
 import college.springcloud.io.seata.core.rpc.netty.RpcServer;
+import college.springcloud.io.seata.server.coordinator.DefaultCoordinator;
 
 /**
  * 假设你要做一个seata，首先你要解决哪些问题？
@@ -17,7 +20,11 @@ public class SeataServerApplication {
 
     public static void main(String[] args) {
         RpcServer rpcServer = new RpcServer(new NettyServerConfig());
+        DefaultCoordinator coordinator = new DefaultCoordinator(rpcServer);
         rpcServer.setListenPort(8091);
+        XID.setIpAddress(NetUtil.getLocalIp());
+        XID.setPort(rpcServer.getListenPort());
+        rpcServer.setHandler(coordinator);
         rpcServer.init();
     }
 }

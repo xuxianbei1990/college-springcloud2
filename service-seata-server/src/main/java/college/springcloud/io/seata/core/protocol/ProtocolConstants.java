@@ -15,6 +15,9 @@
  */
 package college.springcloud.io.seata.core.protocol;
 
+import college.springcloud.io.seata.core.codec.CodecType;
+import college.springcloud.io.seata.core.compressor.CompressorType;
+
 /**
  * @author Geng Zhang
  * @since 0.7.0
@@ -64,5 +67,9 @@ public class ProtocolConstants {
 
     // public static final byte MSGTYPE_NEGOTIATOR_REQUEST = 5;
     // public static final byte MSGTYPE_NEGOTIATOR_RESPONSE = 6;
+
+    public static final byte CONFIGURED_CODEC = CodecType.SEATA.getCode();
+
+    public static final byte CONFIGURED_COMPRESSOR = CompressorType.NONE.getCode();
 
 }

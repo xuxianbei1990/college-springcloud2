@@ -17,7 +17,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 
-import static io.seata.common.Constants.DBKEYS_SPLIT_CHAR;
+import static college.springcloud.io.seata.common.Constants.DBKEYS_SPLIT_CHAR;
+
 
 /**
  * @author: xuxianbei

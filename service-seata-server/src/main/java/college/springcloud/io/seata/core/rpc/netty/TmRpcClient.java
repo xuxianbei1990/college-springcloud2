@@ -3,6 +3,7 @@ package college.springcloud.io.seata.core.rpc.netty;
 import college.springcloud.io.seata.common.thread.NamedThreadFactory;
 import college.springcloud.io.seata.common.thread.RejectedPolicies;
 import college.springcloud.io.seata.core.protocol.RpcMessage;
+import college.springcloud.io.seata.core.rpc.ClientMessageSender;
 import io.netty.channel.ChannelHandler;
 import io.netty.util.concurrent.EventExecutorGroup;
 import lombok.Data;
@@ -21,11 +22,12 @@ import java.util.function.Function;
  */
 @ChannelHandler.Sharable
 @Data
-public class TmRpcClient extends AbstractRpcRemotingClient {
+public class TmRpcClient extends AbstractRpcRemotingClient implements ClientMessageSender {
 
     private String applicationId;
     private String transactionServiceGroup;
 
+    private NettyClientChannelManager clientChannelManager;
     private static final long KEEP_ALIVE_TIME = Integer.MAX_VALUE;
     private static final int MAX_QUEUE_SIZE = 2000;
     private final AtomicBoolean initialized = new AtomicBoolean(false);
@@ -88,4 +90,6 @@ public class TmRpcClient extends AbstractRpcRemotingClient {
     public void sendResponse(RpcMessage request, String serverAddress, Object msg) {
 
     }
+
+
 }

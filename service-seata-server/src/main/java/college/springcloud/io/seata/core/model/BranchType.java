@@ -44,7 +44,7 @@ public enum BranchType {
      * @param ordinal the ordinal
      * @return the branch type
      */
-    public static io.seata.core.model.BranchType get(byte ordinal) {
+    public static BranchType get(byte ordinal) {
         return get((int)ordinal);
     }
 
@@ -54,8 +54,8 @@ public enum BranchType {
      * @param ordinal the ordinal
      * @return the branch type
      */
-    public static io.seata.core.model.BranchType get(int ordinal) {
-        for (io.seata.core.model.BranchType branchType : io.seata.core.model.BranchType.values()) {
+    public static BranchType get(int ordinal) {
+        for (BranchType branchType : BranchType.values()) {
             if (branchType.ordinal() == ordinal) {
                 return branchType;
             }

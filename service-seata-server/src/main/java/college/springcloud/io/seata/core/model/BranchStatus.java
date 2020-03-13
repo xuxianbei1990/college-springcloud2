@@ -15,8 +15,6 @@
  */
 package college.springcloud.io.seata.core.model;
 
-import io.seata.common.exception.ShouldNeverHappenException;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -136,7 +134,7 @@ public enum BranchStatus {
         BranchStatus status = MAP.get(code);
 
         if (null == status) {
-            throw new ShouldNeverHappenException("Unknown BranchStatus[" + code + "]");
+            throw new RuntimeException("Unknown BranchStatus[" + code + "]");
         }
 
         return status;

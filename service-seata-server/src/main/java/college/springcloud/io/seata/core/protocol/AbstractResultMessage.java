@@ -14,4 +14,6 @@ public abstract class AbstractResultMessage extends AbstractMessage {
     private ResultCode resultCode;
 
     private String msg;
+
+
 }

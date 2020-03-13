@@ -41,6 +41,7 @@ public class RmMessageListener implements ClientMessageListener {
             log.info("onMessage:" + msg);
         }
 
+        //收到分支提交请求只是删除了undo日志？
         if (msg instanceof BranchCommitRequest) {
             handleBranchCommit(request, serverAddress, (BranchCommitRequest) msg, sender);
         }

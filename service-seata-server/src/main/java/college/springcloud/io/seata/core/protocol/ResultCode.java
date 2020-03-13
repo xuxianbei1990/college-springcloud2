@@ -40,7 +40,7 @@ public enum ResultCode {
      * @param ordinal the ordinal
      * @return the result code
      */
-    public static io.seata.core.protocol.ResultCode get(byte ordinal) {
+    public static ResultCode get(byte ordinal) {
         return get((int)ordinal);
     }
 
@@ -50,8 +50,8 @@ public enum ResultCode {
      * @param ordinal the ordinal
      * @return the result code
      */
-    public static io.seata.core.protocol.ResultCode get(int ordinal) {
-        for (io.seata.core.protocol.ResultCode resultCode : io.seata.core.protocol.ResultCode.values()) {
+    public static ResultCode get(int ordinal) {
+        for (ResultCode resultCode : ResultCode.values()) {
             if (resultCode.ordinal() == ordinal) {
                 return resultCode;
             }
