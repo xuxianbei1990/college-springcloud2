@@ -51,6 +51,7 @@ public class DefaultCoordinator extends AbstractTCInboundHandler implements Reso
     @Override
     protected void doGlobalBegin(GlobalBeginRequest request, GlobalBeginResponse response, RpcContext rpcContext)
             throws TransactionException {
+        //这里源码就做了两件事，一个统计，一个把数据插入到global_table, 然后返回了一个xid，就这样了
         response.setXid(core.begin(rpcContext.getApplicationId(), rpcContext.getTransactionServiceGroup(),
                 request.getTransactionName(), request.getTimeout()));
     }

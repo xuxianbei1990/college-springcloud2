@@ -1,8 +1,11 @@
 package college.springcloud.io.seata.server.session;
 
 import college.springcloud.io.seata.common.util.XID;
+import college.springcloud.io.seata.core.exception.TransactionException;
 import college.springcloud.io.seata.core.model.GlobalStatus;
 import college.springcloud.io.seata.server.UUIDGenerator;
+import college.springcloud.io.seata.server.store.SessionStorable;
+import lombok.Data;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -13,13 +16,20 @@ import java.util.Set;
  * Time: 18:11
  * Version:V1.0
  */
-public class GlobalSession {
+@Data
+public class GlobalSession implements SessionLifecycle, SessionStorable {
 
     private String xid;
 
     private long transactionId;
 
     private volatile GlobalStatus status;
+
+    private long beginTime;
+
+    private String applicationData;
+
+    private boolean active = true;
 
     private String applicationId;
 
@@ -52,4 +62,24 @@ public class GlobalSession {
         lifecycleListeners.add(sessionLifecycleListener);
     }
 
+    @Override
+    public void begin() throws TransactionException {
+        this.status = GlobalStatus.Begin;
+        this.beginTime = System.currentTimeMillis();
+        this.active = true;
+        //就是这个 DefaultSessionManager
+        for (SessionLifecycleListener lifecycleListener : lifecycleListeners) {
+            lifecycleListener.onBegin(this);
+        }
+    }
+
+    @Override
+    public byte[] encode() {
+        return new byte[0];
+    }
+
+    @Override
+    public void decode(byte[] src) {
+
+    }
 }

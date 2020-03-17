@@ -14,4 +14,6 @@ public interface ResourceManager extends ResourceManagerInbound {
     Map<String, Resource> getManagedResources();
 
     BranchType getBranchType();
+
+    void registerResource(Resource resource);
 }

@@ -1,6 +1,7 @@
 package college.springcloud.io.seata.server.store;
 
 import college.springcloud.io.seata.core.exception.AbstractExceptionHandler;
+import college.springcloud.io.seata.core.exception.StoreException;
 import college.springcloud.io.seata.core.exception.TransactionException;
 import college.springcloud.io.seata.core.exception.TransactionExceptionCode;
 import college.springcloud.io.seata.core.protocol.transaction.*;
@@ -36,4 +37,36 @@ public abstract class AbstractTCInboundHandler extends AbstractExceptionHandler 
 
     protected abstract void doGlobalBegin(GlobalBeginRequest request, GlobalBeginResponse response,
                                           RpcContext rpcContext) throws TransactionException;
+
+
+
+    @Override
+    public GlobalCommitResponse handle(GlobalCommitRequest request, final RpcContext rpcContext) {
+        GlobalCommitResponse response = new GlobalCommitResponse();
+        exceptionHandleTemplate(new AbstractCallback<GlobalCommitRequest, GlobalCommitResponse>() {
+            @Override
+            public void execute(GlobalCommitRequest request, GlobalCommitResponse response)
+                    throws TransactionException {
+                try {
+                    doGlobalCommit(request, response, rpcContext);
+                } catch (StoreException e) {
+                    throw new TransactionException(TransactionExceptionCode.FailedStore,
+                            String.format("global commit request failed. xid=%s, msg=%s", request.getXid(), e.getMessage()),
+                            e);
+                }
+            }
+        }, request, response);
+        return response;
+    }
+
+    /**
+     * Do global commit.
+     *
+     * @param request    the request
+     * @param response   the response
+     * @param rpcContext the rpc context
+     * @throws TransactionException the transaction exception
+     */
+    protected abstract void doGlobalCommit(GlobalCommitRequest request, GlobalCommitResponse response,
+                                           RpcContext rpcContext) throws TransactionException;
 }

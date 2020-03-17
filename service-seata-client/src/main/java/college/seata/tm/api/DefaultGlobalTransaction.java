@@ -1,5 +1,6 @@
 package college.seata.tm.api;
 
+import college.springcloud.io.seata.core.context.RootContext;
 import college.springcloud.io.seata.core.exception.TmTransactionException;
 import college.springcloud.io.seata.core.exception.TransactionException;
 import college.springcloud.io.seata.core.exception.TransactionExceptionCode;
@@ -11,6 +12,8 @@ import college.springcloud.io.seata.core.protocol.transaction.AbstractTransactio
 import college.springcloud.io.seata.core.protocol.transaction.GlobalBeginRequest;
 import college.springcloud.io.seata.core.protocol.transaction.GlobalBeginResponse;
 import college.springcloud.io.seata.core.rpc.netty.TmRpcClient;
+import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.concurrent.TimeoutException;
 
@@ -20,8 +23,13 @@ import java.util.concurrent.TimeoutException;
  * Time: 17:45
  * Version:V1.0
  */
+@Slf4j
+@Data
 public class DefaultGlobalTransaction implements GlobalTransaction {
 
+    private static final int COMMIT_RETRY_COUNT = 1;
+
+    //DefaultTransactionManager
     private TransactionManager transactionManager;
 
     private String xid;
@@ -49,6 +57,40 @@ public class DefaultGlobalTransaction implements GlobalTransaction {
         GlobalBeginResponse response = (GlobalBeginResponse)syncCall(request);
         if (response.getResultCode() == ResultCode.Failed) {
             throw new TmTransactionException(TransactionExceptionCode.BeginFailed, response.getMsg());
+        }
+    }
+
+    @Override
+    public void commit() throws TransactionException {
+        //如果存在一分布式事务
+
+
+
+
+
+        int retry = COMMIT_RETRY_COUNT;
+        try {
+            while (retry > 0) {
+                try {
+                    status = transactionManager.commit(xid);
+                    break;
+                } catch (Throwable ex) {
+                    log.error("Failed to report global commit [{}],Retry Countdown: {}, reason: {}", this.getXid(), retry, ex.getMessage());
+                    retry--;
+                    if (retry == 0) {
+                        throw new TransactionException("Failed to report global commit", ex);
+                    }
+                }
+            }
+        } finally {
+            if (RootContext.getXID() != null) {
+                if (xid.equals(RootContext.getXID())) {
+                    RootContext.unbind();
+                }
+            }
+        }
+        if (log.isInfoEnabled()) {
+            log.info("[{}] commit status: {}", xid, status);
         }
     }
 

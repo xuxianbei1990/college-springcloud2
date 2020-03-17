@@ -12,4 +12,13 @@ public interface TCInboundHandler {
 
 
     GlobalBeginResponse handle(GlobalBeginRequest globalBegin, RpcContext rpcContext);
+
+    /**
+     * Handle global commit response.
+     *
+     * @param globalCommit the global commit
+     * @param rpcContext   the rpc context
+     * @return the global commit response
+     */
+    GlobalCommitResponse handle(GlobalCommitRequest globalCommit, RpcContext rpcContext);
 }

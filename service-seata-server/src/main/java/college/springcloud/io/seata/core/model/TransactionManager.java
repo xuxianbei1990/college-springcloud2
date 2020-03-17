@@ -23,4 +23,15 @@ public interface TransactionManager {
      */
     String begin(String applicationId, String transactionServiceGroup, String name, int timeout)
             throws TransactionException;
+
+
+    /**
+     * Global commit.
+     *
+     * @param xid XID of the global transaction.
+     * @return Status of the global transaction after committing.
+     * @throws TransactionException Any exception that fails this will be wrapped with TransactionException and thrown
+     * out.
+     */
+    GlobalStatus commit(String xid) throws TransactionException;
 }

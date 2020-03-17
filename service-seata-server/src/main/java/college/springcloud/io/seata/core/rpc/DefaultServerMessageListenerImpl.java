@@ -1,10 +1,7 @@
 package college.springcloud.io.seata.core.rpc;
 
 import college.springcloud.io.seata.common.util.NetUtil;
-import college.springcloud.io.seata.core.protocol.AbstractMessage;
-import college.springcloud.io.seata.core.protocol.AbstractResultMessage;
-import college.springcloud.io.seata.core.protocol.MergedWarpMessage;
-import college.springcloud.io.seata.core.protocol.RpcMessage;
+import college.springcloud.io.seata.core.protocol.*;
 import college.springcloud.io.seata.core.rpc.netty.ChannelManager;
 import college.springcloud.io.seata.core.rpc.netty.RegisterCheckAuthHandler;
 import io.netty.channel.ChannelHandlerContext;
@@ -41,12 +38,20 @@ public class DefaultServerMessageListenerImpl implements ServerMessageListener {
             return;
         }
 
+        /**
+         * 事务开始时候，服务端：存储全局事务到表里，然后统计了下  返回一个XID。 管他是啥，反正是一个唯一id
+         * 这个XID 是客户端生成了？
+         */
         if (message instanceof MergedWarpMessage) {
             AbstractResultMessage[] results = new AbstractResultMessage[((MergedWarpMessage) message).msgs.size()];
             for (int i = 0; i < results.length; i++) {
                 final AbstractMessage subMessage = ((MergedWarpMessage) message).msgs.get(i);
                 results[i] = transactionMessageHandler.onRequest(subMessage, rpcContext);
             }
+
+            MergeResultMessage resultMessage = new MergeResultMessage();
+            resultMessage.setMsgs(results);
+            sender.sendResponse(request, ctx.channel(), resultMessage);
         }
     }
 }

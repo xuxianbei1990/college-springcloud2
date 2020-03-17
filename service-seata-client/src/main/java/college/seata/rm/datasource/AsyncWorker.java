@@ -1,6 +1,7 @@
 package college.seata.rm.datasource;
 
 import college.seata.rm.DefaultResourceManager;
+import college.seata.rm.datasource.undo.UndoLogManagerFactory;
 import college.springcloud.io.seata.common.thread.NamedThreadFactory;
 import college.springcloud.io.seata.core.exception.ShouldNeverHappenException;
 import college.springcloud.io.seata.core.exception.TransactionException;
@@ -8,12 +9,11 @@ import college.springcloud.io.seata.core.model.BranchStatus;
 import college.springcloud.io.seata.core.model.BranchType;
 import college.springcloud.io.seata.core.model.ResourceManagerInbound;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.CollectionUtils;
 
 import java.sql.Connection;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.sql.SQLException;
+import java.util.*;
 import java.util.concurrent.*;
 
 /**
@@ -28,6 +28,8 @@ public class AsyncWorker implements ResourceManagerInbound {
     private static ScheduledExecutorService timerExecutor;
 
     private static int ASYNC_COMMIT_BUFFER_LIMIT = 10000;
+
+    private static final int UNDOLOG_DELETE_LIMIT_SIZE = 1000;
 
     private static final int DEFAULT_RESOURCE_SIZE = 16;
 
@@ -63,6 +65,12 @@ public class AsyncWorker implements ResourceManagerInbound {
     }
 
     //为什么需要批量删除undo日志
+
+    /**
+     * 这里其实就是说明了一个核心问题，什么是事务？
+     * 说明白点：事务就是一个insert语句加上一个delete语句
+     * 一个update语句加一个反update语句
+     */
     private void doBranchCommits() {
         if (ASYNC_COMMIT_BUFFER.size() == 0) {
             return;
@@ -83,11 +91,53 @@ public class AsyncWorker implements ResourceManagerInbound {
             Connection conn = null;
             DataSourceProxy dataSourceProxy;
             //这里还没有看明白从哪里来的，不过不是重点
+            try {
             DataSourceManager resourceManager = (DataSourceManager) DefaultResourceManager.get()
                     .getResourceManager(BranchType.AT);
             dataSourceProxy = resourceManager.get(entry.getKey());
             if (dataSourceProxy == null) {
                 throw new ShouldNeverHappenException("Failed to find resource on " + entry.getKey());
+            }
+            conn = dataSourceProxy.getPlainConnection();
+            } catch (SQLException sqle) {
+                log.warn("Failed to get connection for async committing on " + entry.getKey(), sqle);
+                continue;
+            }
+            List<Phase2Context> contextsGroupedByResourceId = entry.getValue();
+            Set<String> xids = new LinkedHashSet<>(UNDOLOG_DELETE_LIMIT_SIZE);
+            Set<Long> branchIds = new LinkedHashSet<>(UNDOLOG_DELETE_LIMIT_SIZE);
+            for (Phase2Context commitContext : contextsGroupedByResourceId) {
+                xids.add(commitContext.xid);
+                branchIds.add(commitContext.branchId);
+                int maxSize = xids.size() > branchIds.size() ? xids.size() : branchIds.size();
+                if (maxSize == UNDOLOG_DELETE_LIMIT_SIZE) {
+                    try {
+                        UndoLogManagerFactory.getUndoLogManager(dataSourceProxy.getDbType()).batchDeleteUndoLog(
+                                xids, branchIds, conn);
+                    } catch (Exception ex) {
+                        log.warn("Failed to batch delete undo log [" + branchIds + "/" + xids + "]", ex);
+                    }
+                    xids.clear();
+                    branchIds.clear();
+                }
+            }
+            if (CollectionUtils.isEmpty(xids) || CollectionUtils.isEmpty(branchIds)) {
+                return;
+            }
+
+            try {
+                UndoLogManagerFactory.getUndoLogManager(dataSourceProxy.getDbType()).batchDeleteUndoLog(xids,
+                        branchIds, conn);
+            } catch (Exception ex) {
+                log.warn("Failed to batch delete undo log [" + branchIds + "/" + xids + "]", ex);
+            }
+
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException closeEx) {
+                    log.warn("Failed to close JDBC resource while deleting undo_log ", closeEx);
+                }
             }
         }
 

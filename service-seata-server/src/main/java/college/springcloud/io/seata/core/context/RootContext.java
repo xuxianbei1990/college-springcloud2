@@ -21,4 +21,12 @@ public class RootContext {
 
         return null;
     }
+
+    public static String unbind() {
+//        String xid = CONTEXT_HOLDER.remove(KEY_XID);
+//        if (LOGGER.isDebugEnabled()) {
+//            LOGGER.debug("unbind {} ", xid);
+//        }
+        return "xid";
+    }
 }
