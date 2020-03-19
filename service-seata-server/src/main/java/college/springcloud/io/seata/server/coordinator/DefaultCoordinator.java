@@ -6,9 +6,7 @@ import college.springcloud.io.seata.core.model.BranchType;
 import college.springcloud.io.seata.core.model.ResourceManagerInbound;
 import college.springcloud.io.seata.core.protocol.AbstractMessage;
 import college.springcloud.io.seata.core.protocol.AbstractResultMessage;
-import college.springcloud.io.seata.core.protocol.transaction.AbstractTransactionRequestToTC;
-import college.springcloud.io.seata.core.protocol.transaction.GlobalBeginRequest;
-import college.springcloud.io.seata.core.protocol.transaction.GlobalBeginResponse;
+import college.springcloud.io.seata.core.protocol.transaction.*;
 import college.springcloud.io.seata.core.rpc.RpcContext;
 import college.springcloud.io.seata.core.rpc.ServerMessageSender;
 import college.springcloud.io.seata.core.rpc.TransactionMessageHandler;
@@ -54,6 +52,11 @@ public class DefaultCoordinator extends AbstractTCInboundHandler implements Reso
         //这里源码就做了两件事，一个统计，一个把数据插入到global_table, 然后返回了一个xid，就这样了
         response.setXid(core.begin(rpcContext.getApplicationId(), rpcContext.getTransactionServiceGroup(),
                 request.getTransactionName(), request.getTimeout()));
+    }
+
+    @Override
+    protected void doGlobalCommit(GlobalCommitRequest request, GlobalCommitResponse response, RpcContext rpcContext) throws TransactionException {
+
     }
 
 

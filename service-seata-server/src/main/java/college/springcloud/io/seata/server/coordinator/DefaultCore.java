@@ -1,6 +1,7 @@
 package college.springcloud.io.seata.server.coordinator;
 
 import college.springcloud.io.seata.core.exception.TransactionException;
+import college.springcloud.io.seata.core.model.GlobalStatus;
 import college.springcloud.io.seata.core.model.ResourceManagerInbound;
 import college.springcloud.io.seata.server.event.EventBus;
 import college.springcloud.io.seata.server.event.EventBusManager;
@@ -34,5 +35,10 @@ public class DefaultCore implements Core {
 //                session.getTransactionName(), session.getBeginTime(), null, session.getStatus()));
 
         return session.getXid();
+    }
+
+    @Override
+    public GlobalStatus commit(String xid) throws TransactionException {
+        return null;
     }
 }

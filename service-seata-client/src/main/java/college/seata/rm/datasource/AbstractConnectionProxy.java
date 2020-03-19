@@ -21,6 +21,8 @@ import java.util.Properties;
 import java.util.concurrent.Executor;
 
 /**
+ *
+ *
  * The type Abstract connection proxy.
  *
  * @author sharajava
@@ -73,6 +75,12 @@ public abstract class AbstractConnectionProxy implements Connection {
      */
     public String getDbType() {
         return dataSourceProxy.getDbType();
+    }
+
+    @Override
+    public Statement createStatement() throws SQLException {
+        Statement targetStatement = getTargetConnection().createStatement();
+        return new StatementProxy(this, targetStatement);
     }
 
     @Override

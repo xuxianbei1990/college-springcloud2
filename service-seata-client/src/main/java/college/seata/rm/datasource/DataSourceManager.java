@@ -54,6 +54,11 @@ public class DataSourceManager extends AbstractResourceManager implements Initia
     }
 
     @Override
+    public void registerResource(Resource resource) {
+
+    }
+
+    @Override
     public BranchStatus branchCommit(BranchType branchType, String xid, long branchId, String resourceId, String applicationData) throws TransactionException {
         return asyncWorker.branchCommit(branchType, xid, branchId, resourceId, applicationData);
     }

@@ -15,6 +15,10 @@
  */
 package college.seata.rm.datasource;
 
+import college.seata.rm.datasource.sql.SQLRecognizer;
+import college.seata.rm.datasource.sql.SQLVisitorFactory;
+import college.springcloud.io.seata.core.context.RootContext;
+
 import java.sql.*;
 
 /**
@@ -35,10 +39,7 @@ public class ConnectionProxy extends AbstractConnectionProxy {
         super(dataSourceProxy, targetConnection);
     }
 
-    @Override
-    public Statement createStatement() throws SQLException {
-        return null;
-    }
+
 
     @Override
     public PreparedStatement prepareStatement(String sql) throws SQLException {
@@ -67,11 +68,18 @@ public class ConnectionProxy extends AbstractConnectionProxy {
 
     @Override
     public Statement createStatement(int resultSetType, int resultSetConcurrency) throws SQLException {
-        return null;
+        Statement targetStatement = getTargetConnection().createStatement();
+        return new StatementProxy(this, targetStatement);
     }
 
     @Override
     public PreparedStatement prepareStatement(String sql, int resultSetType, int resultSetConcurrency) throws SQLException {
+        String dbType = getDbType();
+        // support oracle 10.2+
+        PreparedStatement targetPreparedStatement = null;
+        if (RootContext.inGlobalTransaction()) {
+            SQLRecognizer sqlRecognizer = SQLVisitorFactory.get(sql, dbType);
+        }
         return null;
     }
 

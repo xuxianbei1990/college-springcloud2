@@ -16,6 +16,10 @@ import java.lang.reflect.Proxy;
 
 
 /**
+ *
+ * 我现在基本可以说出seata的基本思路了，netty进行通信
+ * RM进行本地事务处理，核心原理还是代理datasource。我
+ * 现在想到的是mybatis，我猜测和mybatis是一样的道理
  * @author: xuxianbei
  * Date: 2020/3/6
  * Time: 15:34
