@@ -1,5 +1,7 @@
 package college.seata.rm.datasource.undo;
 
+import college.seata.rm.datasource.ConnectionProxy;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Set;
@@ -21,4 +23,6 @@ public interface UndoLogManager {
      * @throws SQLException the sql exception
      */
     void batchDeleteUndoLog(Set<String> xids, Set<Long> branchIds, Connection conn) throws SQLException;
+
+    void flushUndoLogs(ConnectionProxy cp) throws SQLException;
 }

@@ -15,19 +15,31 @@
  */
 package college.seata.rm.datasource;
 
+import college.seata.rm.datasource.exec.LockConflictException;
+import college.seata.rm.datasource.exec.LockRetryController;
 import college.seata.rm.datasource.sql.SQLRecognizer;
 import college.seata.rm.datasource.sql.SQLVisitorFactory;
+import college.seata.rm.datasource.undo.SQLUndoLog;
+import college.seata.rm.datasource.undo.UndoLogManagerFactory;
 import college.springcloud.io.seata.core.context.RootContext;
+import lombok.Data;
 
 import java.sql.*;
+import java.util.concurrent.Callable;
+
 
 /**
+ * 数据库操作全部在这里
+ * <p>
+ * <p>
  * The type Connection proxy.
  *
  * @author sharajava
  */
+@Data
 public class ConnectionProxy extends AbstractConnectionProxy {
 
+    private String xid;
 
     /**
      * Instantiates a new Abstract connection proxy.
@@ -39,12 +51,11 @@ public class ConnectionProxy extends AbstractConnectionProxy {
         super(dataSourceProxy, targetConnection);
     }
 
-
-
-    @Override
-    public PreparedStatement prepareStatement(String sql) throws SQLException {
-        return null;
+    //我现在要做的是了解主体思路，然后了解细节
+    public void bind(String xid) {
+        this.xid = xid;
     }
+
 
     @Override
     public CallableStatement prepareCall(String sql) throws SQLException {
@@ -58,7 +69,16 @@ public class ConnectionProxy extends AbstractConnectionProxy {
 
     @Override
     public void commit() throws SQLException {
+        if (xid != null) {
+            processGlobalTransactionCommit();
+        } else {
+            targetConnection.commit();
+        }
+    }
 
+    private void processGlobalTransactionCommit() throws SQLException {
+        UndoLogManagerFactory.getUndoLogManager(this.getDbType()).flushUndoLogs(this);
+        targetConnection.commit();
     }
 
     @Override
@@ -81,6 +101,14 @@ public class ConnectionProxy extends AbstractConnectionProxy {
             SQLRecognizer sqlRecognizer = SQLVisitorFactory.get(sql, dbType);
         }
         return null;
+    }
+
+    public void appendLockKey(String lockKey) {
+
+    }
+
+    public void appendUndoLog(SQLUndoLog sqlUndoLog) {
+
     }
 
     @Override
@@ -116,5 +144,38 @@ public class ConnectionProxy extends AbstractConnectionProxy {
     @Override
     public PreparedStatement prepareStatement(String sql, String[] columnNames) throws SQLException {
         return null;
+    }
+
+
+    public static class LockRetryPolicy {
+        protected final static boolean LOCK_RETRY_POLICY_BRANCH_ROLLBACK_ON_CONFLICT = true;
+
+        public <T> T execute(Callable<T> callable) throws Exception {
+            return callable.call();
+        }
+
+        protected <T> T doRetryOnLockConflict(Callable<T> callable) throws Exception {
+            LockRetryController lockRetryController = new LockRetryController();
+            while (true) {
+                try {
+                    return callable.call();
+                } catch (LockConflictException lockConflict) {
+                    onException(lockConflict);
+                    lockRetryController.sleep(lockConflict);
+                } catch (Exception e) {
+                    onException(e);
+                    throw e;
+                }
+            }
+        }
+
+        /**
+         * Callback on exception in doLockRetryOnConflict.
+         *
+         * @param e invocation exception
+         * @throws Exception error
+         */
+        protected void onException(Exception e) throws Exception {
+        }
     }
 }

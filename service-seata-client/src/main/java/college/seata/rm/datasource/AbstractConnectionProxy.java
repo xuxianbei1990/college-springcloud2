@@ -15,14 +15,18 @@
  */
 package college.seata.rm.datasource;
 
+import college.seata.rm.datasource.sql.SQLRecognizer;
+import college.seata.rm.datasource.sql.SQLVisitorFactory;
+import college.seata.rm.datasource.sql.struct.TableMeta;
+import college.seata.rm.datasource.sql.struct.TableMetaCacheFactory;
+import college.springcloud.io.seata.core.context.RootContext;
+
 import java.sql.*;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.Executor;
 
 /**
- *
- *
  * The type Abstract connection proxy.
  *
  * @author sharajava
@@ -82,6 +86,27 @@ public abstract class AbstractConnectionProxy implements Connection {
         Statement targetStatement = getTargetConnection().createStatement();
         return new StatementProxy(this, targetStatement);
     }
+
+    @Override
+    public PreparedStatement prepareStatement(String sql) throws SQLException {
+        String dbType = getDbType();
+        // support oracle 10.2+
+        PreparedStatement targetPreparedStatement = null;
+        if (RootContext.inGlobalTransaction()) {
+            SQLRecognizer sqlRecognizer = SQLVisitorFactory.get(sql, dbType);
+            if (sqlRecognizer != null && sqlRecognizer.getSQLType() == college.seata.rm.datasource.sql.SQLType.INSERT) {
+                String tableName = ColumnUtils.delEscape(sqlRecognizer.getTableName(), dbType);
+                TableMeta tableMeta = TableMetaCacheFactory.getTableMetaCache(getDataSourceProxy()).getTableMeta(getTargetConnection(),
+                        tableName, getDataSourceProxy().getResourceId());
+                targetPreparedStatement = getTargetConnection().prepareStatement(sql, new String[]{tableMeta.getPkName()});
+            }
+        }
+        if (targetPreparedStatement == null) {
+            targetPreparedStatement = getTargetConnection().prepareStatement(sql);
+        }
+        return new PreparedStatementProxy(this, targetPreparedStatement, sql);
+    }
+
 
     @Override
     public String nativeSQL(String sql) throws SQLException {

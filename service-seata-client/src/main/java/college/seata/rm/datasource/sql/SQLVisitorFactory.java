@@ -37,7 +37,6 @@ public class SQLVisitorFactory {
     }
 
     public static void main(String[] args) {
-
         System.out.println(get("select * from xxb where dema = 1", "MYSQL"));
     }
 }

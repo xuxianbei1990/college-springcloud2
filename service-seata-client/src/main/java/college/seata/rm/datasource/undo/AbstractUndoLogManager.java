@@ -1,6 +1,7 @@
 package college.seata.rm.datasource.undo;
 
 
+import college.seata.rm.datasource.ConnectionProxy;
 import college.springcloud.io.seata.core.constants.ClientTableColumnsName;
 import college.springcloud.io.seata.core.constants.ConfigurationKeys;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +24,27 @@ public abstract class AbstractUndoLogManager implements UndoLogManager {
 
     protected static final String UNDO_LOG_TABLE_NAME = ConfigurationKeys.TRANSACTION_UNDO_LOG_DEFAULT_TABLE;
 
+    protected enum State {
+        /**
+         * This state can be properly rolled back by services
+         */
+        Normal(0),
+        /**
+         * This state prevents the branch transaction from inserting undo_log after the global transaction is rolled
+         * back.
+         */
+        GlobalFinished(1);
+
+        private int value;
+
+        State(int value) {
+            this.value = value;
+        }
+
+        public int getValue() {
+            return value;
+        }
+    }
 
     /**
      * 这里我可以改的简单点，只支持mysql即可，不用这么抽象
@@ -67,6 +89,33 @@ public abstract class AbstractUndoLogManager implements UndoLogManager {
         }
 
     }
+
+    @Override
+    public void flushUndoLogs(ConnectionProxy cp) throws SQLException {
+        //下面代码其实就是插入数据undolog
+//        ConnectionContext connectionContext = cp.getContext();
+//        String xid = connectionContext.getXid();
+//        long branchID = connectionContext.getBranchId();
+//
+//        BranchUndoLog branchUndoLog = new BranchUndoLog();
+//        branchUndoLog.setXid(xid);
+//        branchUndoLog.setBranchId(branchID);
+//        branchUndoLog.setSqlUndoLogs(connectionContext.getUndoItems());
+//
+//        UndoLogParser parser = UndoLogParserFactory.getInstance();
+//        byte[] undoLogContent = parser.encode(branchUndoLog);
+//
+//        if (log.isDebugEnabled()) {
+//            log.debug("Flushing UNDO LOG: {}", new String(undoLogContent, Constants.DEFAULT_CHARSET));
+//        }
+//
+//        insertUndoLogWithNormal(xid, branchID, buildContext(parser.getName()), undoLogContent,
+//                cp.getTargetConnection());
+    }
+
+    protected abstract void insertUndoLogWithNormal(String xid, long branchId, String rollbackCtx,
+                                                    byte[] undoLogContent, Connection conn) throws SQLException;
+
 
     protected static String toBatchDeleteUndoLogSql(int xidSize, int branchIdSize) {
         StringBuilder sqlBuilder = new StringBuilder(64);
