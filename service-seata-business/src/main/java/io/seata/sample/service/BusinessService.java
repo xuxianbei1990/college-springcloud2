@@ -77,7 +77,7 @@ public class BusinessService {
 
     /**
      * 第一问题：第一个数据库发生更新操作。第二库操作依赖第一个库的更新。这时候seata怎么处理？
-     * 第二问题：如果两个程序都去执行多个@GlobalTransactional 那么获取当前tx；会不会异常？
+     * 第二问题：如果两个程序都去执行多个@GlobalTransactional 那么获取当前tx；会不会异常？ 不会
      */
     @GlobalTransactional
     public void purchaseMulti() {
@@ -110,6 +110,16 @@ public class BusinessService {
         storageFeignClient.update("C100001", 20);
         storageFeignClient.update("C100001", 30);
         storageFeignClient.update("C100001", 40);
+    }
+
+    @GlobalTransactional
+    public void multiUpdateA() {
+        storageFeignClient.update("C100001", 20);
+    }
+
+    @GlobalTransactional
+    public void multiUpdateB() {
+        storageFeignClient.update("C100001", 10);
     }
 
     /**

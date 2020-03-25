@@ -2,9 +2,9 @@ package college.springcloud.common.service;
 
 import college.springcloud.common.db.BbcMapper;
 import college.springcloud.common.query.Criteria;
-import org.springframework.beans.factory.annotation.Autowired;
 import tk.mybatis.mapper.entity.Example;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,7 +17,7 @@ import java.util.List;
  */
 public abstract class BaseService<T> implements IService<T> {
 
-    @Autowired
+    @Resource
     protected BbcMapper<T> mapper;
 
     @Override
@@ -74,9 +74,10 @@ public abstract class BaseService<T> implements IService<T> {
     }
 
     public T saveAndReturn(T entity) {
-        this.mapper.insertSelective(entity);
+        mapper.insertUseGeneratedKeys(entity);
+//        this.mapper.insertSelective(entity);
 //        return this.mapper.selectByPrimaryKey(entity);
-        return null;
+        return entity;
     }
 
     public int createBatch(List<T> list) {

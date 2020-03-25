@@ -94,6 +94,42 @@ public class BusinessController {
         return "全局事务提交";
     }
 
+
+    /**
+     * 场景：A事务发起。暂停，B事务启动，执行完毕。接着执行A事务。
+     * 结论： 这种情况A事务执行成功
+     *
+     * @return
+     */
+    @RequestMapping("/multi/update/a")
+    public String multiUpdateA() {
+        for (int i = 0; i < 30; i++)
+            try {
+                businessService.multiUpdateA();
+            } catch (Exception exx) {
+                return exx.getMessage();
+            }
+        return "全局事务提交";
+    }
+
+    /**
+     * 场景：A事务发起。暂停，B事务启动，执行完毕。接着执行A事务。
+     * 结论：这种情况A事务执行成功
+     *
+     * @return
+     */
+    @RequestMapping("/multi/update/b")
+    public String multiUpdateB() {
+        for (int i = 0; i < 30; i++)
+            try {
+                businessService.multiUpdateB();
+            } catch (Exception exx) {
+                return exx.getMessage();
+            }
+        return "全局事务提交";
+    }
+
+
     /**
      * seata多次更新 失败滚回测试
      * 账户或库存不足
@@ -113,6 +149,7 @@ public class BusinessController {
 
     /**
      * 线程安全
+     *
      * @return
      */
     @GetMapping("/thread/safe")
@@ -122,6 +159,7 @@ public class BusinessController {
 
     /**
      * 作用域安全
+     *
      * @return
      */
     @GetMapping("/scope/safe")
