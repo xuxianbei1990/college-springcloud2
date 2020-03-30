@@ -57,8 +57,15 @@ public class CollectionDemo {
 //        System.out.println(studentDtos);
 
         //去重 支持多线程
-        studentDtos = studentDtos.stream().collect(Collectors.toMap(t -> t.getName(), value -> value,
-                (existing, replacement) -> replacement)).entrySet().stream().map(t -> t.getValue()).collect(Collectors.toList());
+//        studentDtos = studentDtos.stream().collect(Collectors.toMap(t -> t.getName(), value -> value,
+//                (existing, replacement) -> replacement)).entrySet().stream().map(t -> t.getValue()).collect(Collectors.toList());
+        studentDtos = distinctList(studentDtos, t -> t.getName());
         System.out.println(studentDtos);
     }
+
+    static <T, K> List<T> distinctList(List<T> list, Function<? super T, ? extends K> keyMapper) {
+        return list.stream().collect(Collectors.toMap(keyMapper, value -> value,
+                (existing, replacement) -> replacement)).entrySet().stream().map(t -> t.getValue()).collect(Collectors.toList());
+    }
+
 }

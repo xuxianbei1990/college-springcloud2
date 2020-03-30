@@ -6,6 +6,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.concurrent.BrokenBarrierException;
+import java.util.concurrent.CyclicBarrier;
+
 /**
  * @author jimin.jm@alibaba-inc.com
  * @date 2019/06/14
@@ -167,4 +170,44 @@ public class BusinessController {
         return businessService.scopeSafe();
     }
 
+
+    /**
+     * seata 和其他事务一起使用
+     *
+     * 结论： 第一个结论如果都是成功的话，那么大家都没有问题
+     *        第二个结论如果seata发生回滚，那么将一直无法回滚。然后seata无限重试，导致失败。
+     */
+    @GetMapping("/native")
+    public String nativeTransaction(Integer except) {
+        CyclicBarrier cyclicBarrier = new CyclicBarrier(2);
+
+        new Thread(()->{
+            try {
+                cyclicBarrier.await();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (BrokenBarrierException e) {
+                e.printStackTrace();
+            }
+            for (int i = 0; i < 10; i++) {
+                businessService.nativeTransaction(i);
+            }
+        }).start();
+
+        new Thread(()->{
+            try {
+                cyclicBarrier.await();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (BrokenBarrierException e) {
+                e.printStackTrace();
+            }
+            for (int i = 10; i < 20; i++) {
+                businessService.seataTransaction(i, except);
+            }
+        }).start();
+
+
+        return "success";
+    }
 }

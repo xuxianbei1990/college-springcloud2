@@ -15,6 +15,7 @@
  */
 package college.seata.rm.datasource;
 
+import college.seata.rm.DefaultResourceManager;
 import college.seata.rm.datasource.exec.LockConflictException;
 import college.seata.rm.datasource.exec.LockRetryController;
 import college.seata.rm.datasource.sql.SQLRecognizer;
@@ -22,6 +23,9 @@ import college.seata.rm.datasource.sql.SQLVisitorFactory;
 import college.seata.rm.datasource.undo.SQLUndoLog;
 import college.seata.rm.datasource.undo.UndoLogManagerFactory;
 import college.springcloud.io.seata.core.context.RootContext;
+import college.springcloud.io.seata.core.exception.TransactionException;
+import college.springcloud.io.seata.core.model.BranchStatus;
+import college.springcloud.io.seata.core.model.BranchType;
 import lombok.Data;
 
 import java.sql.*;
@@ -39,7 +43,9 @@ import java.util.concurrent.Callable;
 @Data
 public class ConnectionProxy extends AbstractConnectionProxy {
 
-    private String xid;
+
+    private ConnectionContext context = new ConnectionContext();
+    private static final int REPORT_RETRY_COUNT = 5;
 
     /**
      * Instantiates a new Abstract connection proxy.
@@ -53,7 +59,7 @@ public class ConnectionProxy extends AbstractConnectionProxy {
 
     //我现在要做的是了解主体思路，然后了解细节
     public void bind(String xid) {
-        this.xid = xid;
+        context.setXid(xid);
     }
 
 
@@ -69,7 +75,7 @@ public class ConnectionProxy extends AbstractConnectionProxy {
 
     @Override
     public void commit() throws SQLException {
-        if (xid != null) {
+        if (context.getXid() != null) {
             processGlobalTransactionCommit();
         } else {
             targetConnection.commit();
@@ -83,7 +89,26 @@ public class ConnectionProxy extends AbstractConnectionProxy {
 
     @Override
     public void rollback() throws SQLException {
+        targetConnection.rollback();
+        if (context.inGlobalTransaction()) {
+            if (context.isBranchRegistered()) {
+                report(false);
+            }
+        }
+        context.reset();
+    }
 
+    private void report(boolean commitDone) throws SQLException {
+        int retry = REPORT_RETRY_COUNT;
+        while (retry > 0) {
+            try {
+                DefaultResourceManager.get().branchReport(BranchType.AT, context.getXid(), context.getBranchId(),
+                        commitDone ? BranchStatus.PhaseOne_Done : BranchStatus.PhaseOne_Failed, null);
+            } catch (TransactionException e) {
+                e.printStackTrace();
+            }
+            return;
+        }
     }
 
     @Override

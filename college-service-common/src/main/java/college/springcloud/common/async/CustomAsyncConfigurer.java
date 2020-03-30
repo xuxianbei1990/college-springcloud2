@@ -2,8 +2,10 @@ package college.springcloud.common.async;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
+import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
 import java.util.concurrent.Executor;
@@ -17,11 +19,12 @@ import java.util.concurrent.Executor;
  * “taskExecutor”的bean，当可以找到的时候，就将任务提交到此线程池中执行。当不存在以上线程池的时候，
  * Spring会手动创建一个SimpleAsyncTaskExecutor执行异步任务。
  */
-//@Component
+@Component
 @Slf4j
 public class CustomAsyncConfigurer implements AsyncConfigurer {
 
 
+    @Bean("asyncTaskExecutor")
     public Executor getAsyncExecutor() {
         ThreadPoolTaskExecutor threadPool = new ThreadPoolTaskExecutor();
         threadPool.setCorePoolSize(2);//当前线程数

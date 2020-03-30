@@ -213,6 +213,7 @@ public class StudentController<T> implements StudentApi {
 
     /**
      * 异步再同步数据
+     * 说明一个问题，在线程处理时候异步时候 future 是先被返回的。所以future无论放在哪里都是没有问题。
      *
      * @return
      * @throws ExecutionException

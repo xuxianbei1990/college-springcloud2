@@ -9,7 +9,7 @@ import java.util.Map;
  * Version:V1.0
  * 总的管理接口
  */
-public interface ResourceManager extends ResourceManagerInbound {
+public interface ResourceManager extends ResourceManagerInbound, ResourceManagerOutbound {
 
     Map<String, Resource> getManagedResources();
 

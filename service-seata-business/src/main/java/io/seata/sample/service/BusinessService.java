@@ -7,6 +7,7 @@ import io.seata.spring.annotation.GlobalTransactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import javax.annotation.PostConstruct;
@@ -160,5 +161,20 @@ public class BusinessService {
             throw new RuntimeException();
         }
         storageFeignClient.update("C100001", 40);
+    }
+
+
+    @Transactional
+    public String nativeTransaction(int count) {
+        storageFeignClient.update("C100001", count);
+        return null;
+    }
+
+    @GlobalTransactional
+    public void seataTransaction(int i, int except) {
+        storageFeignClient.update("C100001", i);
+        if (except == 1 && Math.floorMod(i, 2) == 1) {
+            throw new RuntimeException("ddfd");
+        }
     }
 }

@@ -15,4 +15,11 @@ public interface RMInboundHandler {
      * @return the branch commit response
      */
     BranchCommitResponse handle(BranchCommitRequest request);
+
+    /**
+     * Handle delete undo log .
+     *
+     * @param request the request
+     */
+    void handle(UndoLogDeleteRequest request);
 }

@@ -27,13 +27,14 @@ public class AsyncThreadTest {
 
     @Async("singleThreadPool")
     public Future<String> asycTestFuture(String key, String key2, Integer key3) {
+        Future future = new AsyncResult<>("test");
         try {
             Thread.sleep(3000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         System.out.println(Thread.currentThread().getName() + key + key2 + key3);
-        return new AsyncResult<>("test");
+        return future;
     }
 
 }

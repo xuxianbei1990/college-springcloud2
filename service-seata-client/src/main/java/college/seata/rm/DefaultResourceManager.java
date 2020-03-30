@@ -87,4 +87,10 @@ public class DefaultResourceManager implements ResourceManager {
         return rm;
     }
 
+    @Override
+    public void branchReport(BranchType branchType, String xid, long branchId, BranchStatus status,
+                             String applicationData) throws TransactionException {
+        getResourceManager(branchType).branchReport(branchType, xid, branchId, status, applicationData);
+    }
+
 }

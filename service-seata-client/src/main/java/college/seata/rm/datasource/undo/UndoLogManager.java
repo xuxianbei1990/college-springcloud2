@@ -4,6 +4,7 @@ import college.seata.rm.datasource.ConnectionProxy;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.Set;
 
 /**
@@ -25,4 +26,15 @@ public interface UndoLogManager {
     void batchDeleteUndoLog(Set<String> xids, Set<Long> branchIds, Connection conn) throws SQLException;
 
     void flushUndoLogs(ConnectionProxy cp) throws SQLException;
+
+
+    /**
+     * delete undolog by created
+     * @param logCreated the created time
+     * @param limitRows the limit rows
+     * @param conn the connection
+     * @return the update rows
+     * @throws SQLException the sql exception
+     */
+    int deleteUndoLogByLogCreated(Date logCreated, int limitRows, Connection conn) throws SQLException;
 }
