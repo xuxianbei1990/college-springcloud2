@@ -68,6 +68,8 @@ public class GlobalTransactionalInterceptor implements MethodInterceptor {
                     TransactionInfo transactionInfo = new TransactionInfo();
                     transactionInfo.setTimeOut(globalTrxAnno.timeoutMills());
                     transactionInfo.setName(name());
+
+                    //搞这么多回滚原则干嘛？
                     Set<RollbackRule> rollbackRules = new LinkedHashSet<>();
                     for (Class<?> rbRule : globalTrxAnno.rollbackFor()) {
                         rollbackRules.add(new RollbackRule(rbRule));

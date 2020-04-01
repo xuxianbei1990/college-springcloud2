@@ -3,6 +3,8 @@ package college.springcloud.io.seata.core.rpc.netty;
 import college.springcloud.io.seata.core.protocol.RpcMessage;
 import college.springcloud.io.seata.core.protocol.transaction.BranchCommitRequest;
 import college.springcloud.io.seata.core.protocol.transaction.BranchCommitResponse;
+import college.springcloud.io.seata.core.protocol.transaction.BranchRollbackRequest;
+import college.springcloud.io.seata.core.protocol.transaction.BranchRollbackResponse;
 import college.springcloud.io.seata.core.rpc.ClientMessageListener;
 import college.springcloud.io.seata.core.rpc.ClientMessageSender;
 import college.springcloud.io.seata.core.rpc.TransactionMessageHandler;
@@ -44,6 +46,8 @@ public class RmMessageListener implements ClientMessageListener {
         //收到分支提交请求只是删除了undo日志？
         if (msg instanceof BranchCommitRequest) {
             handleBranchCommit(request, serverAddress, (BranchCommitRequest) msg, sender);
+        }  else if (msg instanceof BranchRollbackRequest) {
+            handleBranchRollback(request, serverAddress, (BranchRollbackRequest) msg, sender);
         }
     }
 
@@ -53,5 +57,17 @@ public class RmMessageListener implements ClientMessageListener {
         BranchCommitResponse resultMessage;
         resultMessage = (BranchCommitResponse) handler.onRequest(branchCommitRequest, null);
         sender.sendResponse(request, serverAddress, resultMessage);
+    }
+
+    private void handleBranchRollback(RpcMessage request, String serverAddress,
+                                      BranchRollbackRequest branchRollbackRequest, ClientMessageSender sender) {
+        BranchRollbackResponse resultMessage = null;
+        resultMessage = (BranchRollbackResponse)handler.onRequest(branchRollbackRequest, null);
+
+        try {
+            sender.sendResponse(request, serverAddress, resultMessage);
+        } catch (Throwable throwable) {
+            log.error("send response error: {}", throwable.getMessage(), throwable);
+        }
     }
 }

@@ -9,7 +9,9 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 
-/**  一个事务开始总入口
+/**
+ * 一个事务开始总入口
+ *
  * @author: xuxianbei
  * Date: 2020/3/12
  * Time: 17:15
@@ -44,7 +46,7 @@ public class TransactionalTemplate {
             } catch (Throwable ex) {
 
                 // 3.the needed business exception to rollback.  反正这里是回滚，这里等等
-                completeTransactionAfterThrowing(txInfo,tx,ex);
+                completeTransactionAfterThrowing(txInfo, tx, ex);
                 throw ex;
             }
 
@@ -70,19 +72,19 @@ public class TransactionalTemplate {
     }
 
     private void completeTransactionAfterThrowing(TransactionInfo txInfo, GlobalTransaction tx, Throwable ex) throws TransactionalExecutor.ExecutionException {
-        //roll back
-//        if (txInfo != null && txInfo.rollbackOn(ex)) {
-//            try {
-//                rollbackTransaction(tx, ex);
-//            } catch (TransactionException txe) {
-//                // Failed to rollback
-//                throw new TransactionalExecutor.ExecutionException(tx, txe,
-//                        TransactionalExecutor.Code.RollbackFailure, ex);
-//            }
-//        } else {
+        //roll back  明天做个试验看下
+        if (txInfo != null && txInfo.rollbackOn(ex)) {
+            try {
+                rollbackTransaction(tx, ex);
+            } catch (TransactionException txe) {
+                // Failed to rollback
+                throw new TransactionalExecutor.ExecutionException(tx, txe,
+                        TransactionalExecutor.Code.RollbackFailure, ex);
+            }
+        } else {
 //            // not roll back on this exception, so commit
-//            commitTransaction(tx);
-//        }
+            commitTransaction(tx);
+        }
     }
 
     private void beginTransaction(TransactionInfo txInfo, GlobalTransaction tx) throws TransactionalExecutor.ExecutionException {
@@ -98,14 +100,10 @@ public class TransactionalTemplate {
         }
     }
 
-    private void triggerBeforeBegin() {
-        for (TransactionHook hook : getCurrentHooks()) {
-            try {
-                hook.beforeBegin();
-            } catch (Exception e) {
-                log.error("Failed execute beforeBegin in hook {}",e.getMessage(),e);
-            }
-        }
+    private void rollbackTransaction(GlobalTransaction tx, Throwable ex) throws TransactionException, TransactionalExecutor.ExecutionException {
+        tx.rollback();
+        // 3.1 Successfully rolled back
+        throw new TransactionalExecutor.ExecutionException(tx, TransactionalExecutor.Code.RollbackDone, ex);
     }
 
     private List<TransactionHook> getCurrentHooks() {

@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package college.seata.rm.datasource.sql.mysql;
+package college.seata.rm.datasource.sql.druid;
 
 import college.seata.rm.datasource.sql.SQLOperateRecognizerHolder;
 import college.seata.rm.datasource.sql.SQLRecognizer;

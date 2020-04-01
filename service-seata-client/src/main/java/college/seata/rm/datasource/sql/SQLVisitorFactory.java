@@ -1,6 +1,6 @@
 package college.seata.rm.datasource.sql;
 
-import college.seata.rm.datasource.sql.mysql.MySqlOperateRecognizerHolder;
+import college.seata.rm.datasource.sql.druid.MySqlOperateRecognizerHolder;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;

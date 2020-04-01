@@ -12,4 +12,6 @@ import college.springcloud.io.seata.core.exception.TransactionException;
 public interface ResourceManagerInbound {
 
     BranchStatus branchCommit(BranchType branchType, String xid, long branchId, String resourceId, String applicationData) throws TransactionException;
+
+    BranchStatus branchRollback(BranchType branchType, String xid, long branchId, String resourceId, String applicationData) throws TransactionException;
 }

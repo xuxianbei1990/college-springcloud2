@@ -5,10 +5,7 @@ import college.springcloud.io.seata.core.exception.TransactionException;
 import college.springcloud.io.seata.core.exception.TransactionExceptionCode;
 import college.springcloud.io.seata.core.model.GlobalStatus;
 import college.springcloud.io.seata.core.model.TransactionManager;
-import college.springcloud.io.seata.core.protocol.transaction.AbstractTransactionRequest;
-import college.springcloud.io.seata.core.protocol.transaction.AbstractTransactionResponse;
-import college.springcloud.io.seata.core.protocol.transaction.GlobalCommitRequest;
-import college.springcloud.io.seata.core.protocol.transaction.GlobalCommitResponse;
+import college.springcloud.io.seata.core.protocol.transaction.*;
 import college.springcloud.io.seata.core.rpc.netty.TmRpcClient;
 
 import java.util.concurrent.TimeoutException;
@@ -30,6 +27,14 @@ public class DefaultTransactionManager implements TransactionManager {
         GlobalCommitRequest globalCommit = new GlobalCommitRequest();
         globalCommit.setXid(xid);
         GlobalCommitResponse response = (GlobalCommitResponse) syncCall(globalCommit);
+        return response.getGlobalStatus();
+    }
+
+    @Override
+    public GlobalStatus rollback(String xid) throws TransactionException {
+        GlobalRollbackRequest globalRollback = new GlobalRollbackRequest();
+        globalRollback.setXid(xid);
+        GlobalRollbackResponse response = (GlobalRollbackResponse)syncCall(globalRollback);
         return response.getGlobalStatus();
     }
 

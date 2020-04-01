@@ -1,6 +1,8 @@
 package college.seata.rm.datasource.undo;
 
 import college.seata.rm.datasource.ConnectionProxy;
+import college.seata.rm.datasource.DataSourceProxy;
+import college.springcloud.io.seata.core.exception.TransactionException;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -27,7 +29,7 @@ public interface UndoLogManager {
 
     void flushUndoLogs(ConnectionProxy cp) throws SQLException;
 
-
+    void undo(DataSourceProxy dataSourceProxy, String xid, long branchId) throws TransactionException;
     /**
      * delete undolog by created
      * @param logCreated the created time
@@ -37,4 +39,14 @@ public interface UndoLogManager {
      * @throws SQLException the sql exception
      */
     int deleteUndoLogByLogCreated(Date logCreated, int limitRows, Connection conn) throws SQLException;
+
+    /**
+     * Delete undo log.
+     *
+     * @param xid      the xid
+     * @param branchId the branch id
+     * @param conn     the conn
+     * @throws SQLException the sql exception
+     */
+    void deleteUndoLog(String xid, long branchId, Connection conn) throws SQLException;
 }

@@ -7,6 +7,7 @@ import college.springcloud.io.seata.core.constants.ClientTableColumnsName;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Date;
 
 /** 我猜测这个是用来删除undoLog。而这个undoLog是从某个地方被拦截了。
  *  我猜测事务开始时候，会打标机，这时候会同步生成Undolog。而这些log
@@ -56,5 +57,10 @@ public class MySQLUndoLogManager extends AbstractUndoLogManager {
                 pst.close();
             }
         }
+    }
+
+    @Override
+    public int deleteUndoLogByLogCreated(Date logCreated, int limitRows, Connection conn) throws SQLException {
+        return 0;
     }
 }

@@ -3,8 +3,7 @@ package college.seata.rm;
 import college.springcloud.io.seata.core.exception.FrameworkException;
 import college.springcloud.io.seata.core.model.BranchType;
 import college.springcloud.io.seata.core.model.ResourceManager;
-import college.springcloud.io.seata.core.protocol.transaction.BranchCommitRequest;
-import college.springcloud.io.seata.core.protocol.transaction.BranchCommitResponse;
+import college.springcloud.io.seata.core.protocol.transaction.*;
 import college.seata.rm.tcc.RMHandlerTCC;
 import org.apache.commons.collections4.CollectionUtils;
 
@@ -74,6 +73,16 @@ public class DefaultRMHandler extends AbstractRMHandler {
     @Override
     public BranchCommitResponse handle(BranchCommitRequest request) {
         return getRMHandler(request.getBranchType()).handle(request);
+    }
+
+    @Override
+    public BranchRollbackResponse handle(BranchRollbackRequest request) {
+        return getRMHandler(request.getBranchType()).handle(request);
+    }
+
+    @Override
+    public void handle(UndoLogDeleteRequest request) {
+
     }
 
     protected AbstractRMHandler getRMHandler(BranchType branchType) {

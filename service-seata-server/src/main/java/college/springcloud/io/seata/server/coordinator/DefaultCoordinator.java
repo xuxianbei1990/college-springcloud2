@@ -37,6 +37,11 @@ public class DefaultCoordinator extends AbstractTCInboundHandler implements Reso
     }
 
     @Override
+    public BranchStatus branchRollback(BranchType branchType, String xid, long branchId, String resourceId, String applicationData) throws TransactionException {
+        return null;
+    }
+
+    @Override
     public AbstractResultMessage onRequest(AbstractMessage request, RpcContext context) {
         if (!(request instanceof AbstractTransactionRequestToTC)) {
             throw new IllegalArgumentException();
@@ -60,4 +65,8 @@ public class DefaultCoordinator extends AbstractTCInboundHandler implements Reso
     }
 
 
+    @Override
+    public GlobalRollbackResponse handle(GlobalRollbackRequest globalRollback, RpcContext rpcContext) {
+        return null;
+    }
 }

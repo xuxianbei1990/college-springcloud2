@@ -21,4 +21,13 @@ public interface TCInboundHandler {
      * @return the global commit response
      */
     GlobalCommitResponse handle(GlobalCommitRequest globalCommit, RpcContext rpcContext);
+
+    /**
+     * Handle global rollback response.
+     *
+     * @param globalRollback the global rollback
+     * @param rpcContext     the rpc context
+     * @return the global rollback response
+     */
+    GlobalRollbackResponse handle(GlobalRollbackRequest globalRollback, RpcContext rpcContext);
 }

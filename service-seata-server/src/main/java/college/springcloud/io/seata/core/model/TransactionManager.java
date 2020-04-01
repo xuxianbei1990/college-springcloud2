@@ -34,4 +34,6 @@ public interface TransactionManager {
      * out.
      */
     GlobalStatus commit(String xid) throws TransactionException;
+
+    GlobalStatus rollback(String xid) throws TransactionException;
 }

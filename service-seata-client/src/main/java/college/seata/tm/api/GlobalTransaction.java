@@ -15,4 +15,6 @@ public interface GlobalTransaction {
     void begin(int timeout, String name) throws TransactionException;
 
     void commit() throws TransactionException;
+
+    void rollback() throws TransactionException;
 }

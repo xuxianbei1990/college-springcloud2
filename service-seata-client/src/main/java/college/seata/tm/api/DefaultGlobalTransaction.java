@@ -29,6 +29,8 @@ public class DefaultGlobalTransaction implements GlobalTransaction {
 
     private static final int COMMIT_RETRY_COUNT = 1;
 
+    private static final int ROLLBACK_RETRY_COUNT = 1;
+
     //DefaultTransactionManager
     private TransactionManager transactionManager;
 
@@ -91,6 +93,35 @@ public class DefaultGlobalTransaction implements GlobalTransaction {
         }
         if (log.isInfoEnabled()) {
             log.info("[{}] commit status: {}", xid, status);
+        }
+    }
+
+    @Override
+    public void rollback() throws TransactionException {
+        if (xid == null) {
+            throw new IllegalStateException();
+        }
+
+        int retry = ROLLBACK_RETRY_COUNT;
+        try {
+            while (retry > 0) {
+                try {
+                    status = transactionManager.rollback(xid);
+                    break;
+                } catch (Throwable ex) {
+                    log.error("Failed to report global rollback [{}],Retry Countdown: {}, reason: {}", this.getXid(), retry, ex.getMessage());
+                    retry--;
+                    if (retry == 0) {
+                        throw new TransactionException("Failed to report global rollback", ex);
+                    }
+                }
+            }
+        } finally {
+            if (RootContext.getXID() != null) {
+                if (xid.equals(RootContext.getXID())) {
+                    RootContext.unbind();
+                }
+            }
         }
     }
 

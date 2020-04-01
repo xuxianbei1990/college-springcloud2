@@ -13,12 +13,13 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package college.seata.rm.datasource.sql.mysql;
+package college.seata.rm.datasource.sql.druid;
 
 import college.seata.rm.datasource.ParametersHolder;
 import college.seata.rm.datasource.sql.SQLParsingException;
 import college.seata.rm.datasource.sql.SQLType;
 import college.seata.rm.datasource.sql.SQLUpdateRecognizer;
+import college.seata.rm.datasource.sql.druid.BaseMySQLRecognizer;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;

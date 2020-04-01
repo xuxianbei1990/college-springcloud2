@@ -2,9 +2,9 @@ package college.springcloud.common.service;
 
 import college.springcloud.common.db.BbcMapper;
 import college.springcloud.common.query.Criteria;
+import org.springframework.beans.factory.annotation.Autowired;
 import tk.mybatis.mapper.entity.Example;
 
-import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,7 +17,7 @@ import java.util.List;
  */
 public abstract class BaseService<T> implements IService<T> {
 
-    @Resource
+    @Autowired
     protected BbcMapper<T> mapper;
 
     @Override

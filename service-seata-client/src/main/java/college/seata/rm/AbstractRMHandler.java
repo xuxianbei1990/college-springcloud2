@@ -52,6 +52,19 @@ public abstract class AbstractRMHandler implements TransactionMessageHandler, RM
         return response;
     }
 
+    @Override
+    public BranchRollbackResponse handle(BranchRollbackRequest request) {
+        BranchRollbackResponse response = new BranchRollbackResponse();
+        exceptionHandleTemplate(new AbstractCallback<BranchRollbackRequest, BranchRollbackResponse>() {
+            @Override
+            public void execute(BranchRollbackRequest request, BranchRollbackResponse response)
+                    throws TransactionException {
+                doBranchRollback(request, response);
+            }
+        }, request, response);
+        return response;
+    }
+
 
     public void exceptionHandleTemplate(Callback callback, AbstractTransactionRequest request,
                                         AbstractTransactionResponse response) {
@@ -83,6 +96,25 @@ public abstract class AbstractRMHandler implements TransactionMessageHandler, RM
         response.setBranchStatus(status);
     }
 
+    protected void doBranchRollback(BranchRollbackRequest request, BranchRollbackResponse response)
+            throws TransactionException {
+        String xid = request.getXid();
+        long branchId = request.getBranchId();
+        String resourceId = request.getResourceId();
+        String applicationData = request.getApplicationData();
+        if (log.isInfoEnabled()) {
+            log.info("Branch Rollbacking: " + xid + " " + branchId + " " + resourceId);
+        }
+        BranchStatus status = getResourceManager().branchRollback(request.getBranchType(), xid, branchId, resourceId,
+                applicationData);
+        response.setXid(xid);
+        response.setBranchId(branchId);
+        response.setBranchStatus(status);
+        if (log.isInfoEnabled()) {
+            log.info("Branch Rollbacked result: " + status);
+        }
+    }
+   // 这里调用的是RMHandleAT 的 getResourceManager() 最终调用 DataSourceManager
     protected abstract ResourceManager getResourceManager();
 
     public abstract BranchType getBranchType();
