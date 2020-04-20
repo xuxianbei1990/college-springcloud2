@@ -1,5 +1,8 @@
 package college.springcloud.student.controller;
 
+import college.springcloud.student.dto.ObjectStudent;
+import org.openjdk.jol.info.ClassLayout;
+
 /**
  * @author: xuxianbei
  * Date: 2019/12/31
@@ -15,14 +18,14 @@ public class Java8Object {
          * 实例数据
          * 数据对其
          */
-//        ObjectStudent objectStudent = new ObjectStudent();
-//        System.out.println(Integer.toHexString(objectStudent.hashCode()));
-//        System.out.println(ClassLayout.parseInstance(objectStudent).toPrintable());
+        ObjectStudent objectStudent = new ObjectStudent();
+        System.out.println(ClassLayout.parseInstance(objectStudent).toPrintable());
+        System.out.println(Integer.toHexString(objectStudent.hashCode()));
+        System.out.println(ClassLayout.parseInstance(objectStudent).toPrintable());
 
-//        Map<String, Integer> map = new HashMap<>();
-//        map.put("the", 1);
-//        map.put("xxb", 1);
-//        System.out.println(map);
+        synchronized (objectStudent) {
+            System.out.println(ClassLayout.parseInstance(objectStudent).toPrintable());
+        }
     }
 
 }

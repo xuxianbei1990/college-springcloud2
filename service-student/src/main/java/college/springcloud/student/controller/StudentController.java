@@ -8,6 +8,7 @@ import college.springcloud.student.api.StudentApi;
 import college.springcloud.student.dto.ExportVo;
 import college.springcloud.student.dto.StudentDto;
 import college.springcloud.student.po.Student;
+import college.springcloud.student.po.StudentSerialize;
 import college.springcloud.student.service.AsyncThreadTest;
 import college.springcloud.student.service.StudentServiceImpl;
 import com.google.common.collect.Lists;
@@ -16,10 +17,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.task.AsyncTaskExecutor;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
@@ -189,6 +187,13 @@ public class StudentController<T> implements StudentApi {
     @GetMapping("/export")
     public void export(@Validated StudentDto studentDto, HttpServletResponse response) {
         ExcelUtils.exportExcelByEasyPoi("采购单", studentDto, ExportVo.class, studentService, response);
+    }
+
+    @PostMapping("/serialize")
+    public StudentSerialize serialize(@RequestBody StudentSerialize studentSerialize) {
+        studentSerialize.setCashJs(10);
+        studentSerialize.setModifyDate(new Date());
+        return studentSerialize;
     }
 
 
