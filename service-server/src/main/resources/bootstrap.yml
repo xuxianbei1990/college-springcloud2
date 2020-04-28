@@ -22,7 +22,7 @@ eureka:
     service-url:
       defaultZone: http://localhost:${server.port}/eureka/
     server:
-      #中小规模下，自我保护模式坑比好处多，所以关闭它
+      #中小规模下，自我保护模式坑比好处多，所以关闭它   测试时关闭自我保护机制，保证不可用服务及时踢出
       enableSelfPreservation: false
       # 心跳阈值计算周期，如果开启自我保护模式，可以改一下这个配置
       renewalThresholdUpdateIntervalMs: 120000

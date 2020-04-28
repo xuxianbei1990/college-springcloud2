@@ -41,4 +41,9 @@ public class DefaultCore implements Core {
     public GlobalStatus commit(String xid) throws TransactionException {
         return null;
     }
+
+    @Override
+    public GlobalStatus rollback(String xid) throws TransactionException {
+        return null;
+    }
 }

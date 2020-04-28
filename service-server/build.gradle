@@ -14,4 +14,6 @@ dependencyManagement {
 
 dependencies {
     compile("org.springframework.cloud:spring-cloud-starter-netflix-eureka-server")
+    compile('org.projectlombok:lombok:1.18.8')
+    compile('com.alibaba:fastjson:1.2.62')
 }

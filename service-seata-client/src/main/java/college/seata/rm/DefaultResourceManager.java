@@ -79,6 +79,11 @@ public class DefaultResourceManager implements ResourceManager {
         return getResourceManager(branchType).branchCommit(branchType, xid, branchId, resourceId, applicationData);
     }
 
+    @Override
+    public BranchStatus branchRollback(BranchType branchType, String xid, long branchId, String resourceId, String applicationData) throws TransactionException {
+        return null;
+    }
+
     public ResourceManager getResourceManager(BranchType branchType) {
         ResourceManager rm = resourceManagers.get(branchType);
         if (rm == null) {

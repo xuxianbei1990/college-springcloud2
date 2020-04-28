@@ -19,6 +19,7 @@ import college.seata.rm.DefaultResourceManager;
 import college.springcloud.io.seata.core.model.BranchType;
 import college.springcloud.io.seata.core.model.ResourceManager;
 import college.seata.rm.AbstractRMHandler;
+import college.springcloud.io.seata.core.protocol.transaction.UndoLogDeleteRequest;
 
 /**
  * The type Rm handler tcc.
@@ -43,4 +44,8 @@ public class RMHandlerTCC extends AbstractRMHandler {
         return BranchType.TCC;
     }
 
+    @Override
+    public void handle(UndoLogDeleteRequest request) {
+
+    }
 }

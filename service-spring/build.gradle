@@ -12,6 +12,7 @@ dependencyManagement {
 
 dependencies {
     compile("org.springframework.boot:spring-boot-starter-web")
+    compile('org.projectlombok:lombok:1.18.8')
 }
 
 //我猜从这里把配置文件加载到config中

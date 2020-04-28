@@ -44,6 +44,10 @@ public class AsyncWorker implements ResourceManagerInbound {
         return BranchStatus.PhaseTwo_Committed;
     }
 
+    @Override
+    public BranchStatus branchRollback(BranchType branchType, String xid, long branchId, String resourceId, String applicationData) throws TransactionException {
+        return null;
+    }
 
 
     /**

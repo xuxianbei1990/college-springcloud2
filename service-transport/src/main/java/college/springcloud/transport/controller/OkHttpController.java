@@ -103,9 +103,6 @@ public class OkHttpController {
         OkHttpEntity okHttpEntity = new OkHttpEntity();
         okHttpEntity.setId("x");
         okHttpEntity.setKey("sdf");
-        Map<String, String> headers = new HashMap<>();
-        headers.put("content-type", "application/json");
-        headers.put("charset", "UTF-8");
         Map<String, Object> params = beanToMap(okHttpEntity);
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add(HttpHeaders.CONTENT_TYPE, "application/json");
@@ -120,6 +117,9 @@ public class OkHttpController {
         System.out.println("Okhttp:" + (System.currentTimeMillis() - start));
         start = System.currentTimeMillis();
         for (int i = 0; i < count; i++) {
+            Map<String, String> headers = new HashMap<>();
+            headers.put("content-type", "application/json");
+            headers.put("charset", "UTF-8");
             HttpURLConnectionUtil.sentPost(ipaddr + "/okHttp/receiveJson",
                     JSONObject.toJSONString(okHttpEntity), headers);
         }
