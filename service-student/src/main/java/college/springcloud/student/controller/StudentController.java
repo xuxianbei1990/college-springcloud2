@@ -3,15 +3,16 @@ package college.springcloud.student.controller;
 import college.springcloud.common.utils.ExcelUtils;
 import college.springcloud.common.utils.Reflection;
 import college.springcloud.common.utils.Result;
+import college.springcloud.common.utils.ResultUtils;
 import college.springcloud.student.annotation.TeacherRole;
 import college.springcloud.student.api.StudentApi;
 import college.springcloud.student.dto.ExportVo;
 import college.springcloud.student.dto.StudentDto;
 import college.springcloud.student.po.Student;
+import college.springcloud.student.po.StudentCopy;
 import college.springcloud.student.po.StudentSerialize;
 import college.springcloud.student.service.AsyncThreadTest;
 import college.springcloud.student.service.StudentServiceImpl;
-import com.google.common.collect.Lists;
 import io.swagger.annotations.ApiOperation;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,8 +34,6 @@ import java.util.concurrent.Future;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 /**
  * User: EDZ
@@ -108,26 +107,39 @@ public class StudentController<T> implements StudentApi {
     public static void main(String[] args) {
         //怎么说呢，延后创建吧。属于设计范畴。我觉得可以大量使用
         //我觉得这个是好东西啊
-        Supplier<Student> supplier = Student::new;
-        supplier.get();
-        List<Student> list = new ArrayList<>();
-        Student student = supplier.get();
-        student.setName("x");
-        list.add(student);
-        student = supplier.get();
-        student.setName("y");
-        list.add(student);
-        list.forEach(student1 -> student1.run());
-        //就是代码太长看不过来的
-        testJava8Consumer(list, student);
-
-//        Map<String, Student> map = new HashMap<>();
-        list = null;
-        Map<String, Student> countryNameMap = Optional.ofNullable(list).orElse(Lists.newArrayList()).
-                stream().collect(Collectors.toMap(Student::getName, student1 -> student1, (key1, key2) -> key2));
-        System.out.println(countryNameMap);
-
+//        Supplier<Student> supplier = Student::new;
+//        supplier.get();
+//        List<Student> list = new ArrayList<>();
+//        Student student = supplier.get();
+//        student.setName("x");
+//        list.add(student);
+//        student = supplier.get();
+//        student.setName("y");
+//        list.add(student);
+//        list.forEach(student1 -> student1.run());
+//        //就是代码太长看不过来的
+//        testJava8Consumer(list, student);
+//
+////        Map<String, Student> map = new HashMap<>();
+//        list = null;
+//        Map<String, Student> countryNameMap = Optional.ofNullable(list).orElse(Lists.newArrayList()).
+//                stream().collect(Collectors.toMap(Student::getName, student1 -> student1, (key1, key2) -> key2));
+//        System.out.println(countryNameMap);
+        BeanCopy();
     }
+
+    private static void BeanCopy() {
+        Student student = new Student();
+        student.setAge(1);
+        student.setKey(2L);
+        student.setName("lu 卡 si");
+        student.setMoney(10);
+        StudentCopy copy = new StudentCopy();
+        ResultUtils.copyProperties(student, copy);
+        ResultUtils.copyProperties(student, copy);
+        System.out.println(copy);
+    }
+
 
     @Test
     public void testGetStudents() {

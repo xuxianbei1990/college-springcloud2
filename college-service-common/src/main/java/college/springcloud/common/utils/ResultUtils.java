@@ -2,6 +2,12 @@ package college.springcloud.common.utils;
 
 import college.springcloud.common.exception.BizException;
 import college.springcloud.common.exception.CollegeExceptionCode;
+import org.springframework.cglib.beans.BeanCopier;
+import org.springframework.cglib.core.Converter;
+
+import java.math.BigDecimal;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 结果工具类
@@ -57,4 +63,37 @@ public class ResultUtils {
         return data;
     }
 
+    private static Map<String, BeanCopier> beanCopierMap = new ConcurrentHashMap<>();
+
+    //属性拷贝
+    public static void copyProperties(Object source, Object dest) {
+        String key = source.getClass() + ":" + dest.getClass();
+        BeanCopier copier = null;
+        if (beanCopierMap.containsKey(key)) {
+            copier = beanCopierMap.get(key);
+        } else {
+            synchronized (ResultUtils.class) {
+                if (!beanCopierMap.containsKey(key)) {
+                    copier = BeanCopier.create(source.getClass(), dest.getClass(), true);
+                    beanCopierMap.putIfAbsent(key, copier);
+                }
+            }
+        }
+        Converter converter = (o, aClass, o1) -> {
+            if (aClass.equals(String.class)) {
+                return String.valueOf(o);
+            } else if (aClass.equals(BigDecimal.class)) {
+                if (o instanceof Long) {
+                    return BigDecimal.valueOf((Long) o);
+                } else if (o instanceof Integer) {
+                    return BigDecimal.valueOf((Integer) o);
+                } else {
+                    throw new IllegalArgumentException();
+                }
+            } else {
+                return o;
+            }
+        };
+        copier.copy(source, dest, converter);
+    }
 }

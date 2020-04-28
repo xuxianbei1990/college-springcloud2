@@ -3,6 +3,7 @@ package college.springcloud.student.po;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Objects;
 
 /**
@@ -12,32 +13,24 @@ import java.util.Objects;
  * Version:V1.0
  */
 @Data
-public class Student implements Serializable {
+public class StudentCopy implements Serializable {
     private static final long serialVersionUID = -2874944596724304275L;
     private String name;
-    private Integer age;
+    private String age;
     private Long key;
-    private Integer money;
+    private BigDecimal money;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Student student = (Student) o;
+        StudentCopy student = (StudentCopy) o;
         return Objects.equals(key, student.key);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(key);
-    }
-
-    @Override
-    public String toString() {
-        return "Student{" +
-                "name='" + name + '\'' +
-                ", age=" + age +
-                '}';
     }
 
     public void run(){
@@ -50,13 +43,13 @@ public class Student implements Serializable {
         System.out.println(name);
     }
 
-    public Student fun(Student student) {
+    public StudentCopy fun(StudentCopy student) {
         student.setName("fun");
         System.out.println("fun");
         return student;
     }
 
-    public Student fun2(Student student) {
+    public StudentCopy fun2(StudentCopy student) {
         student.setName("fun2");
         System.out.println("fun2");
         return student;
@@ -70,11 +63,4 @@ public class Student implements Serializable {
         this.name = name;
     }
 
-    public Integer getAge() {
-        return age;
-    }
-
-    public void setAge(Integer age) {
-        this.age = age;
-    }
 }
