@@ -1,0 +1,29 @@
+server:
+  port: 8574
+
+eureka:
+  instance:
+    # 是否用ip注册 这个配合 health-check-url  status-page-url home-page-url 配合使用主要和健康检查有关
+    prefer-ip-address: true
+    # 实例id
+    instance-id: ${spring.cloud.client.ip-address}:${server.port}
+    # 服务调用的ip地址
+    ip-address: ${spring.cloud.client.ip-address}
+    # 重定义/actuator，处理context-path
+    health-check-url: http://${spring.cloud.client.ip-address}:${server.port}${server.servlet.context-path:}/actuator/health
+    status-page-url: http://${spring.cloud.client.ip-address}:${server.port}${server.servlet.context-path:}/actuator/info
+    home-page-url: http://${spring.cloud.client.ip-address}:${server.port}${server.servlet.context-path:}/
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8571/eureka/
+
+# 从Eureka中找到Config服务并读取配置
+spring:
+  application:
+    name: service-helper
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 1000MB
+      enabled: true
+

@@ -5,14 +5,6 @@ allprojects {
 //		maven { url "http://repo.spring.io/libs-snapshot-local" }
 //		maven { url "http://repo.spring.io/libs-milestone-local" }
 //		maven { url "http://repo.spring.io/libs-release-local" }
-		maven {
-			url "http://192.168.2.110:8081/repository/maven-public/"
-			credentials {
-				username 'xingyun'
-				password 'xy123ns'
-			}
-		}
-
 		jcenter()
 	}
 }

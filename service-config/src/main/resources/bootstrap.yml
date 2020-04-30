@@ -8,8 +8,6 @@ server:
 #/key：查看密钥的端点
 #/encrypt：对请求的body内容进行加密的端点
 #decrypt：对请求的body内容进行解密的端点
-encrypt:
-  key: bond
 #对应svn路径/{label}/{application}{profile}
 spring:
   application:
@@ -25,15 +23,6 @@ spring:
           search-locations: file:///G:/Project/Config/xybbc-config
           add-label-locations: true
           default-label: tito
-        # SVN配置
-        svn:
-          uri: svn://119.23.162.80/xybbc/service/xybbc-config
-          username: zhan.peng
-          password: '{cipher}43e1ec2128f92014e86ef55500a9616dd7fab37386453c6aa060bbb4581bae1e'
-          search-paths: {application}
-          default-label: trunk
-
-#        bootstrap: true
 
 eureka:
   instance:

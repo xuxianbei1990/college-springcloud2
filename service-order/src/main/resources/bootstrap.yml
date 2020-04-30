@@ -20,9 +20,6 @@ spring:
   application:
     name: college-service-order
   datasource:
-#    url: jdbc:mysql://192.168.2.72:3306/bbc?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8&useSSL=false
-#    username: xybbc
-#    password: xybbctest
     url: jdbc:mysql://localhost:3306/college?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=GMT%2B8
     username: root
     password: 1qaz!QAZ
