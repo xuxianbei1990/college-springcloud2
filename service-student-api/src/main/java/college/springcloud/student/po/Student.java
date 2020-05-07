@@ -18,6 +18,7 @@ public class Student implements Serializable {
     private Integer age;
     private Long key;
     private Integer money;
+    private byte[] bytes = new byte[1024];
 
     @Override
     public boolean equals(Object o) {

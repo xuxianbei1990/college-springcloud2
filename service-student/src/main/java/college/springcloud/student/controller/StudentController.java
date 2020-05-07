@@ -246,4 +246,19 @@ public class StudentController<T> implements StudentApi {
         return future.get();
     }
 
+    private List<Student> list = new ArrayList<>();
+
+    @GetMapping("/oom")
+    public String outOfMemory(Integer count) {
+        for (int i = 0; i < count; i++) {
+            Student student = new Student();
+            student.setName("xxb");
+            student.setKey(1L);
+            student.setAge(1);
+            student.setMoney(4);
+            list.add(student);
+        }
+        return "success";
+    }
+
 }
