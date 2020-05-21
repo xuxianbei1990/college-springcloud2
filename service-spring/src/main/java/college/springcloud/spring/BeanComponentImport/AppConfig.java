@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 /**
+ * 注入：IOC 的方式；1.直接注入类；2.字符串形式。3.直接定义BeanDefinition
  * User: xuxianbei
  * Date: 2019/11/5
  * Time: 15:57

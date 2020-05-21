@@ -1,0 +1,23 @@
+plugins {
+    id "io.spring.dependency-management" version "1.0.8.RELEASE"
+    id "org.springframework.boot" version "2.1.0.RELEASE"
+    id "java"
+    id "application"
+}
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
+}
+//这个一定要放到dependencies之前
+sourceSets.main.resources.srcDirs = ["src/main/java","src/main/resources"]
+
+
+dependencies {
+    compile("org.springframework.boot:spring-boot-starter-web")
+    //只是在fegin基础上增加了对springmvc支持，简单的说支持rest风格代码
+    compile("org.springframework.cloud:spring-cloud-starter-openfeign")
+    compile('com.alibaba:fastjson:1.2.58')
+    compile('com.aliyun.oss:aliyun-sdk-oss:3.5.0')
+    compile project(":college-service-common")
+}

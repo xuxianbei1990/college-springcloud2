@@ -16,6 +16,10 @@ public class BizException extends RuntimeException {
         this.status = status;
     }
 
+    public BizException(String msg) {
+        super(msg);
+    }
+
     public IResultStatus getStatus() {
         return this.status;
     }

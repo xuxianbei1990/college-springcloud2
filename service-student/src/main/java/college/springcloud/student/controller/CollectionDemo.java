@@ -34,8 +34,12 @@ public class CollectionDemo {
             sonList.add(Long.valueOf(i * 3));
             lists.add(sonList);
         }
-        System.out.println(lists.stream().flatMap(t -> t.stream()).collect(Collectors.toList()));
+        System.out.println(sonToSum(lists));
+//        testDistinctList();
 
+    }
+
+    private static void testDistinctList() {
         //集合去重  按照指定属性
         List<StudentDto> studentDtos = new ArrayList<>();
         StudentDto studentDto = new StudentDto();
@@ -61,6 +65,11 @@ public class CollectionDemo {
 //                (existing, replacement) -> replacement)).entrySet().stream().map(t -> t.getValue()).collect(Collectors.toList());
         studentDtos = distinctList(studentDtos, t -> t.getName());
         System.out.println(studentDtos);
+    }
+
+    //集合合并
+    public static <T> List<T> sonToSum(List<List<T>> lists) {
+        return lists.stream().flatMap(t -> t.stream()).collect(Collectors.toList());
     }
 
     static <T, K> List<T> distinctList(List<T> list, Function<? super T, ? extends K> keyMapper) {

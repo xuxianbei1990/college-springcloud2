@@ -1,0 +1,15 @@
+server:
+  port: 6002
+
+spring:
+  application:
+    name: college-service-aliyun
+
+
+ali-oss:
+  endpoint: http://oss-cn-shenzhen.aliyuncs.com
+  accessKeyId: LTAI4Fv4nNUYS2Y4VLUur6Y4
+  accessKeySecret: LPzepF4eOGJHbbrwLtghMkMhuDVB8G
+  bucketName: xy-league-test
+  urlStr: http://img.league-test.xyb2b.com
+  uploadPicUrl: pic
