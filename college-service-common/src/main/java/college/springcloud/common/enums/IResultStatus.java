@@ -6,8 +6,6 @@ package college.springcloud.common.enums;
  * Time: 14:51
  * Version:V1.0
  */
-public interface IResultStatus {
-    String getCode();
+public interface IResultStatus extends IExceptionCode {
 
-    String getMsg();
 }

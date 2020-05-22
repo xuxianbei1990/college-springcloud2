@@ -58,3 +58,7 @@ logging:
 #        max-interval: 2000
 #        multiplier: 1.1
 
+#  HystrixCommandProperties
+feign:
+  hystrix:
+    enabled: true

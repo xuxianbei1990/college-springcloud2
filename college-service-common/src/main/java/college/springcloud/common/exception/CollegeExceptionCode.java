@@ -16,10 +16,12 @@ public class CollegeExceptionCode implements IResultStatus {
     public static final CollegeExceptionCode INTERNAL_SERVER_ERROR = new CollegeExceptionCode("604", "服务器内部错误");
     private String code;
     private String msg;
+    private String module;
 
     public CollegeExceptionCode(String code, String msg) {
         this.code = code;
         this.msg = msg;
+        this.module = code.substring(1, 2);
     }
 
     public CollegeExceptionCode bulid(Object... args) {
