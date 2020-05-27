@@ -23,10 +23,12 @@ eureka:
     # 服务调用的ip地址
     ip-address: ${spring.cloud.client.ip-address}
   client:
+    #刷新本地服务列表 默认30s
+    registry-fetch-interval-seconds: 5
     serviceUrl:
       defaultZone: http://localhost:8571/eureka/
 
-      # sleuth只能收集DEBUG级别日志（这里定义了收集日志的范围）
+# sleuth只能收集DEBUG级别日志（这里定义了收集日志的范围）
 logging:
   level:
     org:

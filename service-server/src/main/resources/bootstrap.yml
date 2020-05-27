@@ -4,17 +4,23 @@ server:
 spring:
   application:
     name: xybbc-server
-    
+
+   #EurekaServerConfigBean
 eureka:
+  server:
+    #readCacheMap从readWriteCacheMap拿最新数据间隔。默认30s
+    response-cache-update-interval-ms: 3000
+    # 主动失效时间默认60s
+    eviction-interval-timer-in-ms: 5000
   instance:
-    hostname: server1
-    #false:禁止Eureka Server相互注册时hostname使用IP地址, 设置false 可用的复制副本 hostname available-replicas 成功
-#    springcloud 1.5时候无效  springcloud 2.1实测无效
-    prefer-ip-address: false
     #心跳间隔5秒
     leaseRenewalIntervalInSeconds: 5
     #没有心跳的淘汰时间10秒
     leaseExpirationDurationInSeconds: 10
+    hostname: server1
+    #false:禁止Eureka Server相互注册时hostname使用IP地址, 设置false 可用的复制副本 hostname available-replicas 成功
+#    springcloud 1.5时候无效  springcloud 2.1实测无效
+    prefer-ip-address: false
   client:
     # 如果不做Eureka集群，就不需要相互注册。
     registerWithEureka: true

@@ -36,6 +36,7 @@ public class Criteria<A, B> {
     private void cacheEntityTable(Class<A> entityClass) {
         if (!entityTableCache.containsKey(entityClass)) {
             Table table = entityClass.getAnnotation(Table.class);
+            //解决并发问题
             Map<String, String> fieldsMap = new ConcurrentHashMap<>();
             Map<String, String> fieldsMapDisplay = new LinkedHashMap<>();
             Field[] declareFields = entityClass.getDeclaredFields();

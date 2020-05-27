@@ -15,7 +15,7 @@ import java.util.List;
 public interface UpdateBatchNotNullMapper<T> {
 
     /**
-     * 批量更新通过单个主键更新
+     * 批量更新通过单个主键更新  效率高
      *
      * @param recordList
      * @return
@@ -24,7 +24,7 @@ public interface UpdateBatchNotNullMapper<T> {
     int updateBatchNotNullBySinglePrimaryKey(List<? extends T> recordList);
 
     /**
-     * 批量更新通过单个主键更新
+     * 批量更新通过单个主键更新 效率低
      * 原因：上面的效率大约是这个5倍。测试数据10000订单
      * @param recordList
      * @return

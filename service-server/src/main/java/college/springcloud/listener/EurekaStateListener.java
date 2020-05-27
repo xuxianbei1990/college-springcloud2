@@ -19,6 +19,8 @@ import java.util.Map;
  * Date: 2020/4/28
  * Time: 10:24
  * Version:V1.0
+ * 服务注册白名单问题
+ * https://blog.csdn.net/flying461/article/details/90784983
  */
 @Component
 public class EurekaStateListener {

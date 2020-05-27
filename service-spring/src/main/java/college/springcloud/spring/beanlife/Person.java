@@ -28,7 +28,7 @@ public class Person implements BeanFactoryAware, BeanNameAware,
         System.out.println("【构造器】调用Person的构造器实例化");
     }
 
-    // 直接给结论吧；这个方法实在beanPostProcess之前就执行了。
+    // 直接给结论吧；这个方法是在beanPostProcess之前就执行了。
     @PostConstruct
     public void postConstruct() {
         System.out.println("I'm  init  method  using  @PostConstrut....");
