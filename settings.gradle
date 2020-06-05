@@ -28,4 +28,6 @@ include 'service-seata-server'
 include 'service-seata-client'
 include 'service-seata-client'
 include 'service-aliyun'
+include 'service-gateway'
+include 'service-hystrix'
 

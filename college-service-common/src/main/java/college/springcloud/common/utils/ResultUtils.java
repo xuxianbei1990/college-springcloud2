@@ -5,6 +5,8 @@ import college.springcloud.common.exception.CollegeExceptionCode;
 import org.springframework.cglib.beans.BeanCopier;
 import org.springframework.cglib.core.Converter;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -95,5 +97,20 @@ public class ResultUtils {
             }
         };
         copier.copy(source, dest, converter);
+    }
+
+    public static String getStackTrace(Throwable throwable) {
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw);
+
+        String var3;
+        try {
+            throwable.printStackTrace(pw);
+            var3 = sw.toString();
+        } finally {
+            pw.close();
+        }
+
+        return var3;
     }
 }

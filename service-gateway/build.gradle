@@ -1,0 +1,19 @@
+plugins {
+    id 'java'
+    id "application"
+    //下面代码换成${springBootVersion} 不行
+    id "org.springframework.boot" version "2.1.0.RELEASE"
+    id "io.spring.dependency-management" version "1.0.8.RELEASE"
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
+}
+
+dependencies {
+    compile("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client")
+    compile('org.projectlombok:lombok:1.18.8')
+    compile('com.alibaba:fastjson:1.2.62')
+}
