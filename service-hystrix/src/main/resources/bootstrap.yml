@@ -1,0 +1,63 @@
+server:
+  port: 8201
+  servlet:
+    context-path: /hystrix
+
+
+spring:
+  application:
+    name: college.springcloud.service-zuul
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8571/eureka/
+
+hystrix:
+  command:
+    default:
+      #打开断路器
+      circuitBreaker:
+        enabled: true
+        #窗口时间内断路器跳闸的最小请求数
+        #如果此属性值为20，则在窗口时间内（如10s内），如果只收到19个请求且都失败了，则断路器也不会开启。
+        requestVolumeThreshold: 20
+        #断路器跳闸后; 5000不会接收新请求
+        sleepWindowInMilliseconds: 5000
+        #失败百分比的阈值。如果失败比率超过这个值，则断路器跳闸并且进入fallback逻辑
+        errorThresholdPercentage: 50
+        #强制使断路器跳闸, 会覆盖forceClosed
+        forceOpen: false
+        #强制关闭断路器跳闸
+        forceClosed: false
+      metrics:
+        rollingPercentile:
+          #设置执行延迟是否被跟踪，并且被计算在失败百分比中。如果设置为false,则所有的统计数据返回-1
+          enabled: true
+          #此属性设置统计滚动百分比窗口的持续时间
+          timeInMilliseconds: 10000
+          # 设置统计滚动百分比窗口的桶数量; 公式：timeInMilliseconds % numBuckets == 0
+          numBuckets: 10
+          #此属性设置每个桶保存的执行时间的最大值。如果桶数量是100，统计窗口为10s，
+          #如果这10s里有500次执行，只有最后100次执行会被统计到bucket里去
+          bucketSize: 100
+        healthSnapshot:
+          #          采样时间间隔
+          intervalInMilliseconds: 500
+      fallback:
+        #当执行失败或者请求被拒绝，是否会尝试调用hystrixCommand.getFallback()
+        enabled: true
+      execution:
+        #是否超时限制
+        timeout:
+          enabled: true
+        isolation:
+          semaphore:
+            #信号量最大并发数 如果 strategy 是Semaphore 有效 我比较好奇semaphore 怎么实现的
+            maxConcurrentRequests: 10
+          #隔离策略  Semaphore | Thread
+          strategy: THREAD
+          thread:
+            interruptOnTimeout: true
+            #熔断超时时间
+            timeoutInMilliseconds: 1000

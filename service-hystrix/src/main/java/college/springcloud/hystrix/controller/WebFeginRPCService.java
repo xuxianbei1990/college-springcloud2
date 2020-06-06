@@ -11,8 +11,9 @@ import org.springframework.web.bind.annotation.RequestParam;
  * Date: 2019/7/22
  * Time: 10:00
  * Version:V1.0
+ * 指定服务器名称加路径
  */
-@FeignClient(value = "college.springcloud.service-web-fegin", path = "/fegin")
+@FeignClient(value = "college-service-student", path = "/hystrix")
 public interface WebFeginRPCService {
 
     @RequestMapping(value = "/getString", method = RequestMethod.GET)
