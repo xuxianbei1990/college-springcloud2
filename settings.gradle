@@ -30,4 +30,5 @@ include 'service-seata-client'
 include 'service-aliyun'
 include 'service-gateway'
 include 'service-hystrix'
+include 'service-ribbon'
 

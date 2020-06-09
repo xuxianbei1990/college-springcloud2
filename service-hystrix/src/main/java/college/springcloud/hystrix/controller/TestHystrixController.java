@@ -30,6 +30,7 @@ public class TestHystrixController {
      * 5. 提供熔断器组件,可以自动运行或手动调用,停止当前依赖一段时间(10秒)，熔断器默认错误率阈值为50%,超过将自动运行。
      * 6. 提供近实时依赖的统计和监控
      * HystrixCommandProperties
+     * 如果想得到异常，就要用RestTemplate了。
      **/
     //简单测试，就是把服务停用了.
     @GetMapping("/student")

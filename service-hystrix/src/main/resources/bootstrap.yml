@@ -6,7 +6,7 @@ server:
 
 spring:
   application:
-    name: college.springcloud.service-zuul
+    name: college.springcloud.service-hystirx
 
 eureka:
   client:
@@ -65,3 +65,26 @@ hystrix:
 feign:
   hystrix:
     enabled: true
+
+
+
+#WebEndpointProperties
+management:
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        #info,health,metrics
+        include: hystrix.stream, /*
+        exclude: /*
+
+#指定需要监控的服务名 ；1.可以改进为注册方式
+#turbine:
+#  app-config: college.springcloud.service-hystirx
+#  #指定集群的名称为default，当服务实例非常多的时候，可以启动多个Turbine来
+#  #构建不同的聚合集群，而该参数可以区分这些不同的集群，同时该参数可以在
+#  #Hystrix仪表盘中用来定位不同的聚合集群，只需在Hystrix Stream的URL中通过cluster
+#  #参数来指定
+#  cluster-name-expression: "default"
