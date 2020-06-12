@@ -1,5 +1,7 @@
 package college.springcloud.student.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,8 +16,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/hystrix")
 public class TestHystrixController {
 
+    @Autowired
+    ApplicationContext applicationContext;
+
     @GetMapping("/getString")
     public String getString(String key) {
-        return key;
+        return key + applicationContext.getEnvironment().getProperty("server.port");
     }
 }

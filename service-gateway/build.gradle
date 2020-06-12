@@ -14,6 +14,12 @@ dependencyManagement {
 
 dependencies {
     compile("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client")
+    //redis 限流
+    compile("org.springframework.boot:spring-boot-starter-data-redis-reactive")
+    compile 'org.springframework.cloud:spring-cloud-starter-gateway'
+    compile 'com.auth0:java-jwt:3.6.0'
+    compile 'io.jsonwebtoken:jjwt:0.9.1'
+//    compile 'org.springframework.cloud:spring-cloud-starter-netflix-zuul'
     compile('org.projectlombok:lombok:1.18.8')
     compile('com.alibaba:fastjson:1.2.62')
 }

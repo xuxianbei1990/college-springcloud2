@@ -1,0 +1,74 @@
+server:
+  port: 8200
+
+spring:
+  application:
+    name: college.springcloud.service-zuul
+  cloud:
+
+    gateway:
+      routes:
+        # 这个名字随意唯一即可
+        - id: college-service-student
+          uri: lb://college-service-student
+          predicates:
+            - Path=/feign/**
+          filters:
+            - StripPrefix=1
+              #            - name: RequestRateLimiter
+              #              args:
+              #                #用于限流的键的解析器的 Bean 对象的名字。它使用 SpEL 表达式根据#{@beanName}从 Spring 容器中获取 Bean 对象。
+              #                key-resolver: '#{@hostAddrKeyResolver}'
+              #                #replenishRate，令牌桶每秒填充平均速率。
+              #                redis-rate-limiter.replenishRate: 1
+              #                #burstCapacity，令牌桶总容量。
+              #                redis-rate-limiter.burstCapacity: 3
+      discovery:
+        locator:
+          enabled: true
+
+#  redis:
+#    host: localhost
+#    port: 6379
+
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8571/eureka/
+
+#http://localhost:8200/actuator/routes
+#management:
+#  endpoints:
+#    web:
+#      exposure:
+#        include: "*"
+#  endpoint:
+#    health:
+#      ##默认是never
+#      show-details: ALWAYS
+#      enabled: true
+#    routes:
+#      enabled: true
+
+
+#zuul:
+#  routes:
+##    名字随意
+#    web-fegin-api:
+#      path: /fegin/**
+#      service-id: college-service-student
+##      转发时候是否跳过名字  就是path的内容 true：不带fegin
+#      stripPrefix: true
+#      ribbon:
+#        NFLoadBalancerRuleClassName: com.netflix.loadbalancer.RoundRobinRule
+##      配置隔离策略为信号量
+#  ribbon-isolation-strategy: THREAD
+  #访问时候加上这个。 http://localhost:8200/gateway/fegin/hystrix/getString?key=112
+#  prefix: /gateway
+  #实际跳转时候去掉
+#  strip-prefix: true
+  # 忽略token：请求头headers 包含 token 将会被阻止请求。就是吃掉token
+#  sensitive-headers: token
+
+
