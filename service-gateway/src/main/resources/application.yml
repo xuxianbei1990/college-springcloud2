@@ -23,21 +23,28 @@ spring:
               #                redis-rate-limiter.replenishRate: 1
               #                #burstCapacity，令牌桶总容量。
               #                redis-rate-limiter.burstCapacity: 3
-      discovery:
-        locator:
-          enabled: true
+        - id: testGateWay
+          uri: https://baidu.com/
+          predicates:
+            - Path=/testGateWay/**
+#      discovery:
+#        locator:
+#          enabled: true
 
 #  redis:
 #    host: localhost
 #    port: 6379
-
+#网关负载均衡策略
+college-service-student:
+  ribbon:
+    NFLoadBalancerRuleClassName: com.netflix.loadbalancer.RandomRule
 
 eureka:
   client:
     serviceUrl:
       defaultZone: http://localhost:8571/eureka/
 
-#http://localhost:8200/actuator/routes
+#http://localhost:8200/actuator/routes  查看路由端点，排查错误
 #management:
 #  endpoints:
 #    web:

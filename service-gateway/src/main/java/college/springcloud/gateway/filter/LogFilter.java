@@ -38,7 +38,7 @@ public class LogFilter implements GlobalFilter {
         stopWatch.start();
         String trace = exchange.getRequest().getHeaders().getFirst("trace");
         ServerRequest serverRequest = new DefaultServerRequest(exchange);
-        log.info("QueryParams:{}",  serverRequest.queryParams());
+        log.info("QueryParams:{}", serverRequest.queryParams());
         return serverRequest.bodyToMono(String.class).flatMap(reqBody -> {
             //重写原始请求
             ServerHttpRequestDecorator decorator = new ServerHttpRequestDecorator(exchange.getRequest()) {
@@ -58,9 +58,14 @@ public class LogFilter implements GlobalFilter {
             //重写原始响应
             BodyHandlerServerHttpResponseDecorator responseDecorator = new BodyHandlerServerHttpResponseDecorator(
                     initBodyHandler(exchange, startTime), exchange.getResponse());
-            return chain.filter(exchange.mutate().request(decorator).response(responseDecorator).build());
+            return chain.filter(exchange.mutate().request(decorator).response(responseDecorator).build())
+                    .then(Mono.fromRunnable(() -> {
+                        stopWatch.stop();
+                        log.info(exchange.getRequest().getURI().getRawPath() + ":" + stopWatch.getTotalTimeMillis() + "ms");
+                    }));
         });
     }
+
     protected BodyHandlerFunction initBodyHandler(ServerWebExchange exchange, long startTime) {
         return (resp, body) -> {
             String trace = exchange.getRequest().getHeaders().getFirst("trace");

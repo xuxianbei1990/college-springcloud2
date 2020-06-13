@@ -46,7 +46,7 @@ public class AuthFilter implements GlobalFilter, Ordered {
      * 不需要验证token的url
      */
 //    @Value("${league.gateway.token.notRequiredAuthUrls}")
-    private String notRequiredAuthUrls = "/league/facade/order/**";
+    private String notRequiredAuthUrls = "/league/facade/order/**,/testGateWay/**";
 
 //    @Value("${league.gateway.token.closed}")
     private boolean closed = false;
@@ -167,7 +167,7 @@ public class AuthFilter implements GlobalFilter, Ordered {
     }
 
     public static void main(String[] args) {
-        System.out.println(generateJwt("1", "dd", "sky", "secret_league_admin_>S4aUItz", 1000 * 30 * 30 * 60L));
+        System.out.println(generateJwt("1", "dd", "sky", "secret_league_admin_>S4aUItz", 1000 * 60 * 24 * 30 * 60L));
         //eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIxIiwiaWF0IjoxNTkxOTUyNjUxLCJzdWIiOiJkZCIsImlzcyI6InNreSIsImV4cCI6MTU5MTk1NDQ1MX0.xqxRPXF9YCxG6wctDyweT2DFjZ7YT1QvoyFd5iIYWRI
     }
 
