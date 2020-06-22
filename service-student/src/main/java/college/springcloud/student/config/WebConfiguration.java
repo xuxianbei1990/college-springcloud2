@@ -22,7 +22,7 @@ import java.util.List;
 public class WebConfiguration implements WebMvcConfigurer {
 
     /**
-     * 结论这个是和JsonSerilize   @JsonFormat 是互斥的
+     * 结论这个是和JsonSerilize   @JsonFormat 是可以共存的
      * @param converters
      */
     @Override
