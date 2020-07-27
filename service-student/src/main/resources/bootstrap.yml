@@ -22,6 +22,10 @@ eureka:
     instance-id: ${spring.cloud.client.ip-address}:${server.port}
     # 服务调用的ip地址
     ip-address: ${spring.cloud.client.ip-address}
+    # 重定义/actuator，处理context-path
+    health-check-url: http://${spring.cloud.client.ip-address}:${server.port}${server.servlet.context-path:}/actuator/health
+    status-page-url: http://${spring.cloud.client.ip-address}:${server.port}${server.servlet.context-path:}/actuator/info
+    home-page-url: http://${spring.cloud.client.ip-address}:${server.port}${server.servlet.context-path:}/
   client:
     #刷新本地服务列表 默认30s
     registry-fetch-interval-seconds: 5

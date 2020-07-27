@@ -19,6 +19,17 @@ college-service-student:
     NFLoadBalancerRuleClassName: com.netflix.loadbalancer.ZoneAvoidanceRule
 
 ribbon:
+#  连接超时主要针对网络抖动或者某个服务响应特别慢的情况
+  #如果服务体量上去之后，最好设置为1秒
+  ConnectTimeout: 30000
+  ReadTimeOut: 30000
+  # RibbonProperties  失败重试，无论是超时还是失败
+  OkToRetryOnAllOperations: true
+  #同一实例最大重试次数，不包括首次调用
+  MaxAutoRetries: 1
+  #重试其他实例最大重试次数，不包括首次所选的server
+  MaxAutoRetriesNextServer: 1
+
   eager-load:
     #默认false 饥饿加载。主要解决第一远程调用，如果超时时间设置比较短，导致的错误。
     #主要是Ribbon进行客户端负载均衡的Client并不是在服务启动的时候就初始化好的，
@@ -30,6 +41,7 @@ ribbon:
     clients:
     #默认的请求发起是：HttpURLConnection，true：意思是：改成：HttpClinet.
     #ribbon.okhttp.enabled: true ,true:改成OKHttpClient。
+
   http:
     client:
       enabled: false
