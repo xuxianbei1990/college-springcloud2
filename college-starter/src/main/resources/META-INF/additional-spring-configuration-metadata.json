@@ -1,0 +1,15 @@
+{
+  "properties": [{
+    "name": "college.redisson.host",
+    "type": "java.lang.String",
+    "description": "redis 服务器地址",
+    "defaultValue": "localhost"
+  },
+    {
+      "name": "college.redisson.port",
+      "type": "java.lang.Integer",
+      "description": "redis 服务器端口",
+      "defaultValue": "6379"
+    }
+  ]
+}
