@@ -72,6 +72,7 @@ public class CollectionDemo {
         return lists.stream().flatMap(t -> t.stream()).collect(Collectors.toList());
     }
 
+    //去重
     static <T, K> List<T> distinctList(List<T> list, Function<? super T, ? extends K> keyMapper) {
         return list.stream().collect(Collectors.toMap(keyMapper, value -> value,
                 (existing, replacement) -> replacement)).entrySet().stream().map(t -> t.getValue()).collect(Collectors.toList());

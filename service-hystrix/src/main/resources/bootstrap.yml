@@ -13,7 +13,7 @@ eureka:
     serviceUrl:
       defaultZone: http://localhost:8571/eureka/
 
-
+#HystrixCommandProperties
 hystrix:
   command:
     default:
@@ -56,11 +56,11 @@ hystrix:
           semaphore:
             #信号量最大并发数 如果 strategy 是Semaphore 有效 我比较好奇semaphore 怎么实现的
             maxConcurrentRequests: 10
-          #隔离策略  Semaphore | Thread
+          #隔离策略  Semaphore | Thread  默认thread
           strategy: THREAD
           thread:
             interruptOnTimeout: true
-            #熔断超时时间
+            #熔断超时时间  默认也是1000ms
             timeoutInMilliseconds: 1000
 feign:
   hystrix:
