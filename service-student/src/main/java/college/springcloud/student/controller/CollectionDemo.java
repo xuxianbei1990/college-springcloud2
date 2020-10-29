@@ -9,6 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * User: xuxianbei
@@ -77,5 +78,10 @@ public class CollectionDemo {
         return list.stream().collect(Collectors.toMap(keyMapper, value -> value,
                 (existing, replacement) -> replacement)).entrySet().stream().map(t -> t.getValue()).collect(Collectors.toList());
     }
-
+    //集合拆分
+    private static <T> List<List<T>> splitList(List<T> list, Integer send){
+        int limit =(list.size() + send - 1) / send;;
+        return Stream.iterate(0, n -> n + 1).limit(limit).parallel().map(a -> list.stream().skip(a * send)
+                .limit(send).parallel().collect(Collectors.toList())).collect(Collectors.toList());
+    }
 }
