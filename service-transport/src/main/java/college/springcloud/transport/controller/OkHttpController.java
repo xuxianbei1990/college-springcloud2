@@ -7,6 +7,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Maps;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.cglib.beans.BeanMap;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpEntity;
@@ -14,6 +16,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,9 +30,25 @@ import java.util.Map;
 @RequestMapping("/okHttp")
 public class OkHttpController {
 
+//    作废：
+//    @Bean("restTemplate")
+//    public RestTemplate init() {
+//        return new RestTemplate();
+//    }
+
+    /**
+     * 链接超时：默认3000
+     */
+    @Value("${connectTimeOut:3000}")
+    private Long connectTimeOut;
+
+    @Value("${readTimeOut:2000}")
+    private Long readTimeOut;
+
     @Bean("restTemplate")
-    public RestTemplate init() {
-        return new RestTemplate();
+    public RestTemplate init(RestTemplateBuilder restTemplateBuilder) {
+        return restTemplateBuilder.setConnectTimeout(Duration.ofMillis(connectTimeOut))
+                .setReadTimeout(Duration.ofMillis(readTimeOut)).build();
     }
 
     @Bean("httpRestTemplate")

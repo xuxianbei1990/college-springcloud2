@@ -2,6 +2,8 @@ package college.springcloud.student.api;
 
 import college.springcloud.common.utils.Result;
 import college.springcloud.student.fallback.StudentApiFallBack;
+import college.springcloud.student.po.Student;
+import feign.QueryMap;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,4 +23,10 @@ public interface StudentApi {
 
     @PostMapping("/insert/param")
     Result insert(@RequestParam("param") String param);
+
+    @GetMapping("/get/Student")
+    Result getStudent(Student student);
+
+    @GetMapping("/get/Student/map")
+    Result getStudentQueryMap(@QueryMap Student student);
 }

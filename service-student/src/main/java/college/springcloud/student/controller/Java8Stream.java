@@ -60,6 +60,14 @@ public class Java8Stream {
     }
 
     public static void main(String[] args) {
+        //groupByTest();
+//  默认11个线程
+        List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9);
+        numbers.parallelStream().forEach(num->System.out.println(Thread.currentThread().getName()+">>"+num));
+    }
+
+    //分组测试
+    private static void groupByTest() {
         List<Student> students = new ArrayList<>();
         String[] strings = new String[]{"xxb", "lulu"};
         for (int i = 0; i < 10; i++) {

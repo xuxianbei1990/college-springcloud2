@@ -57,7 +57,7 @@ public class StudentController<T> implements StudentApi {
     @Autowired
     private AsyncThreadTest asyncThreadTest;
 
-    @Resource
+//    @Resource
     private AsyncTaskExecutor asyncTaskExecutor;
 
     @Override
@@ -69,6 +69,16 @@ public class StudentController<T> implements StudentApi {
     @Override
     public Result insert(String param) {
         return Result.success(param);
+    }
+
+    @Override
+    public Result getStudent(Student student) {
+        return Result.success(student);
+    }
+
+    @Override
+    public Result getStudentQueryMap(Student student) {
+        return Result.success(student);
     }
 
     @Test
