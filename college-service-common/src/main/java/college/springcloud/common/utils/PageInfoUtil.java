@@ -43,7 +43,7 @@ public class PageInfoUtil {
     @Qualifier("rpcThreadPool")
     private AsyncTaskExecutor rpcThreadPool;
 
-    @Autowired
+//    @Autowired
     private ApiRemoteService apiRemoteService;
 
 
