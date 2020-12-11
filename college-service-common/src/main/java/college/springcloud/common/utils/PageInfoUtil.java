@@ -4,6 +4,7 @@ package college.springcloud.common.utils;
 import college.springcloud.common.rpc.ApiRemoteService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import feign.Request;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
@@ -13,9 +14,14 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.task.AsyncTaskExecutor;
 import org.springframework.stereotype.Component;
 import org.springframework.util.FileCopyUtils;
+import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.io.InputStream;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -43,7 +49,7 @@ public class PageInfoUtil {
     @Qualifier("rpcThreadPool")
     private AsyncTaskExecutor rpcThreadPool;
 
-//    @Autowired
+    //    @Autowired
     private ApiRemoteService apiRemoteService;
 
 
@@ -278,6 +284,42 @@ public class PageInfoUtil {
             }
             result.put(entry.getKey(), value);
         });
+        return result;
+    }
+
+
+    public <T> T testCustomApi() {
+        String imgName = "xxx.jpg";
+        return customApi(ApiRemoteService.class, apiRemoteService, "views", imgName);
+    }
+
+    /**
+     * 动态配置rpc的超时时间
+     * 半成品
+     *
+     * @param interfaceObj
+     */
+    public <T> T customApi(Class clazz, Object interfaceObj, String methodName, Object... args) {
+        Field field = ReflectionUtils.findField(Proxy.class, "h");
+        field.setAccessible(true);
+        InvocationHandler h = (InvocationHandler) ReflectionUtils.getField(field, interfaceObj);
+        Method method = ReflectionUtils.findMethod(clazz, methodName, objectToClass(args));
+        Request.Options options = new Request.Options(5000, TimeUnit.MILLISECONDS, 5000, TimeUnit.MILLISECONDS, true);
+        List<Object> objects = new ArrayList();
+        objects.addAll(Arrays.asList(args));
+        objects.add(options);
+        try {
+            return (T) h.invoke(interfaceObj, method, objects.toArray());
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+        }
+        return null;
+    }
+
+    private Class[] objectToClass(Object[] args) {
+        List<Object> list = Arrays.asList(args);
+        Class[] result = new Class[list.size()];
+        result = list.stream().map(o -> o.getClass()).collect(Collectors.toList()).toArray(result);
         return result;
     }
 
