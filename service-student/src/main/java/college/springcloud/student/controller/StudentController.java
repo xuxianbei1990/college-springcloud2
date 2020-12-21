@@ -13,6 +13,7 @@ import college.springcloud.student.po.StudentCopy;
 import college.springcloud.student.po.StudentSerialize;
 import college.springcloud.student.service.AsyncThreadTest;
 import college.springcloud.student.service.StudentServiceImpl;
+import feign.Request;
 import io.swagger.annotations.ApiOperation;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,7 +68,7 @@ public class StudentController<T> implements StudentApi {
     }
 
     @Override
-    public Result insert(String param) {
+    public Result insert(String param, Request.Options options) {
         return Result.success(param);
     }
 

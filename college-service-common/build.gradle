@@ -21,7 +21,6 @@ dependencies {
     compile('com.alibaba:fastjson:1.2.58')
     compile('org.apache.commons:commons-lang3:3.8.1')
     compile('commons-io:commons-io:2.4')
-    compile('io.github.openfeign:feign-core:10.10.1')
     compile('org.aspectj:aspectjrt:1.9.2')
     compile('org.aspectj:aspectjweaver:1.9.2')
     compile("com.squareup.okhttp3:okhttp:4.2.0")
@@ -30,6 +29,7 @@ dependencies {
     //解决线程池 线程之间传值问题
     compile("com.alibaba:transmittable-thread-local:2.11.5")
     compile("com.github.pagehelper:pagehelper:5.1.8")
+    compile('io.github.openfeign:feign-core:10.1.0')
     //excel 导出
     compile group: 'cn.afterturn', name: 'easypoi-base', version: '4.1.0'
     compile group: 'cn.afterturn', name: 'easypoi-web', version: '4.1.0'

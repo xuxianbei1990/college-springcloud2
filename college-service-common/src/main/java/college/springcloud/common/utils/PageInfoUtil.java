@@ -304,7 +304,7 @@ public class PageInfoUtil {
         field.setAccessible(true);
         InvocationHandler h = (InvocationHandler) ReflectionUtils.getField(field, interfaceObj);
         Method method = ReflectionUtils.findMethod(clazz, methodName, objectToClass(args));
-        Request.Options options = new Request.Options(5000, TimeUnit.MILLISECONDS, 5000, TimeUnit.MILLISECONDS, true);
+        Request.Options options = new Request.Options(5000, 5000, true);
         List<Object> objects = new ArrayList();
         objects.addAll(Arrays.asList(args));
         objects.add(options);

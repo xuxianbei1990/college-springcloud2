@@ -15,7 +15,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 @EnableDiscoveryClient
 //这里说明服务还是调用方触发，只不过服务的代码改为服务发布方编写
 //好处就是：控制变化。这样调用方就不用关心服务发布方的内部变化的，增加代码内聚
-@EnableFeignClients("college.springcloud.*.api")
+@EnableFeignClients("college.springcloud.student.api")
 public class TeacherApplication {
 
     public static void main(String[] args) {

@@ -4,6 +4,7 @@ import college.springcloud.common.utils.Result;
 import college.springcloud.student.api.StudentApi;
 import college.springcloud.student.enums.StudentEnum;
 import college.springcloud.student.po.Student;
+import feign.Request;
 
 /**
  * User: EDZ
@@ -18,7 +19,7 @@ public class StudentApiFallBack implements StudentApi {
     }
 
     @Override
-    public Result insert(String param) {
+    public Result insert(String param, Request.Options options) {
         return null;
     }
 

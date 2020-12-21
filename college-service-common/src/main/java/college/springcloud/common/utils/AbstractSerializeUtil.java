@@ -9,7 +9,7 @@ public abstract class AbstractSerializeUtil implements Serializable {
 
 
 	private final String SERIALIZE_NAME = "serialize_" + this.getClass().getSimpleName().split("\\$")[0];
-	private final String FILE_PATH = System.getProperty("java.io.tmpdir") + "/serialize";
+	private final String FILE_PATH = System.getProperty("java.io.tmpdir") + "\\serialize";
 
 
 	{

@@ -1,6 +1,7 @@
 package college.springcloud.teacher.controller;
 
 import college.springcloud.common.utils.Result;
+import college.springcloud.common.utils.RpcConfigUtil;
 import college.springcloud.student.api.StudentApi;
 import college.springcloud.student.po.Student;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,7 +35,8 @@ public class TeacherController {
     //测试结果还是需要写。也就是说OpenFegin只是扩展了Rest风格
     @PostMapping("/test/student/insert/param")
     public Result getInsertParam() {
-        return studentApi.insert("xxb");
+        RpcConfigUtil.setOnceTimeByMilliseconds(1000, 1000);
+        return studentApi.insert("xxb", RpcConfigUtil.getOptions());
     }
 
     @PostMapping("/test/student/query")

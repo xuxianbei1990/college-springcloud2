@@ -16,7 +16,8 @@ eureka:
   client:
     serviceUrl:
       defaultZone: http://localhost:8571/eureka/
-
+fdfs:
+  xy_group: sdfsfa
 # 从Eureka中找到Config服务并读取配置
 spring:
   application:
