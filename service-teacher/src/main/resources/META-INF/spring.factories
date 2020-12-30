@@ -1,0 +1,2 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  college.springcloud.teacher.config.ClassA,college.springcloud.teacher.config.ClassB
