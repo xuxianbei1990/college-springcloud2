@@ -8,6 +8,7 @@ import com.netflix.loadbalancer.ZoneAvoidanceRule;
  * Date: 2020/12/29
  * Time: 17:15
  * Version:V1.0
+ * 失败了，过来一段时间 Server获取不到了
  */
 public class PrintZoneAvoidanceRule extends ZoneAvoidanceRule {
     @Override

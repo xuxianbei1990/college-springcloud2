@@ -4,6 +4,7 @@ import college.springcloud.common.enums.IResultStatus;
 import college.springcloud.common.enums.ResultStatus;
 import college.springcloud.common.exception.BizException;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.ToString;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -23,6 +24,18 @@ public class Result<T> implements Serializable {
     private boolean success;
     @ApiModelProperty("编码")
     private String code;
+
+    @Override
+    public String toString() {
+        return "Result{" +
+                "success=" + success +
+                ", code='" + code + '\'' +
+                ", msg='" + msg + '\'' +
+                ", data=" + data +
+                ", extra=" + extra +
+                '}';
+    }
+
     @ApiModelProperty("消息")
     private String msg;
     @ApiModelProperty("数据")

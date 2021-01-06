@@ -1,5 +1,6 @@
 package college.springcloud.teacher.controller;
 
+import college.springcloud.common.annotation.Idempotent;
 import college.springcloud.common.utils.Result;
 import college.springcloud.common.utils.RpcConfigUtil;
 import college.springcloud.student.api.StudentApi;
@@ -26,6 +27,7 @@ public class TeacherController {
     @Resource
     StudentApi studentApi;
 
+    @Idempotent
     @GetMapping("/get/test/student")
     public Result getTestStudent() {
         return studentApi.get();

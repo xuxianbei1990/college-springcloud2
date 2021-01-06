@@ -4,7 +4,7 @@ import college.springcloud.common.plug.log.AbstractLog;
 import college.springcloud.common.plug.log.handler.RequestParameterInterceptor;
 import college.springcloud.common.plug.log.handler.ResponseParameterInterceptor;
 import college.springcloud.common.plug.log.level.TraceLog;
-import college.springcloud.common.utils.Iptool;
+import college.springcloud.common.utils.IpUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -137,13 +137,13 @@ public class FilterConfig {
             } catch (Throwable e) {
                 // 增加sql
                 if (e instanceof SQLException) {
-                    traceLog.log(CLASSNAME, "IP={} 执行方法={} sql 异常", Iptool.getRealIp(request), request.getRequestURI(),
+                    traceLog.log(CLASSNAME, "IP={} 执行方法={} sql 异常", IpUtil.getRealIp(request), request.getRequestURI(),
                             e);
 
                     // 降级操作
 
                 } else {
-                    traceLog.log(CLASSNAME, "IP={} 方法={} 全局异常", Iptool.getRealIp(request), request.getRequestURI(), e);
+                    traceLog.log(CLASSNAME, "IP={} 方法={} 全局异常", IpUtil.getRealIp(request), request.getRequestURI(), e);
                 }
 
                 // 统一返回错误处理

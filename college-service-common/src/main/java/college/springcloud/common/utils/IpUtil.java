@@ -14,9 +14,9 @@ import java.util.Enumeration;
  * 获取真实Ip
  */
 @Slf4j
-public class Iptool {
+public class IpUtil {
 
-    private Iptool() {
+    private IpUtil() {
     }
 
     private static boolean isNotEmpty(String str) {
