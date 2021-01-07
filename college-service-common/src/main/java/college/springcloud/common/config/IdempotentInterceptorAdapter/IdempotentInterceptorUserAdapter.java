@@ -78,7 +78,7 @@ public class IdempotentInterceptorUserAdapter extends HandlerInterceptorAdapter 
                 HandlerMethod handlerMethod = (HandlerMethod) mappedHandler.getHandler();
                 if (customIdempotent(handlerMethod)) {
                     String key = getKey(request);
-                    boolean result = cacheLock.tryLock(key, Thread.currentThread().getName(), timeOut, TimeUnit.SECONDS);
+                    boolean result = cacheLock.tryLock(key, cacheLock.defaultValue(), timeOut, TimeUnit.SECONDS);
                     if (!result) {
                         errorMsg(response);
                     }
@@ -129,7 +129,7 @@ public class IdempotentInterceptorUserAdapter extends HandlerInterceptorAdapter 
      */
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
-        cacheLock.releaseLock(getKey(request), Thread.currentThread().getName());
+        cacheLock.releaseLock(getKey(request), cacheLock.defaultValue());
         super.afterCompletion(request, response, handler, ex);
     }
 }

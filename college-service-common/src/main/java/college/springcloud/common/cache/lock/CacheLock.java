@@ -1,5 +1,7 @@
 package college.springcloud.common.cache.lock;
 
+import org.apache.logging.log4j.util.Strings;
+
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -41,5 +43,9 @@ public interface CacheLock {
      * @return
      */
     boolean tryLockTimes(String key, String value, int times, long expiring);
+
+    default String defaultValue() {
+        return Strings.EMPTY;
+    }
 
 }
