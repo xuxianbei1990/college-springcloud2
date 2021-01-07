@@ -26,7 +26,7 @@ public class RedisLock implements CacheLock {
 //    private RedisTemplate<String, Object> redisTemplate;
 
     @Override
-    public boolean tryLock(String key, String value, long expiring) {
+    public boolean tryLock(String key, String value, long expiring, TimeUnit timeUnit) {
 //        Boolean result = redisTemplate.execute((RedisCallback<Boolean>) redisConnection ->
 //                redisConnection.set(SafeEncoder.encode(key), SafeEncoder.encode(value), Expiration.seconds(expiring),
 //                        RedisStringCommands.SetOption.SET_IF_ABSENT));
@@ -48,7 +48,7 @@ public class RedisLock implements CacheLock {
         times = times <= 0 ? 1 : times;
         times = times > 10 ? 10 : times;
         for (int i = 0; i < times; i++) {
-            boolean getLock = this.tryLock(key, value, expiring);
+            boolean getLock = this.tryLock(key, value, expiring, TimeUnit.MILLISECONDS);
             if (getLock) {
                 return true;
             }

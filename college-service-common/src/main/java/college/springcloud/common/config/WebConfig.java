@@ -1,6 +1,6 @@
 package college.springcloud.common.config;
 
-import college.springcloud.common.config.IdempotentInterceptorAdapter.IdempotentInterceptorAdapter;
+import college.springcloud.common.config.IdempotentInterceptorAdapter.IdempotentInterceptorUserAdapter;
 import college.springcloud.common.interceptor.TokenInterceptor;
 import college.springcloud.common.interceptor.message.MessageInterceptor;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -50,7 +50,7 @@ public class WebConfig implements WebMvcConfigurer {
     private TokenInterceptor tokenInterceptor;
 
     @Autowired
-    private IdempotentInterceptorAdapter idempotentInterceptorAdapter;
+    private IdempotentInterceptorUserAdapter idempotentInterceptorAdapter;
 
     /**
      * 添加静态资源--过滤swagger-api (开源的在线API文档)

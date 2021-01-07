@@ -1,5 +1,7 @@
 package college.springcloud.common.cache.lock;
 
+import java.util.concurrent.TimeUnit;
+
 /**
  * 分布式锁
  *
@@ -18,7 +20,7 @@ public interface CacheLock {
      * @param expiring 单位秒
      * @return
      */
-    boolean tryLock(String key, String value, long expiring);
+    boolean tryLock(String key, String value, long expiring, TimeUnit timeUnit);
 
     /**
      * 解锁
