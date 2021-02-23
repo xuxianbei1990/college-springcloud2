@@ -18,6 +18,7 @@ import org.springframework.context.annotation.Configuration;
 
 import java.lang.reflect.Method;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author nick
@@ -41,6 +42,7 @@ public class FormCommitAspect {
     public FormCommitAspect() {
     }
 
+    //@Pointcut("execution(* com.chenfan.sample.util.PageInfoUtil.*(..))")
     @Pointcut("execution(* college.springcloud.*.controller..*.*(..))")
     public void formCommitCut() {
 
@@ -61,7 +63,7 @@ public class FormCommitAspect {
             MethodSignature signature = (MethodSignature) point.getSignature();
             Method method = signature.getMethod();
             //验证注解
-            if (Objects.isNull(method.getAnnotation(Form.class))) {
+            if (!method.isAnnotationPresent(Form.class)) {
                 return;
             }
             // 拿到token
@@ -75,7 +77,7 @@ public class FormCommitAspect {
                 String key = clzName + methodName + userId;
                 String lock = FORM_LOCK_PREFIX + key.hashCode();
                 if (isLock) {
-                    if (!cacheLock.tryLock(lock, token, LOCK_EXPIRE_SECOND_TIME)) {
+                    if (!cacheLock.tryLock(lock, token, LOCK_EXPIRE_SECOND_TIME, TimeUnit.SECONDS)) {
                         log.error("表单重复提交,class===>{},method===>{},userId:{}", clzName, methodName, userId);
                         throw new RuntimeException("FORM_COMMIT_REPEAT");
                     }
