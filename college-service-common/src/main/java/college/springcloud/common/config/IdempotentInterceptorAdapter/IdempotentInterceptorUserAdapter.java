@@ -29,6 +29,7 @@ import java.util.concurrent.TimeUnit;
  * Time: 10:04
  * Version:V1.0
  */
+//@RefreshScope
 @Component
 public class IdempotentInterceptorUserAdapter extends HandlerInterceptorAdapter {
 
@@ -96,7 +97,8 @@ public class IdempotentInterceptorUserAdapter extends HandlerInterceptorAdapter 
      * @return
      */
     private boolean customIdempotent(HandlerMethod handlerMethod) {
-        return custom == 0 || (custom == 1 && handlerMethod.getMethod().isAnnotationPresent(Idempotent.class));
+        return (custom == 0 && !handlerMethod.getMethod().isAnnotationPresent(NotIdempotent.class))
+                || (custom == 1 && handlerMethod.getMethod().isAnnotationPresent(Idempotent.class));
     }
 
     private void errorMsg(HttpServletResponse response) {
