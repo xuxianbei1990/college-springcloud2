@@ -1,6 +1,7 @@
 package college.springcloud.common.config.IdempotentInterceptorAdapter;
 
 import college.springcloud.common.annotation.Idempotent;
+import college.springcloud.common.annotation.NotIdempotent;
 import college.springcloud.common.cache.lock.CacheLock;
 import college.springcloud.common.utils.IpUtil;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,0 +1,9 @@
+server:
+  port: ${port:8099}
+  servlet:
+    context-path: /
+logging:
+  level:
+    college.springcloud.log: DEBUG
+  file:
+    name: logs/service-log.log

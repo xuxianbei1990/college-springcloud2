@@ -1,6 +1,6 @@
 package college.springcloud.common.utils;
 
-import college.springcloud.common.plug.hot.ClassHotStart;
+import college.springcloud.log.plug.hot.ClassHotStart;
 
 import java.net.URL;
 

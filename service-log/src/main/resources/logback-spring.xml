@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <property name="maxQueueSize" value="512"/>
+    <property name="maxFlushTime" value="1000"/>
+    <!--    <property name="logstash" value="10.228.81.161:15044"/>-->
+    <!-- 日志输出格式 -->
+    <property name="FILE_LOG_PATTERN" value="%d{MM-dd  HH:mm:ss.SSS}  %-5level -|%X{traceId}|- %msg%n"/>
+    <property name="CONSOLE_LOG_PATTERN"
+              value="%d{MM-dd  HH:mm:ss.SSS}  %clr(%-5level) -|%X{traceId}|- [%logger{0}] [%thread] => %msg%n"/>
+    <!--spring的yml读取-->
+    <springProperty scope="context" name="log.name" defaultValue="log" source="spring.application.name"/>
+    <springProperty scope="context" name="log.project" defaultValue="log" source="spring.application.name"/>
+    <springProperty scope="context" name="log.path" defaultValue="./logs/" source="logging.file.path"/>
+    <springProperty scope="context" name="totalEnabledSize" defaultValue="2GB" source="logging.file.total-size-cap"/>
+    <springProperty scope="context" name="maxHistory" defaultValue="15" source="logging.file.max-history"/>
+    <springProperty scope="context" name="maxFileSize" defaultValue="10MB" source="logging.file.max-size"/>
+
+    <!--控制台输出记录-->
+    <appender name="CONSOLE_FILE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!--INFO文件记录-->
+    <appender name="INFO_FILE" class="college.springcloud.log.handler.CustomRollingFileAppender">
+        <file>${log.path}${log.project}/${log.name}-info.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>
+                ${log.path}/${log.project}/%d{yyyy-MM}/%d{dd}/info/${log.name}-info.%d{yyyy-MM-dd}.%i.log.zip
+            </fileNamePattern>
+            <maxHistory>${maxHistory}</maxHistory>
+            <totalSizeCap>${totalEnabledSize}</totalSizeCap>
+            <timeBasedFileNamingAndTriggeringPolicy
+                    class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>${maxFileSize}</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${FILE_LOG_PATTERN}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!--WARN文件记录-->
+    <appender name="WARN_FILE" class="college.springcloud.log.handler.CustomRollingFileAppender">
+        <file>${log.path}${log.project}/${log.name}-warn.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>
+                ${log.path}/${log.project}/%d{yyyy-MM}/%d{dd}/warn/${log.name}-warn.%d{yyyy-MM-dd}.%i.log.zip
+            </fileNamePattern>
+            <maxHistory>${maxHistory}</maxHistory>
+            <totalSizeCap>${totalEnabledSize}</totalSizeCap>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>${maxFileSize}</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${FILE_LOG_PATTERN}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+
+    <!--ERROR文件记录-->
+
+    <appender name="ERROR_FILE"
+              class="college.springcloud.log.handler.CustomRollingFileAppender">
+        <file>${log.path}${log.project}/${log.name}-error.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>
+                ${log.path}/${log.project}/%d{yyyy-MM}/%d{dd}/error/${log.name}-error.%d{yyyy-MM-dd}.%i.log.zip
+            </fileNamePattern>
+            <maxHistory>${maxHistory}</maxHistory>
+            <totalSizeCap>${totalEnabledSize}</totalSizeCap>
+            <timeBasedFileNamingAndTriggeringPolicy
+                    class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>${maxFileSize}</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${FILE_LOG_PATTERN}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+
+    <!--SYSTEM文件记录-->
+    <appender name="SYSTEM_FILE"
+              class="college.springcloud.log.handler.CustomRollingFileAppender">
+        <file>${log.path}${log.project}/${log.name}-system.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>
+                ${log.path}/${log.project}/%d{yyyy-MM}/%d{dd}/system/${log.name}-system.%d{yyyy-MM-dd}.%i.log.zip
+            </fileNamePattern>
+            <maxHistory>${maxHistory}</maxHistory>
+            <totalSizeCap>${totalEnabledSize}</totalSizeCap>
+            <timeBasedFileNamingAndTriggeringPolicy
+                    class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>${maxFileSize}</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${FILE_LOG_PATTERN}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!--SYSTEM系统报警-->
+    <appender name="SYSTEM_ALARM" class="college.springcloud.log.alarm.AlarmLog">
+        <!--如果只是想要 Error 级别的日志，那么需要过滤一下，默认是 info 级别的，ThresholdFilter-->
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>TRACE</level>
+        </filter>
+
+    </appender>
+
+    <!--TOTAL文件记录-->
+    <appender name="TOTAL_FILE"
+              class="college.springcloud.log.handler.CustomRollingFileAppender">
+        <file>${log.path}${log.project}/${log.name}.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>
+                ${log.path}/${log.project}/%d{yyyy-MM}/%d{dd}/total/${log.name}.%d{yyyy-MM-dd}.%i.log.zip
+            </fileNamePattern>
+            <maxHistory>${maxHistory}</maxHistory>
+            <totalSizeCap>${totalEnabledSize}</totalSizeCap>
+            <timeBasedFileNamingAndTriggeringPolicy
+                    class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>${maxFileSize}</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${FILE_LOG_PATTERN}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+
+    <!--基础信息对接-->
+    <appender name="ROOT_LOG" class="college.springcloud.log.plug.log.RootLogBackLogAppender">
+    </appender>
+
+    <!--INFO异步文件输出-->
+    <appender name="INFO_FILE_ASYNC" class="ch.qos.logback.classic.AsyncAppender">
+        <queueSize>${maxQueueSize}</queueSize>
+        <discardingThreshold>0</discardingThreshold>
+        <maxFlushTime>${maxFlushTime}</maxFlushTime>
+        <neverBlock>true</neverBlock>
+        <includeCallerData>true</includeCallerData>
+        <appender-ref ref="INFO_FILE"/>
+    </appender>
+
+
+    <!--WARN异步文件输出-->
+    <appender name="WARN_FILE_ASYNC" class="ch.qos.logback.classic.AsyncAppender">
+        <queueSize>${maxQueueSize}</queueSize>
+        <discardingThreshold>0</discardingThreshold>
+        <maxFlushTime>${maxFlushTime}</maxFlushTime>
+        <neverBlock>true</neverBlock>
+        <includeCallerData>true</includeCallerData>
+        <appender-ref ref="WARN_FILE"/>
+    </appender>
+
+    <!--ERROR异步文件输出-->
+    <appender name="ERROR_FILE_ASYNC" class="ch.qos.logback.classic.AsyncAppender">
+        <queueSize>${maxQueueSize}</queueSize>
+        <discardingThreshold>0</discardingThreshold>
+        <maxFlushTime>${maxFlushTime}</maxFlushTime>
+        <neverBlock>true</neverBlock>
+        <includeCallerData>true</includeCallerData>
+        <appender-ref ref="ERROR_FILE"/>
+    </appender>
+
+    <!--SYSTEM异步文件输出-->
+    <appender name="SYSTEM_FILE_ASYNC" class="ch.qos.logback.classic.AsyncAppender">
+        <queueSize>${maxQueueSize}</queueSize>
+        <discardingThreshold>0</discardingThreshold>
+        <maxFlushTime>${maxFlushTime}</maxFlushTime>
+        <neverBlock>true</neverBlock>
+        <includeCallerData>true</includeCallerData>
+        <appender-ref ref="SYSTEM_FILE"/>
+    </appender>
+
+    <!--TOTAL异步文件输出-->
+    <appender name="TOTAL_FILE_ASYNC" class="ch.qos.logback.classic.AsyncAppender">
+        <queueSize>${maxQueueSize}</queueSize>
+        <discardingThreshold>0</discardingThreshold>
+        <maxFlushTime>${maxFlushTime}</maxFlushTime>
+        <neverBlock>true</neverBlock>
+        <includeCallerData>true</includeCallerData>
+        <appender-ref ref="TOTAL_FILE"/>
+    </appender>
+
+
+    <!--LOGSTASH_URL-->
+    <appender name="LOGSTASH_URL" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+        <destination>${logstash}</destination>
+        <encoder charset="UTF-8" class="net.logstash.logback.encoder.LogstashEncoder"/>
+    </appender>
+
+
+    <!--加载每个项目的日志-->
+    <include resource="logback_extend.xml"></include>
+
+    <!--info日志级别-->
+    <logger name="com.chenfan.ccp.plug.log.info" level="INFO" additivity="false">
+        <appender-ref ref="INFO_FILE_ASYNC"/>
+        <appender-ref ref="LOGSTASH_URL"/>
+    </logger>
+
+    <!--warn日志级别-->
+    <logger name="com.chenfan.ccp.plug.log.warn" level="WARN" additivity="false">
+        <appender-ref ref="WARN_FILE_ASYNC"/>
+        <appender-ref ref="LOGSTASH_URL"/>
+    </logger>
+
+    <!--error日志级别-->
+    <logger name="com.chenfan.ccp.plug.log.error" level="ERROR" additivity="false">
+        <appender-ref ref="ERROR_FILE_ASYNC"/>
+        <appender-ref ref="LOGSTASH_URL"/>
+    </logger>
+
+    <!--系统ERROR日志级别-->
+    <logger name="com.chenfan.ccp.plug.log.trace" level="TRACE" additivity="false">
+        <appender-ref ref="SYSTEM_FILE_ASYNC"/>
+        <appender-ref ref="CONSOLE_FILE"/>
+        <appender-ref ref="SYSTEM_ALARM"/>
+        <appender-ref ref="LOGSTASH_URL"/>
+    </logger>
+
+    <!--TOTAL日志级别-->
+    <logger name="com.chenfan.ccp.plug.log.total" level="DEBUG" additivity="false">
+        <appender-ref ref="TOTAL_FILE_ASYNC"/>
+    </logger>
+
+
+    <!--根日志级别-->
+    <root level="INFO">
+        <appender-ref ref="ROOT_LOG"/>
+        <appender-ref ref="CONSOLE_FILE"/>
+
+    </root>
+
+
+</configuration>

@@ -1,6 +1,6 @@
 package college.springcloud.common.config;
 
-import college.springcloud.common.plug.hot.ClassHotApplicationListener;
+import college.springcloud.log.plug.hot.ClassHotApplicationListener;
 import org.springframework.context.annotation.Bean;
 
 /**

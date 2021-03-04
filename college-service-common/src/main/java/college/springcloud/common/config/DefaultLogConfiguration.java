@@ -1,8 +1,8 @@
 package college.springcloud.common.config;
 
-import college.springcloud.common.plug.log.config.FeignInterceptorConfig;
-import college.springcloud.common.plug.log.config.FilterConfig;
-import college.springcloud.common.plug.log.config.LogUrlConfig;
+import college.springcloud.log.plug.log.config.FeignInterceptorConfig;
+import college.springcloud.log.plug.log.config.FilterConfig;
+import college.springcloud.log.plug.log.config.LogUrlConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

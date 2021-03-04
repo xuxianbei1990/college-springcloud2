@@ -1,6 +1,7 @@
 package college.springcloud;
 
 import college.springcloud.spring.BeanComponentImport.AppConfig;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.util.Arrays;
@@ -11,6 +12,7 @@ import java.util.Arrays;
  * Time: 15:53
  * Version:V1.0
  */
+@Slf4j
 public class MySpringApplicaiton {
     public static void main(String[] args) {
         AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext(AppConfig.class);
