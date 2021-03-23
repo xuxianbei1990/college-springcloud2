@@ -3,14 +3,16 @@ package ddd.bookingms.cargotracker.bookingms.domain.model.aggregates;
 import ddd.bookingms.cargotracker.bookingms.domain.model.commands.BookCargoCommand;
 import ddd.bookingms.cargotracker.bookingms.domain.model.entities.Location;
 import ddd.bookingms.cargotracker.bookingms.domain.model.valueobjects.*;
+import ddd.bookingms.cargotracker.shareddomain.event.CargoBookedEvent;
+import ddd.bookingms.cargotracker.shareddomain.event.CargoBookedEventData;
+import ddd.bookingms.cargotracker.shareddomain.event.CargoRoutedEvent;
+import ddd.bookingms.cargotracker.shareddomain.event.CargoRoutedEventData;
 import lombok.Data;
-import org.springframework.beans.BeanUtils;
-import org.springframework.context.annotation.Bean;
-
-import java.util.Objects;
+import org.springframework.data.domain.AbstractAggregateRoot;
 
 /**
  * 货物的聚合根
+ * 这里无法存储。因为mybatis无法直接使用。
  *
  * @author: xuxianbei
  * Date: 2021/3/21
@@ -18,19 +20,38 @@ import java.util.Objects;
  * Version:V1.0
  */
 @Data
-public class Cargo {
+public class Cargo extends AbstractAggregateRoot<Cargo> {
 
+    private Long id;
 
+    /**
+     * 预定信息
+     */
     private BookingId bookingId;
 
+    /**
+     * 出发地
+     */
     private Location origin;
 
+    /**
+     * 传送
+     */
     private Delivery delivery;
 
+    /**
+     * 货物旅程
+     */
     private CargoItinerary itinerary;
 
+    /**
+     * 预定金额
+     */
     private BookingAmount bookingAmount;
 
+    /**
+     * 路由说明
+     */
     private RouteSpecification routeSpecification;
 
 
@@ -51,6 +72,15 @@ public class Cargo {
 
         this.delivery = Delivery.derivedFrom(this.routeSpecification,
                 this.itinerary, LastCargoHandledEvent.EMPTY);
+        addDomainEvent(new CargoBookedEvent(new CargoBookedEventData(this.bookingId.getBookingId())));
     }
 
+    public void assignToRoute(CargoItinerary cargoItinerary) {
+        this.itinerary = cargoItinerary;
+        addDomainEvent(new CargoRoutedEvent(new CargoRoutedEventData(this.bookingId.getBookingId())));
+    }
+
+    public void addDomainEvent(Object event) {
+        registerEvent(event);
+    }
 }

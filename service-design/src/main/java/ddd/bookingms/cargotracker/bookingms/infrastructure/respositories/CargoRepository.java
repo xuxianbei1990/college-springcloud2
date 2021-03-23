@@ -1,5 +1,6 @@
 package ddd.bookingms.cargotracker.bookingms.infrastructure.respositories;
 
+import ddd.bookingms.cargotracker.bookingms.domain.model.aggregates.BookingId;
 import ddd.bookingms.cargotracker.bookingms.domain.model.aggregates.Cargo;
 
 /**
@@ -10,4 +11,6 @@ import ddd.bookingms.cargotracker.bookingms.domain.model.aggregates.Cargo;
  */
 public interface CargoRepository {
     void save(Cargo cargo);
+
+    Cargo findByBookingId(BookingId bookingId);
 }

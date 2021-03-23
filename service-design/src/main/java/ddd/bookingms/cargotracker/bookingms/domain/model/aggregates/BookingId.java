@@ -11,4 +11,13 @@ import lombok.Data;
 @Data
 public class BookingId {
     private String bookingId;
+
+    public BookingId() {
+
+    }
+
+    public BookingId(String bookingId) {
+        this.bookingId = bookingId;
+    }
+
 }

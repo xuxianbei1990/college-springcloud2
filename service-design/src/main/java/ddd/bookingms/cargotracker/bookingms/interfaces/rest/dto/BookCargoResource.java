@@ -10,6 +10,7 @@ import java.time.LocalDate;
  * Date: 2021/3/21
  * Time: 18:19
  * Version:V1.0
+ * 这个可以理解为DTO
  */
 @Data
 public class BookCargoResource {

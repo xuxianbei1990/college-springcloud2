@@ -1,8 +1,11 @@
 package ddd.bookingms.cargotracker.bookingms.application.internal.commandservices;
 
+import ddd.bookingms.cargotracker.bookingms.application.internal.outboundservices.acl.ExternalCargoRoutingService;
 import ddd.bookingms.cargotracker.bookingms.domain.model.aggregates.BookingId;
 import ddd.bookingms.cargotracker.bookingms.domain.model.aggregates.Cargo;
 import ddd.bookingms.cargotracker.bookingms.domain.model.commands.BookCargoCommand;
+import ddd.bookingms.cargotracker.bookingms.domain.model.commands.RouteCargoCommand;
+import ddd.bookingms.cargotracker.bookingms.domain.model.valueobjects.CargoItinerary;
 import ddd.bookingms.cargotracker.bookingms.infrastructure.respositories.CargoRepository;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +23,8 @@ public class CargoBookingCommandService {
 
     private CargoRepository cargoRepository;
 
+    private ExternalCargoRoutingService externalCargoRoutingService;
+
     /**
      * 货物预定
      *
@@ -34,5 +39,18 @@ public class CargoBookingCommandService {
         BookingId bookingId = new BookingId();
         bookingId.setBookingId(bookCargoCommand.getBookingId());
         return bookingId;
+    }
+
+    public void assignRouteToCargo(RouteCargoCommand routeCargoCommand) {
+        System.out.println("Route Cargo command" + routeCargoCommand.getCargoBookingId());
+
+        Cargo cargo = cargoRepository.findByBookingId(
+                new BookingId(routeCargoCommand.getCargoBookingId()));
+
+        //通过Http获取货物行程
+        CargoItinerary cargoItinerary = externalCargoRoutingService.fetchRouteForSpecification(cargo.getRouteSpecification());
+
+        cargo.assignToRoute(cargoItinerary);
+        cargoRepository.save(cargo);
     }
 }
