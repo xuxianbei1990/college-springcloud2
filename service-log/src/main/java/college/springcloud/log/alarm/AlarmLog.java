@@ -37,29 +37,18 @@ public class AlarmLog extends AppenderBase<ILoggingEvent> {
             //去除系统中的线程影响
             String key = eventObject.getFormattedMessage().replaceAll(eventObject.getThreadName(), EMPTY);
             Integer count = alarmCache.merge(key, DEFAULT_ALARM_COUNT, Integer::sum);
-
             if (count == MAX_ALARM_COUNT) {
                 IThrowableProxy throwableProxy = eventObject.getThrowableProxy();
                 String msg;
                 if (throwableProxy != null) {
-                    msg = "**" + eventObject.getFormattedMessage() + "**\n###### " + throwableProxy.getMessage() + "\n" + Arrays.stream(throwableProxy.getStackTraceElementProxyArray()).map(String::valueOf).
-
-                            collect(Collectors.joining("\n- "));
+                    msg = "**" + eventObject.getFormattedMessage() + "**\n###### " + throwableProxy.getMessage() + "\n" +
+                            Arrays.stream(throwableProxy.getStackTraceElementProxyArray()).map(String::valueOf).collect(Collectors.joining("\n- "));
                 } else {
                     msg = "**" + eventObject.getFormattedMessage() + "**";
                 }
-
                 executorService.execute(() -> PushUtil.getInstance().send(PushUtil.PushType.DINGDING, EMPTY, msg));
                 alarmCache.put(key, Integer.MIN_VALUE);
             }
         }
-    }
-
-    public static void main(String[] args) {
-        Map<String, Integer> alarmCache = new ConcurrentHashMap<>();
-        alarmCache.put("1", 1);
-        alarmCache.merge("1", 2, Integer::sum);
-        System.out.println(alarmCache);
-
     }
 }

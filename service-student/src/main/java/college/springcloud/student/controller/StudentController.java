@@ -6,6 +6,7 @@ import college.springcloud.common.utils.Result;
 import college.springcloud.common.utils.ResultUtils;
 import college.springcloud.student.annotation.TeacherRole;
 import college.springcloud.student.api.StudentApi;
+import college.springcloud.student.dto.ExportMultyMergeVo;
 import college.springcloud.student.dto.ExportVo;
 import college.springcloud.student.dto.StudentDto;
 import college.springcloud.student.po.Student;
@@ -24,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -58,7 +60,7 @@ public class StudentController<T> implements StudentApi {
     @Autowired
     private AsyncThreadTest asyncThreadTest;
 
-//    @Resource
+    //    @Resource
     private AsyncTaskExecutor asyncTaskExecutor;
 
     @Override
@@ -207,9 +209,42 @@ public class StudentController<T> implements StudentApi {
     }
 
     @ApiOperation("导出")
-    @GetMapping("/export")
+    @GetMapping("/export/big")
     public void export(@Validated StudentDto studentDto, HttpServletResponse response) {
         ExcelUtils.exportExcelByEasyPoi("采购单", studentDto, ExportVo.class, studentService, response);
+    }
+
+    @ApiOperation("导出")
+    @GetMapping("/export/cellMerge")
+    public void exportCellMerge(@Validated StudentDto studentDto, HttpServletResponse response) {
+
+        List<ExportMultyMergeVo> exportVos = new ArrayList<>();
+        for (int i = 0; i < 100; i++) {
+            ExportMultyMergeVo exportVo = factoryNewExcport();
+            exportVos.add(exportVo);
+        }
+
+        ExcelUtils.exportExcel(exportVos, ExportMultyMergeVo.class, "采购单", response);
+    }
+
+    private ExportMultyMergeVo factoryNewExcport() {
+        String[] firsts = {"女装", "水装", "光装"};
+        String[] seconds = {"上身", "连身", "下身", "变身", "超神"};
+        String[] thirds = {"背心", "吊带", "风衣", "连体裤", "连衣裙", "半群", "背带裙", "超群"};
+        String[] codes = {"代号", "型号", "星号"};
+        BigDecimal[] prics = {BigDecimal.valueOf(9.9), BigDecimal.valueOf(99.9), BigDecimal.valueOf(999.9),
+                BigDecimal.valueOf(11.9), BigDecimal.valueOf(22.9), BigDecimal.valueOf(33.9)};
+        ExportMultyMergeVo exportVo = new ExportMultyMergeVo();
+        exportVo.setFirstClass(random(firsts));
+        exportVo.setSecondClass(random(seconds));
+        exportVo.setThirdClass(random(thirds));
+        exportVo.setCode(random(codes));
+        exportVo.setPrice(random(prics));
+        return exportVo;
+    }
+
+    private <T> T random(T[] strings) {
+        return strings[(int) (Math.random() * (strings.length - 1))];
     }
 
     @PostMapping("/serialize")

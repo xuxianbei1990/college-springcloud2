@@ -1,4 +1,4 @@
-package state.machine;
+package state.machine.order;
 
 import java.util.Map;
 

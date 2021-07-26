@@ -1,4 +1,4 @@
-package state.machine;
+package state.machine.order;
 
 import org.springframework.messaging.Message;
 import org.springframework.statemachine.annotation.OnTransition;

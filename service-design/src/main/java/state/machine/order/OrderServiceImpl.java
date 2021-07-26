@@ -1,4 +1,4 @@
-package state.machine;
+package state.machine.order;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.Message;

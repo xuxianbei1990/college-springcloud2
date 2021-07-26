@@ -1,4 +1,4 @@
-package state.machine;
+package state.machine.order;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -15,8 +15,11 @@ import org.apache.poi.ss.usermodel.Workbook;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -349,6 +352,58 @@ public class ExcelUtils {
         } catch (Throwable e) {
             log.error("导出{}出错", fileName, e);
             throw new BizException(CollegeExceptionCode.SYSTEM_ERROR);
+        }
+    }
+
+    /**
+     * 导出excel 按照目标类型
+     *
+     * @param list
+     * @param tClass
+     * @param sheetName
+     * @param response
+     * @param <T>
+     */
+    public static <T> void exportExcel(List<?> list, Class<T> tClass, String sheetName, HttpServletResponse response) {
+        try {
+            defaultExport(list, tClass, sheetName + ".xls", response, new ExportParams(null, sheetName));
+        } catch (Exception exception) {
+            throw new RuntimeException(exception);
+        }
+    }
+
+    private static void defaultExport(
+            List<?> list,
+            Class<?> pojoClass,
+            String fileName,
+            HttpServletResponse response,
+            ExportParams exportParams)
+            throws Exception {
+        exportParams.setStyle(ExcelExportStatisticStyler.class);
+        Workbook workbook = ExcelExportUtil.exportExcel(exportParams, pojoClass, list);
+        if (workbook != null) {
+            downLoadExcel(fileName, response, workbook);
+        }
+    }
+
+    private static void downLoadExcel(
+            String fileName, HttpServletResponse response, Workbook workbook) throws Exception {
+
+        try (OutputStream out = response.getOutputStream()) {
+            response.setCharacterEncoding("UTF-8");
+            response.setHeader("content-Type", "application/vnd.ms-excel");
+            response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode(fileName, "UTF-8"));
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            workbook.write(baos);
+            response.setHeader("Content-Length", String.valueOf(baos.size()));
+            out.write(baos.toByteArray());
+        } catch (IOException e) {
+            try {
+                throw new Exception(e.getMessage());
+            } catch (Exception e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
         }
     }
 

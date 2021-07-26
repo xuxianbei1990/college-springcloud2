@@ -1,4 +1,4 @@
-package state.machine;
+package state.machine.order;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
