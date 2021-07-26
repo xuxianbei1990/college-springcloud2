@@ -223,7 +223,10 @@ public class StudentController<T> implements StudentApi {
             ExportMultyMergeVo exportVo = factoryNewExcport();
             exportVos.add(exportVo);
         }
-
+        exportVos.sort(Comparator.comparing(ExportMultyMergeVo::getCode));
+        exportVos.sort(Comparator.comparing(ExportMultyMergeVo::getThirdClass));
+        exportVos.sort(Comparator.comparing(ExportMultyMergeVo::getSecondClass));
+        exportVos.sort(Comparator.comparing(ExportMultyMergeVo::getFirstClass));
         ExcelUtils.exportExcel(exportVos, ExportMultyMergeVo.class, "采购单", response);
     }
 
@@ -244,7 +247,7 @@ public class StudentController<T> implements StudentApi {
     }
 
     private <T> T random(T[] strings) {
-        return strings[(int) (Math.random() * (strings.length - 1))];
+        return strings[(int) (Math.random() * (strings.length))];
     }
 
     @PostMapping("/serialize")
