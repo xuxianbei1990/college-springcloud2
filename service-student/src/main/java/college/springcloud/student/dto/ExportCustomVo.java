@@ -14,7 +14,7 @@ import java.util.Date;
  * Version:V1.0
  */
 @Data
-public class ExportMultyMergeVo {
+public class ExportCustomVo {
 
 
     /**
@@ -47,5 +47,16 @@ public class ExportMultyMergeVo {
     @Excel(name = "编码")
     private String code;
 
+    /**
+     * 时间
+     */
+    @Excel(name = "时间Date", format ="yyyy/MM/dd HH:mm")
+    private Date createTime;
 
+
+    /**
+     * 时间LocalDateTime
+     */
+    @Excel(name = "时间LocalDateTime", format ="yyyy/MM/dd HH:mm")
+    private LocalDateTime createTime2;
 }

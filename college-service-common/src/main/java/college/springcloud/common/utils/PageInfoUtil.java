@@ -4,6 +4,7 @@ package college.springcloud.common.utils;
 import college.springcloud.common.rpc.ApiRemoteService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.google.common.collect.Maps;
 import feign.Request;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -11,6 +12,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.cglib.beans.BeanMap;
 import org.springframework.core.task.AsyncTaskExecutor;
 import org.springframework.stereotype.Component;
 import org.springframework.util.FileCopyUtils;
@@ -321,6 +323,17 @@ public class PageInfoUtil {
         Class[] result = new Class[list.size()];
         result = list.stream().map(o -> o.getClass()).collect(Collectors.toList()).toArray(result);
         return result;
+    }
+
+    public static <T> Map<String, Object> beanToMap(T bean) {
+        Map<String, Object> map = Maps.newHashMap();
+        if (bean != null) {
+            BeanMap beanMap = BeanMap.create(bean);
+            for (Object key : beanMap.keySet()) {
+                map.put(key + "", beanMap.get(key));
+            }
+        }
+        return map;
     }
 
 }

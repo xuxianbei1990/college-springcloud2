@@ -1,4 +1,4 @@
-package college.springcloud.common.utils;
+package college.springcloud.common.utils.excel;
 
 import cn.afterturn.easypoi.excel.entity.params.ExcelExportEntity;
 import cn.afterturn.easypoi.excel.entity.vo.BaseEntityTypeConstants;

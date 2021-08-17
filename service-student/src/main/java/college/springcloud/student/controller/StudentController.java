@@ -1,11 +1,10 @@
 package college.springcloud.student.controller;
 
-import college.springcloud.common.utils.ExcelUtils;
-import college.springcloud.common.utils.Reflection;
-import college.springcloud.common.utils.Result;
-import college.springcloud.common.utils.ResultUtils;
+import cn.afterturn.easypoi.excel.entity.TemplateExportParams;
+import college.springcloud.common.utils.*;
 import college.springcloud.student.annotation.TeacherRole;
 import college.springcloud.student.api.StudentApi;
+import college.springcloud.student.dto.ExportCustomVo;
 import college.springcloud.student.dto.ExportMultyMergeVo;
 import college.springcloud.student.dto.ExportVo;
 import college.springcloud.student.dto.StudentDto;
@@ -16,6 +15,8 @@ import college.springcloud.student.service.AsyncThreadTest;
 import college.springcloud.student.service.StudentServiceImpl;
 import feign.Request;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.lang.time.DateUtils;
+import org.apache.xmlbeans.ResourceLoader;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.task.AsyncTaskExecutor;
@@ -208,13 +209,13 @@ public class StudentController<T> implements StudentApi {
         System.out.println(predicate.test(student));
     }
 
-    @ApiOperation("导出")
+    @ApiOperation("导出 大数据")
     @GetMapping("/export/big")
     public void export(@Validated StudentDto studentDto, HttpServletResponse response) {
         ExcelUtils.exportExcelByEasyPoi("采购单", studentDto, ExportVo.class, studentService, response);
     }
 
-    @ApiOperation("导出")
+    @ApiOperation("导出 合并单元格")
     @GetMapping("/export/cellMerge")
     public void exportCellMerge(@Validated StudentDto studentDto, HttpServletResponse response) {
 
@@ -228,6 +229,53 @@ public class StudentController<T> implements StudentApi {
         exportVos.sort(Comparator.comparing(ExportMultyMergeVo::getSecondClass));
         exportVos.sort(Comparator.comparing(ExportMultyMergeVo::getFirstClass));
         ExcelUtils.exportExcel(exportVos, ExportMultyMergeVo.class, "采购单", response);
+    }
+
+
+    @ApiOperation("导出定制")
+    @GetMapping("/export/custom")
+    public void exportCellMerge(HttpServletResponse response) {
+        Date date = new Date();
+        LocalDateTime localDateTime = LocalDateTime.now();
+        List<ExportCustomVo> exportVos = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            ExportCustomVo exportVo = new ExportCustomVo();
+            exportVo.setFirstClass("random(firsts)");
+            exportVo.setSecondClass("random(seconds)");
+            exportVo.setThirdClass("random(thirds)");
+            exportVo.setCode("random(codes)");
+            exportVo.setPrice(BigDecimal.ZERO);
+            exportVo.setCreateTime(DateUtils.addDays(date, i));
+            exportVo.setCreateTime2(localDateTime.plusDays(i));
+            exportVos.add(exportVo);
+        }
+
+        ExcelUtils.exportExcel(exportVos, ExportCustomVo.class, "采购单", response);
+    }
+
+    @ApiOperation("导出定制模板")
+    @GetMapping("/export/template")
+    public void exportCellMergeTemplate(HttpServletResponse response) {
+        Date date = new Date();
+        LocalDateTime localDateTime = LocalDateTime.now();
+        List<Map<String, Object>> exportVos = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            ExportCustomVo exportVo = new ExportCustomVo();
+            exportVo.setFirstClass("random(firsts)");
+            exportVo.setSecondClass("random(seconds)");
+            exportVo.setThirdClass("random(thirds)");
+            exportVo.setCode("random(codes)");
+            exportVo.setPrice(BigDecimal.ZERO);
+            exportVo.setCreateTime(DateUtils.addDays(date, i));
+            exportVo.setCreateTime2(localDateTime.plusDays(i));
+            exportVos.add(PageInfoUtil.beanToMap(exportVo));
+        }
+        Map<String, Object> map = new HashMap();
+        map.put("maplist", exportVos);
+        map.put("data", "ddd");
+
+        TemplateExportParams params = new TemplateExportParams(this.getClass().getClassLoader().getResource("template.xls").getPath());
+        ExcelUtils.exportExcel("采购单", params, map, response);
     }
 
     private ExportMultyMergeVo factoryNewExcport() {
