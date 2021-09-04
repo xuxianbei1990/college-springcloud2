@@ -278,6 +278,14 @@ public class StudentController<T> implements StudentApi {
         ExcelUtils.exportExcel("采购单", params, map, response);
     }
 
+    /**
+     * html 转换 pdf
+     */
+    @GetMapping("pdf/exchange/html")
+    public void pdfExchange(){
+
+    }
+
     private ExportMultyMergeVo factoryNewExcport() {
         String[] firsts = {"女装", "水装", "光装"};
         String[] seconds = {"上身", "连身", "下身", "变身", "超神"};

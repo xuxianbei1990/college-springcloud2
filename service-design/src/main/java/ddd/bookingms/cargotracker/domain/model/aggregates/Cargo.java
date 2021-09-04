@@ -2,7 +2,6 @@ package ddd.bookingms.cargotracker.domain.model.aggregates;
 
 import ddd.bookingms.cargotracker.domain.model.commands.BookCargoCommand;
 import ddd.bookingms.cargotracker.domain.model.entities.Location;
-import ddd.bookingms.cargotracker.bookingms.domain.model.valueobjects.*;
 import ddd.bookingms.cargotracker.domain.model.valueobjects.*;
 import ddd.shareddomain.event.CargoBookedEvent;
 import ddd.shareddomain.event.CargoBookedEventData;

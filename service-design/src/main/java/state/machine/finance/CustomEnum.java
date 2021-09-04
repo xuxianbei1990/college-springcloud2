@@ -8,14 +8,33 @@ package state.machine.finance;
  * Version:V1.0
  */
 public enum CustomEnum implements StatusEvent {
-    INVOICE_STATUS_TWELVE(1, "dddd", () -> {
+    INVOICE_STATUS_TWELVE(1, "dddd", new StatusEvent() {
+        @Override
+        public int getStatus() {
+            return 0;
+        }
+
+        @Override
+        public void executeEvent() {
+
+        }
     }) {
+        @Override
+        public int getStatus() {
+            return 0;
+        }
+
         @Override
         public void executeEvent() {
 
         }
     },
     DDDD {
+        @Override
+        public int getStatus() {
+            return 0;
+        }
+
         @Override
         public void executeEvent() {
 
