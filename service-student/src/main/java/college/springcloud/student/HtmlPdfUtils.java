@@ -5,17 +5,15 @@ import com.itextpdf.html2pdf.ConverterProperties;
 import com.itextpdf.html2pdf.HtmlConverter;
 import com.itextpdf.html2pdf.resolver.font.DefaultFontProvider;
 import com.itextpdf.kernel.counter.event.IMetaInfo;
-import com.itextpdf.kernel.font.PdfFont;
-import com.itextpdf.kernel.font.PdfFontFactory;
+import com.itextpdf.kernel.geom.PageSize;
 import com.itextpdf.kernel.pdf.DocumentProperties;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.font.FontProvider;
-import com.itextpdf.text.Font;
-import com.itextpdf.text.pdf.BaseFont;
-import org.springframework.web.client.RestTemplate;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 
 /**
  * @author: xuxianbei
@@ -25,19 +23,21 @@ import java.io.*;
  */
 public class HtmlPdfUtils {
 
-
-    private static final String ORIG = "uploads/input.html";
     private static final String OUTPUT_FOLDER = "E:\\整理\\Java";
 
 
     public static void main(String[] args) throws Exception {
         final ConverterProperties converterProperties = defaultFont();
-        File htmlSource = new File(OUTPUT_FOLDER +"\\CHIN-EOP.html");
+        File htmlSource = new File(HtmlPdfUtils.class.getResource("/uploads/CHIN-EOP.html").getPath());
         File pdfDest = new File(OUTPUT_FOLDER + "\\output.pdf");
-        HtmlConverter.convertToPdf(new FileInputStream(htmlSource), new FileOutputStream(pdfDest), converterProperties);
+
+        DocumentProperties documentProperties = new DocumentProperties().setEventCountingMetaInfo(new IMetaInfo() {
+        });
+        PdfDocument pdfDocument = new PdfDocument(new PdfWriter(new FileOutputStream(pdfDest)), documentProperties);
+        pdfDocument.setDefaultPageSize(PageSize.A3);
+        HtmlConverter.convertToPdf(new FileInputStream(htmlSource), pdfDocument, converterProperties);
+//        HtmlConverter.convertToPdf(new FileInputStream(htmlSource), new FileOutputStream(pdfDest), converterProperties);
     }
-
-
 
 
     private static ConverterProperties defaultFont() {
@@ -48,7 +48,6 @@ public class HtmlPdfUtils {
         converterProperties.setFontProvider(fontProvider);
         return converterProperties;
     }
-
 
 
 }
