@@ -2,6 +2,7 @@ package college.springcloud.student.controller;
 
 import cn.afterturn.easypoi.excel.entity.TemplateExportParams;
 import college.springcloud.common.utils.*;
+import college.springcloud.student.HtmlPdfUtils;
 import college.springcloud.student.annotation.TeacherRole;
 import college.springcloud.student.api.StudentApi;
 import college.springcloud.student.dto.ExportCustomVo;
@@ -282,8 +283,8 @@ public class StudentController<T> implements StudentApi {
      * html 转换 pdf
      */
     @GetMapping("pdf/exchange/html")
-    public void pdfExchange(){
-
+    public void pdfExchange() {
+        HtmlPdfUtils.htmlToPdf();
     }
 
     private ExportMultyMergeVo factoryNewExcport() {

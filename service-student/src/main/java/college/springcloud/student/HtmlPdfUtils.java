@@ -4,6 +4,7 @@ package college.springcloud.student;
 import com.itextpdf.html2pdf.ConverterProperties;
 import com.itextpdf.html2pdf.HtmlConverter;
 import com.itextpdf.html2pdf.resolver.font.DefaultFontProvider;
+import com.itextpdf.io.font.FontProgram;
 import com.itextpdf.kernel.counter.event.IMetaInfo;
 import com.itextpdf.kernel.geom.PageSize;
 import com.itextpdf.kernel.pdf.DocumentProperties;
@@ -11,9 +12,7 @@ import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.font.FontProvider;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
+import java.io.*;
 
 /**
  * @author: xuxianbei
@@ -27,16 +26,24 @@ public class HtmlPdfUtils {
 
 
     public static void main(String[] args) throws Exception {
+
+    }
+
+    public static void htmlToPdf(){
         final ConverterProperties converterProperties = defaultFont();
         File htmlSource = new File(HtmlPdfUtils.class.getResource("/uploads/CHIN-EOP.html").getPath());
         File pdfDest = new File(OUTPUT_FOLDER + "\\output.pdf");
 
         DocumentProperties documentProperties = new DocumentProperties().setEventCountingMetaInfo(new IMetaInfo() {
         });
-        PdfDocument pdfDocument = new PdfDocument(new PdfWriter(new FileOutputStream(pdfDest)), documentProperties);
-        pdfDocument.setDefaultPageSize(PageSize.A3);
-        HtmlConverter.convertToPdf(new FileInputStream(htmlSource), pdfDocument, converterProperties);
-//        HtmlConverter.convertToPdf(new FileInputStream(htmlSource), new FileOutputStream(pdfDest), converterProperties);
+        PdfDocument pdfDocument = null;
+        try {
+            pdfDocument = new PdfDocument(new PdfWriter(new FileOutputStream(pdfDest)), documentProperties);
+            pdfDocument.setDefaultPageSize(PageSize.A3);
+            HtmlConverter.convertToPdf(new FileInputStream(htmlSource), pdfDocument, converterProperties);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 

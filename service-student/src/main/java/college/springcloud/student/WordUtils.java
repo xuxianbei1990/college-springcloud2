@@ -32,10 +32,12 @@ public class WordUtils {
         }
         map.put("goods", goods);
         try {
-            XWPFDocument xwpfDocument = WordExportUtil.exportWord07("E:\\整理\\test.docx", map);
+            String filePath = WordUtils.class.getResource("/test.docx").getPath();
+            XWPFDocument xwpfDocument = WordExportUtil.exportWord07(filePath, map);
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             xwpfDocument.write(outputStream);
-            FileOutputStream fos = new FileOutputStream("E:\\整理\\exp.docx");;
+            FileOutputStream fos = new FileOutputStream("E:\\整理\\exp.docx");
+
             fos.write(outputStream.toByteArray());
             fos.flush();
             outputStream.close();

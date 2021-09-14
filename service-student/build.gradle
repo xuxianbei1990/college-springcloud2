@@ -11,6 +11,8 @@ dependencyManagement {
 }
 
 dependencies {
+    //apose word 转pdf
+    compile files("lib/aspose-words-16.8.0-jdk16.jar")
     compile("org.springframework.boot:spring-boot-starter-web")
     compile("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client")
     compile("org.springframework.cloud:spring-cloud-starter-netflix-hystrix")
@@ -25,6 +27,11 @@ dependencies {
     compile "com.itextpdf:itext-asian:5.2.0"
     compile "com.itextpdf:itextpdf:5.4.3"
 
+    //word 转换pdf
+//    compile "org.docx4j:docx4j-JAXB-ReferenceImpl:8.2.4"
+//    compile "org.docx4j:docx4j-export-fo:8.2.4"
+
+
     compile "cn.afterturn:easypoi-base:${easypoiversion}"
     compile "cn.afterturn:easypoi-web:${easypoiversion}"
     compile "cn.afterturn:easypoi-annotation:${easypoiversion}"
@@ -36,7 +43,6 @@ dependencies {
 //    compile group: 'javax.mail', name: 'mail', version: '1.5.0-b01'
     compile project(":service-student-api")
     compile project(":college-service-common")
-    testCompile group: 'junit', name: 'junit', version: '4.12'
 }
 
 //jar {
