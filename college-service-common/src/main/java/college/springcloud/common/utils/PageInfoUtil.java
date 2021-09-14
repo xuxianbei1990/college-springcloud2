@@ -330,7 +330,7 @@ public class PageInfoUtil {
         if (bean != null) {
             BeanMap beanMap = BeanMap.create(bean);
             for (Object key : beanMap.keySet()) {
-                map.put(key + "", beanMap.get(key));
+                map.put(String.valueOf(key), beanMap.get(key));
             }
         }
         return map;
