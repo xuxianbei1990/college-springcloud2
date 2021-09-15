@@ -13,6 +13,7 @@ dependencyManagement {
 dependencies {
     //apose word 转pdf
     compile files("lib/aspose-words-16.8.0-jdk16.jar")
+    compile fileTree(dir: 'src/main/java/resources/lib', include: [ '*.jar'])
     compile("org.springframework.boot:spring-boot-starter-web")
     compile("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client")
     compile("org.springframework.cloud:spring-cloud-starter-netflix-hystrix")
