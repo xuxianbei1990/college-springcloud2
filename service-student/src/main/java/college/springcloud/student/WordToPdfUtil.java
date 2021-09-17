@@ -30,14 +30,14 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Date: 2021/9/14
  * Time: 14:08
  * Version:V1.0
- *
+ * <p>
  * UploadDataEnum 解决linux文件路径
  */
 @Slf4j
 @Component
 public class WordToPdfUtil {
 
-    public static String getProjectPath(){
+    public static String getProjectPath() {
         return System.getProperty("user.dir");
     }
 
@@ -200,12 +200,7 @@ public class WordToPdfUtil {
     }
 
     public void wordToPdf(FileInputStream fileInput, File outputFile) {
-        InputStream license = null;
-        try {
-            license = new FileInputStream(WordToPdfUtil.class.getResource("/license.xml").getPath());
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
+        InputStream license = WordToPdfUtil.class.getResourceAsStream("/license.xml");
         // 验证License
         if (!getLicense(license)) {
             return;
