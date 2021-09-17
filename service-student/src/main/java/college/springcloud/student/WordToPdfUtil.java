@@ -9,6 +9,7 @@ import com.aspose.words.SaveFormat;
 import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.beans.BeanMap;
 import org.springframework.stereotype.Component;
 import org.springframework.util.FileCopyUtils;
@@ -16,8 +17,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * word转换PDF
@@ -26,15 +30,23 @@ import java.time.format.DateTimeFormatter;
  * Date: 2021/9/14
  * Time: 14:08
  * Version:V1.0
+ *
+ * UploadDataEnum 解决linux文件路径
  */
 @Slf4j
 @Component
 public class WordToPdfUtil {
 
-    private ApiRemoteServer apiRemoteServer;
+    public static String getProjectPath(){
+        return System.getProperty("user.dir");
+    }
 
     public static final String YYYY_MM_DD_HH_MM_SS = "yyyy_MM_dd_HH_mm_ss";
 
+    private AtomicInteger atomicInteger = new AtomicInteger(0);
+
+
+    private ApiRemoteServer apiRemoteServer;
 
     public <T> Result execute(String filePath, T t) {
         FileOutputStream fos = null;
@@ -44,16 +56,14 @@ public class WordToPdfUtil {
         File filePdf = null;
         File fileword = null;
         try {
-            java.util.Map<String, Object> map = beanToMap(t);
+            Map<String, Object> map = beanToMap(t);
             doc = WordExportUtil.exportWord07(filePath, map);
-            String str = WordToPdfUtil.class.getResource("/").getPath();
-            str = str.substring(0, str.indexOf("chenfan-purchase") + "chenfan-purchase".length() + 1);
-            String tempFile = str + "output";
+            String tempFile = WordToPdfUtil.getProjectPath() + "\\output";
             File fileDir = new File(tempFile);
             if (!fileDir.exists()) {
                 fileDir.mkdirs();
             }
-            String fileName = LocalDateTime.now().format(DateTimeFormatter.ofPattern(YYYY_MM_DD_HH_MM_SS));
+            String fileName = getFileName();
             String tempFileWord = tempFile + "/" + fileName + ".docx";
             String tempFilePdf = tempFile + "/" + fileName + ".pdf";
             fos = new FileOutputStream(tempFileWord);
@@ -95,6 +105,11 @@ public class WordToPdfUtil {
                 log.error("文件异常", e);
             }
         }
+    }
+
+    private synchronized String getFileName() {
+        return LocalDateTime.now().format(DateTimeFormatter.ofPattern(YYYY_MM_DD_HH_MM_SS)) +
+                atomicInteger.getAndIncrement();
     }
 
     @SuppressWarnings("serial")
@@ -154,7 +169,7 @@ public class WordToPdfUtil {
         }
 
         @Override
-        public void transferTo(java.nio.file.Path dest) throws IOException, IllegalStateException {
+        public void transferTo(Path dest) throws IOException, IllegalStateException {
             FileCopyUtils.copy(this.content, Files.newOutputStream(dest));
         }
     }
@@ -173,8 +188,8 @@ public class WordToPdfUtil {
         return result;
     }
 
-    public <T> java.util.Map<String, Object> beanToMap(T bean) {
-        java.util.Map<String, Object> map = Maps.newHashMap();
+    public <T> Map<String, Object> beanToMap(T bean) {
+        Map<String, Object> map = Maps.newHashMap();
         if (bean != null) {
             BeanMap beanMap = BeanMap.create(bean);
             for (Object key : beanMap.keySet()) {
