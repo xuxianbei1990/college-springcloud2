@@ -1,4 +1,4 @@
-package college.springcloud.student;
+package college.springcloud.student.utils;
 
 import cn.afterturn.easypoi.word.WordExportUtil;
 import college.springcloud.common.utils.Result;
@@ -9,7 +9,6 @@ import com.aspose.words.SaveFormat;
 import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.beans.BeanMap;
 import org.springframework.stereotype.Component;
 import org.springframework.util.FileCopyUtils;
@@ -74,8 +73,8 @@ public class WordToPdfUtil {
             wordToPdf(fileInput, filePdf);
             filepdf = new FileInputStream(tempFilePdf);
             MultipartFile multipartFile = new StandardMultipartFilePdf(fileName + ".pdf", FileCopyUtils.copyToByteArray(filepdf));
-            apiRemoteServer.uploadFile(multipartFile);
-            return null;
+//            apiRemoteServer.uploadFile(multipartFile);
+            return Result.success();
         } catch (Exception e) {
             log.error("execute异常", e);
             filePdf = null;

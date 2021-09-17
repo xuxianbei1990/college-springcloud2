@@ -1,4 +1,4 @@
-package college.springcloud.student;
+package college.springcloud.student.utils;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -59,4 +59,8 @@ public enum UploadDataEnum {
             return "";
         }
     }
+
+
+
+
 }

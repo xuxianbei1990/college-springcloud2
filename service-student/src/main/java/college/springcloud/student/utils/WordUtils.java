@@ -1,9 +1,8 @@
-package college.springcloud.student;
+package college.springcloud.student.utils;
 
 import cn.afterturn.easypoi.word.WordExportUtil;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.util.ArrayList;

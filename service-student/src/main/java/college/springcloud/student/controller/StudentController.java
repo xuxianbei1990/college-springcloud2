@@ -2,9 +2,13 @@ package college.springcloud.student.controller;
 
 import cn.afterturn.easypoi.excel.entity.TemplateExportParams;
 import college.springcloud.common.utils.*;
-import college.springcloud.student.HtmlPdfUtils;
+import college.springcloud.student.controller.pdf.UploadDatasDto;
+import college.springcloud.student.utils.HtmlPdfUtils;
+import college.springcloud.student.utils.UploadDataEnum;
+import college.springcloud.student.utils.WordToPdfUtil;
 import college.springcloud.student.annotation.TeacherRole;
 import college.springcloud.student.api.StudentApi;
+import college.springcloud.student.controller.pdf.UploadDataDto;
 import college.springcloud.student.dto.ExportCustomVo;
 import college.springcloud.student.dto.ExportMultyMergeVo;
 import college.springcloud.student.dto.ExportVo;
@@ -14,18 +18,19 @@ import college.springcloud.student.po.StudentCopy;
 import college.springcloud.student.po.StudentSerialize;
 import college.springcloud.student.service.AsyncThreadTest;
 import college.springcloud.student.service.StudentServiceImpl;
+import com.alibaba.fastjson.JSONObject;
 import feign.Request;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang.time.DateUtils;
-import org.apache.xmlbeans.ResourceLoader;
+import org.apache.logging.log4j.util.Strings;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.task.AsyncTaskExecutor;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -64,6 +69,9 @@ public class StudentController<T> implements StudentApi {
 
     //    @Resource
     private AsyncTaskExecutor asyncTaskExecutor;
+
+    @Autowired
+    private WordToPdfUtil wordToPdfUtil;
 
     @Override
     @GetMapping("/get")
@@ -285,6 +293,109 @@ public class StudentController<T> implements StudentApi {
     @GetMapping("pdf/exchange/html")
     public void pdfExchange() {
         HtmlPdfUtils.htmlToPdf();
+    }
+
+    /**
+     * word 转换 pdf
+     *
+     * @return
+     */
+    @GetMapping("word/to/pdf")
+    public String wordToPdf() {
+        String jsonStr = getJsonStr();
+        UploadDatasDto uploadDataDtos = JSONObject.parseObject(jsonStr, UploadDatasDto.class);
+        UploadDataDto uploadDataDto = uploadDataDtos.getUploadDataDtoList().get(0);
+        String filePath = Strings.EMPTY;
+        Object object = null;
+        if (uploadDataDto.getTemplateId() == UploadDataEnum.ONE_FOR_DISTRIBUTION_CONTRACT.getCode()) {
+            filePath = UploadDataEnum.ONE_FOR_DISTRIBUTION_CONTRACT.getFilePath();
+            object = uploadDataDto.getOneForDistributionContractDto();
+        } else if (uploadDataDto.getTemplateId() == UploadDataEnum.FIRST_GIVE_CONTRACT.getCode()) {
+            filePath = UploadDataEnum.FIRST_GIVE_CONTRACT.getFilePath();
+            object = uploadDataDto.getFirstGiveContract();
+        } else if (uploadDataDto.getTemplateId() == UploadDataEnum.LIVE_COMMON_CONTRACT.getCode()) {
+            filePath = UploadDataEnum.LIVE_COMMON_CONTRACT.getFilePath();
+            object = uploadDataDto.getLiveCommonContract();
+        } else if (uploadDataDto.getTemplateId() == UploadDataEnum.LIVE_PREPARE_CONTRACT.getCode()) {
+            filePath = UploadDataEnum.LIVE_PREPARE_CONTRACT.getFilePath();
+            object = uploadDataDto.getLivePrepareContract();
+        } else if (uploadDataDto.getTemplateId() == UploadDataEnum.MATERIAL_CONTRACT.getCode()) {
+            filePath = UploadDataEnum.MATERIAL_CONTRACT.getFilePath();
+            object = uploadDataDto.getMaterialContract();
+        } else if (uploadDataDto.getTemplateId() == UploadDataEnum.XUE_LI_LIVE_OUT_CONTRACT.getCode()) {
+            filePath = UploadDataEnum.XUE_LI_LIVE_OUT_CONTRACT.getFilePath();
+            object = uploadDataDto.getXueLiLiveOutContract();
+        } else if (uploadDataDto.getTemplateId() == UploadDataEnum.XUE_LI_LIVE_CONTRACT.getCode()) {
+            filePath = UploadDataEnum.XUE_LI_LIVE_CONTRACT.getFilePath();
+            object = uploadDataDto.getXueLiLiveContract();
+        }
+        if (!StringUtils.isEmpty(filePath) && object != null) {
+            wordToPdfUtil.execute(filePath, object);
+            return "success";
+        } else {
+            throw new RuntimeException("PurchaseExceptionState.WORD_PDF_UNDEFINE_ERROR");
+        }
+    }
+
+    private String getJsonStr() {
+        return "{\"uploadDataDtoList\":[{\"templateId\":6,\"poId\":1000027212,\"xueLiLiveOutContract\":" +
+                "{\"financialBody\":\"衢州宸帆电子商务有限责任公司\",\"brandName\":\"XUELI\",\"poCode\":\"CG2101140001\"," +
+                "\"vendorName\":\"壹毫不苟（杭州）品牌管理有限公司\",\"tableData\":[{\"accessoryRequisitionsInfoId\":null," +
+                "\"appvouchDetailId\":null,\"arrivalQty\":211,\"color\":\"珍珠粉\",\"conEndDate\":\"2021-01-16 00:00:00\"" +
+                ",\"conStartDate\":\"2021-01-14 00:00:00\",\"detailStatus\":3,\"exchName\":\"\",\"freeTaxMoney\":65940.6," +
+                "\"gsp\":null,\"includedTaxMoney\":66600,\"inventoryCode\":\"CH21010010ZZFS\",\"inventoryId\":1003018," +
+                "\"inventoryName\":\"[钱夫人1]210106-小李测试PDA扫描\",\"isDelete\":null,\"poCode\":\"CG2101140001\",\"poDetailId\"" +
+                ":1000083045,\"poId\":1000027212,\"preOrderDetailId\":null,\"productCode\":\"CH21010010\",\"purchaseQuantity\":200," +
+                "\"quantity\":200,\"quantityTop\":null,\"rejectionQty\":3,\"remark\":\"\",\"rrdQuantity\":0,\"salesType\":2,\"size\"" +
+                ":\"S\",\"sort\":3,\"specName\":\"珍珠粉S\",\"specificationsRemark\":\"\",\"taxMoney\":659.4,\"taxRate\":1,\"taxUnitPrice\":" +
+                "333,\"unitPrice\":329.703,\"updateDate\":null},{\"accessoryRequisitionsInfoId\":null,\"appvouchDetailId\":null,\"arrival" +
+                "Qty\":0,\"color\":\"珍珠粉\",\"conEndDate\":\"2021-01-16 00:00:00\",\"conStartDate\":\"2021-01-14 00:00:00\",\"detailStat" +
+                "us\":3,\"exchName\":\"\",\"freeTaxMoney\":65940.6,\"gsp\":null,\"includedTaxMoney\":66600,\"inventoryCode\":\"CH21010010Z" +
+                "ZFM\",\"inventoryId\":1003019,\"inventoryName\":\"[钱夫人1]210106-小李测试PDA扫描\",\"isDelete\":null,\"poCode\":\"CG21011400" +
+                "01\",\"poDetailId\":1000083046,\"poId\":1000027212,\"preOrderDetailId\":null,\"productCode\":\"CH21010010\",\"purchaseQua" +
+                "ntity\":200,\"quantity\":200,\"quantityTop\":null,\"rejectionQty\":0,\"remark\":\"\",\"rrdQuantity\":0,\"salesType\":2,\"s" +
+                "ize\":\"M\",\"sort\":4,\"specName\":\"珍珠粉M\",\"specificationsRemark\":\"\",\"taxMoney\":659.4,\"taxRate\":1,\"taxUnitPr" +
+                "ice\":333,\"unitPrice\":329.703,\"updateDate\":null},{\"accessoryRequisitionsInfoId\":null,\"appvouchDetailId\":null,\"arri" +
+                "valQty\":0,\"color\":\"珍珠粉\",\"conEndDate\":\"2021-01-16 00:00:00\",\"conStartDate\":\"2021-01-14 00:00:00\",\"detailSt" +
+                "atus\":3,\"exchName\":\"\",\"freeTaxMoney\":65940.6,\"gsp\":null,\"includedTaxMoney\":66600,\"inventoryCode\":\"CH2101001" +
+                "0ZZFL\",\"inventoryId\":1003020,\"inventoryName\":\"[钱夫人1]210106-小李测试PDA扫描\",\"isDelete\":null,\"poCode\":\"CG21011" +
+                "40001\",\"poDetailId\":1000083047,\"poId\":1000027212,\"preOrderDetailId\":null,\"productCode\":\"CH21010010\",\"purchas" +
+                "eQuantity\":200,\"quantity\":200,\"quantityTop\":null,\"rejectionQty\":0,\"remark\":\"\",\"rrdQuantity\":0,\"salesType" +
+                "\":2,\"size\":\"L\",\"sort\":5,\"specName\":\"珍珠粉L\",\"specificationsRemark\":\"\",\"taxMoney\":659.4,\"taxRate\":1,\"t" +
+                "axUnitPrice\":333,\"unitPrice\":329.703,\"updateDate\":null},{\"accessoryRequisitionsInfoId\":null,\"appvouchDetailId\":n" +
+                "ull,\"arrivalQty\":0,\"color\":\"花灰\",\"conEndDate\":\"2021-01-16 00:00:00\",\"conStartDate\":\"2021-01-14 00:00:00\",\"de" +
+                "tailStatus\":3,\"exchName\":\"\",\"freeTaxMoney\":65940.6,\"gsp\":null,\"includedTaxMoney\":66600,\"inventoryCode\":\"CH210" +
+                "10010HVS\",\"inventoryId\":1003021,\"inventoryName\":\"[钱夫人1]210106-小李测试PDA扫描\",\"isDelete\":null,\"poCode\":\"CG210" +
+                "1140001\",\"poDetailId\":1000083048,\"poId\":1000027212,\"preOrderDetailId\":null,\"productCode\":\"CH21010010\",\"purchas" +
+                "eQuantity\":200,\"quantity\":200,\"quantityTop\":null,\"rejectionQty\":0,\"remark\":\"\",\"rrdQuantity\":0,\"salesType\":" +
+                "2,\"size\":\"S\",\"sort\":3,\"specName\":\"花灰S\",\"specificationsRemark\":\"\",\"taxMoney\":659.4,\"taxRate\":1,\"taxUnit" +
+                "Price\":333,\"unitPrice\":329.703,\"updateDate\":null},{\"accessoryRequisitionsInfoId\":null,\"appvouchDetailId\":null,\"ar" +
+                "rivalQty\":0,\"color\":\"花灰\",\"conEndDate\":\"2021-01-16 00:00:00\",\"conStartDate\":\"2021-01-14 00:00:00\",\"detailSt" +
+                "atus\":3,\"exchName\":\"\",\"freeTaxMoney\":65940.6,\"gsp\":null,\"includedTaxMoney\":66600,\"inventoryCode\":\"CH21010010HV" +
+                "M\",\"inventoryId\":1003022,\"inventoryName\":\"[钱夫人1]210106-小李测试PDA扫描\",\"isDelete\":null,\"poCode\":\"CG2101140001\"," +
+                "\"poDetailId\":1000083049,\"poId\":1000027212,\"preOrderDetailId\":null,\"productCode\":\"CH21010010\",\"purchaseQuantity\"" +
+                ":200,\"quantity\":200,\"quantityTop\":null,\"rejectionQty\":0,\"remark\":\"\",\"rrdQuantity\":0,\"salesType\":2,\"size\":\"" +
+                "M\",\"sort\":4,\"specName\":\"花灰M\",\"specificationsRemark\":\"\",\"taxMoney\":659.4,\"taxRate\":1,\"taxUnitPrice\":333,\"" +
+                "unitPrice\":329.703,\"updateDate\":null},{\"accessoryRequisitionsInfoId\":null,\"appvouchDetailId\":null,\"arrivalQty\":0,\"" +
+                "color\":\"花灰\",\"conEndDate\":\"2021-01-16 00:00:00\",\"conStartDate\":\"2021-01-14 00:00:00\",\"detailStatus\":3,\"exchNa" +
+                "me\":\"\",\"freeTaxMoney\":65940.6,\"gsp\":null,\"includedTaxMoney\":66600,\"inventoryCode\":\"CH21010010HVL\",\"inventoryI" +
+                "d\":1003023,\"inventoryName\":\"[钱夫人1]210106-小李测试PDA扫描\",\"isDelete\":null,\"poCode\":\"CG2101140001\",\"poDetailId\"" +
+                ":1000083050,\"poId\":1000027212,\"preOrderDetailId\":null,\"productCode\":\"CH21010010\",\"purchaseQuantity\":200,\"quanti" +
+                "ty\":200,\"quantityTop\":null,\"rejectionQty\":0,\"remark\":\"\",\"rrdQuantity\":0,\"salesType\":2,\"size\":\"L\",\"sort\":" +
+                "5,\"specName\":\"花灰L\",\"specificationsRemark\":\"\",\"taxMoney\":659.4,\"taxRate\":1,\"taxUnitPrice\":333,\"unitPrice\":3" +
+                "29.703,\"updateDate\":null},{\"accessoryRequisitionsInfoId\":null,\"appvouchDetailId\":null,\"arrivalQty\":0,\"color\":\"草绿" +
+                "色\",\"conEndDate\":\"2021-01-16 00:00:00\",\"conStartDate\":\"2021-01-14 00:00:00\",\"detailStatus\":3,\"exchName\":\"\",\"" +
+                "freeTaxMoney\":65940.6,\"gsp\":null,\"includedTaxMoney\":66600,\"inventoryCode\":\"CH21010010CLSS\",\"inventoryId\":1003024," +
+                "\"inventoryName\":\"[钱夫人1]210106-小李测试PDA扫描\",\"isDelete\":null,\"poCode\":\"CG2101140001\",\"poDetailId\":1000083051,\"poI" +
+                "d\":1000027212,\"preOrderDetailId\":null,\"productCode\":\"CH21010010\",\"purchaseQuantity\":200,\"quantity\":200,\"quantityTop\":n" +
+                "ull,\"rejectionQty\":0,\"remark\":\"\",\"rrdQuantity\":0,\"salesType\":2,\"size\":\"S\",\"sort\":3,\"specName\":\"草绿色S\",\"specifi" +
+                "cationsRemark\":\"\",\"taxMoney\":659.4,\"taxRate\":1,\"taxUnitPrice\":333,\"unitPrice\":329.703,\"updateDate\":null}],\"totalQuanti" +
+                "ty\":1400,\"totalMoney\":466200,\"chineseTypeMoney\":\"肆拾陆万陆仟贰佰元整\",\"taxRate\":1,\"parameTer\":\"1\",\"parameTer1\":\"30\",\"" +
+                "parameTer2\":\"\",\"parameTer3\":\"\",\"parameTer4\":\"\",\"chinaTer4\":\"\",\"parameTer5\":\"\",\"parameTer6\":\"\",\"chinaTer6\":\"\"" +
+                ",\"parameTer7\":\"\",\"parameTer8\":\"\",\"settlementDay\":\"\",\"receivingAddress\":\"浙江省杭州市富阳区东洲街道明星路8号-到货组-（雪梨店）\",\"" +
+                "contactPerson\":\"沈强\",\"contactPhone\":\"18656622567 \",\"moreLess1\":10,\"moreLess2\":3,\"moreLess3\":2,\"accessories\":\"1470.00\"," +
+                "\"totalSum\":\"7350\",\"poNum10\":\"5\"}}],\"poToContracts\":[{\"poId\":1000027212,\"contract\":\"\",\"firstParty\":\"衢州宸帆电子商务有限责" +
+                "任公司\",\"secondParty\":\"壹毫不苟\",\"vendorId\":695,\"isVendor\":0}]}";
     }
 
     private ExportMultyMergeVo factoryNewExcport() {
