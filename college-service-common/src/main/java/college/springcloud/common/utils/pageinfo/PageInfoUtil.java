@@ -1,7 +1,8 @@
-package college.springcloud.common.utils;
+package college.springcloud.common.utils.pageinfo;
 
 
 import college.springcloud.common.rpc.ApiRemoteService;
+import college.springcloud.common.utils.PagerDTO;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Maps;
@@ -28,6 +29,7 @@ import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -53,6 +55,12 @@ public class PageInfoUtil {
 
     //    @Autowired
     private ApiRemoteService apiRemoteService;
+
+    private final static Pattern NUMBER_PATTERN = Pattern.compile("^[-\\+]?[\\d]*$");
+
+    private final static Pattern DAY_DATE_PATTERN = Pattern.compile("^\\d{4}\\/\\d{1,2}\\/\\d{1,2}");
+
+    private final static Pattern MONTH_DATE_PATTERN = Pattern.compile("^\\d{4}\\/\\d{1,2}");
 
 
     /**
@@ -296,6 +304,27 @@ public class PageInfoUtil {
     }
 
     /**
+     * 判断是否数字
+     *
+     * @param str
+     * @return
+     */
+    public static boolean isInteger(String str) {
+        return NUMBER_PATTERN.matcher(str).matches();
+    }
+
+    /**
+     * 判断是否日期：格式为yyyy/mm/dd
+     */
+    public static boolean isDayDate(String input) {
+        return DAY_DATE_PATTERN.matcher(input).matches();
+    }
+
+    public static boolean isMonthDate(String input) {
+        return MONTH_DATE_PATTERN.matcher(input).matches();
+    }
+
+    /**
      * 动态配置rpc的超时时间
      * 半成品
      *
@@ -334,6 +363,23 @@ public class PageInfoUtil {
             }
         }
         return map;
+    }
+
+    /**
+     * 基础属性拷贝
+     *
+     * @param oldBase
+     * @param newBase
+     */
+    public static void copyPropertiesBaseInfo(AuthorityInfo oldBase, AuthorityInfo newBase) {
+        if (Objects.nonNull(oldBase)) {
+            newBase.setCreateBy(oldBase.getCreateBy());
+            newBase.setCreateDate(oldBase.getCreateDate());
+            newBase.setCreateName(oldBase.getCreateName());
+            newBase.setUpdateBy(oldBase.getUpdateBy());
+            newBase.setUpdateName(oldBase.getUpdateName());
+            newBase.setUpdateDate(oldBase.getUpdateDate());
+        }
     }
 
 }
