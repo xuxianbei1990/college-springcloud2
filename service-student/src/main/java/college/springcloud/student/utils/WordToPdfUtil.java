@@ -8,6 +8,7 @@ import com.aspose.words.Run;
 import com.aspose.words.SaveFormat;
 import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.springframework.cglib.beans.BeanMap;
 import org.springframework.stereotype.Component;
@@ -47,11 +48,52 @@ public class WordToPdfUtil {
 
     private ApiRemoteServer apiRemoteServer;
 
-    public <T> Result execute(String filePath, T t) {
-        FileOutputStream fos = null;
+
+    public <T> Result executeStream(String filePath, T t) {
         XWPFDocument doc = null;
-        FileInputStream fileInput = null;
-        FileInputStream filepdf = null;
+        InputStream fileInput = null;
+        ByteArrayOutputStream fos = new ByteArrayOutputStream();
+        Map<String, Object> map = beanToMap(t);
+        try {
+            doc = WordExportUtil.exportWord07(filePath, map);
+            doc.write(fos);
+            fileInput = new ByteArrayInputStream(fos.toByteArray());
+            byte[] pdfContent = wordToPdf(fileInput);
+
+            String tempFile = WordToPdfUtil.getProjectPath() + "\\output";
+            String fileName = getFileName();
+            String tempFilePdf = tempFile + "/" + fileName + ".pdf";
+            FileCopyUtils.copy(pdfContent, new File(tempFilePdf));
+            MultipartFile multipartFile = new StandardMultipartFilePdf(fileName + ".pdf", pdfContent);
+
+            //apiRemoteServer.uploadFile(multipartFile);
+            return Result.success();
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            throw new RuntimeException("PurchaseExceptionState.WORD_PDF_ERROR");
+        } finally {
+            try {
+                if (doc != null) {
+                    doc.close();
+                }
+                if (fileInput != null) {
+                    fileInput.close();
+                }
+                if (fos != null) {
+                    fos.close();
+                }
+            } catch (Exception e) {
+                log.error("文件异常", e);
+            }
+        }
+
+    }
+
+    public <T> Result execute(String filePath, T t) {
+        OutputStream fos = null;
+        XWPFDocument doc = null;
+        InputStream fileInput = null;
+        InputStream filepdf = null;
         File filePdf = null;
         File fileword = null;
         try {
@@ -64,9 +106,9 @@ public class WordToPdfUtil {
             }
             String fileName = getFileName();
             String tempFileWord = tempFile + "/" + fileName + ".docx";
-            String tempFilePdf = tempFile + "/" + fileName + ".pdf";
             fos = new FileOutputStream(tempFileWord);
             doc.write(fos);
+            String tempFilePdf = tempFile + "/" + fileName + ".pdf";
             fileInput = new FileInputStream(tempFileWord);
             filePdf = new File(tempFilePdf);
             fileword = new File(tempFileWord);
@@ -198,7 +240,38 @@ public class WordToPdfUtil {
         return map;
     }
 
-    public void wordToPdf(FileInputStream fileInput, File outputFile) {
+    public byte[] wordToPdf(InputStream fileInput) {
+        InputStream license = WordToPdfUtil.class.getResourceAsStream("/license.xml");
+        // 验证License
+        if (!getLicense(license)) {
+            return null;
+        }
+        ByteArrayOutputStream outputStream = null;
+        Document doc = null;
+        try {
+            doc = new Document(fileInput);
+            outputStream = new ByteArrayOutputStream();
+            doc.save(outputStream, SaveFormat.PDF);
+            return outputStream.toByteArray();
+        } catch (Exception e) {
+            log.error("wordToPdf异常", e);
+            throw new RuntimeException("PurchaseExceptionState.WORD_PDF_ERROR");
+        } finally {
+            try {
+                if (outputStream != null) {
+                    outputStream.close();
+                }
+                if (license != null) {
+                    license.close();
+                }
+            } catch (IOException e) {
+                log.error("wordToPdf异常", e);
+
+            }
+        }
+    }
+
+    public void wordToPdf(InputStream fileInput, File outputFile) {
         InputStream license = WordToPdfUtil.class.getResourceAsStream("/license.xml");
         // 验证License
         if (!getLicense(license)) {

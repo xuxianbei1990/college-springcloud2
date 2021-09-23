@@ -2,6 +2,7 @@ package college.springcloud.student.controller;
 
 import cn.afterturn.easypoi.excel.entity.TemplateExportParams;
 import college.springcloud.common.utils.*;
+import college.springcloud.common.utils.pageinfo.PageInfoUtil;
 import college.springcloud.student.controller.pdf.UploadDatasDto;
 import college.springcloud.student.utils.HtmlPdfUtils;
 import college.springcloud.student.utils.UploadDataEnum;
@@ -305,36 +306,11 @@ public class StudentController<T> implements StudentApi {
         String jsonStr = getJsonStr();
         UploadDatasDto uploadDataDtos = JSONObject.parseObject(jsonStr, UploadDatasDto.class);
         UploadDataDto uploadDataDto = uploadDataDtos.getUploadDataDtoList().get(0);
-        String filePath = Strings.EMPTY;
-        Object object = null;
-        if (uploadDataDto.getTemplateId() == UploadDataEnum.ONE_FOR_DISTRIBUTION_CONTRACT.getCode()) {
-            filePath = UploadDataEnum.ONE_FOR_DISTRIBUTION_CONTRACT.getFilePath();
-            object = uploadDataDto.getOneForDistributionContractDto();
-        } else if (uploadDataDto.getTemplateId() == UploadDataEnum.FIRST_GIVE_CONTRACT.getCode()) {
-            filePath = UploadDataEnum.FIRST_GIVE_CONTRACT.getFilePath();
-            object = uploadDataDto.getFirstGiveContract();
-        } else if (uploadDataDto.getTemplateId() == UploadDataEnum.LIVE_COMMON_CONTRACT.getCode()) {
-            filePath = UploadDataEnum.LIVE_COMMON_CONTRACT.getFilePath();
-            object = uploadDataDto.getLiveCommonContract();
-        } else if (uploadDataDto.getTemplateId() == UploadDataEnum.LIVE_PREPARE_CONTRACT.getCode()) {
-            filePath = UploadDataEnum.LIVE_PREPARE_CONTRACT.getFilePath();
-            object = uploadDataDto.getLivePrepareContract();
-        } else if (uploadDataDto.getTemplateId() == UploadDataEnum.MATERIAL_CONTRACT.getCode()) {
-            filePath = UploadDataEnum.MATERIAL_CONTRACT.getFilePath();
-            object = uploadDataDto.getMaterialContract();
-        } else if (uploadDataDto.getTemplateId() == UploadDataEnum.XUE_LI_LIVE_OUT_CONTRACT.getCode()) {
-            filePath = UploadDataEnum.XUE_LI_LIVE_OUT_CONTRACT.getFilePath();
-            object = uploadDataDto.getXueLiLiveOutContract();
-        } else if (uploadDataDto.getTemplateId() == UploadDataEnum.XUE_LI_LIVE_CONTRACT.getCode()) {
-            filePath = UploadDataEnum.XUE_LI_LIVE_CONTRACT.getFilePath();
-            object = uploadDataDto.getXueLiLiveContract();
-        }
-        if (!StringUtils.isEmpty(filePath) && object != null) {
-            wordToPdfUtil.execute(filePath, object);
-            return "success";
-        } else {
-            throw new RuntimeException("PurchaseExceptionState.WORD_PDF_UNDEFINE_ERROR");
-        }
+        UploadDataEnum uploadDataEnum = UploadDataEnum.getSpecial(uploadDataDto.getTemplateId(), uploadDataDto);
+//        wordToPdfUtil.execute(uploadDataEnum.getFilePath(), uploadDataEnum.getValue());
+        wordToPdfUtil.executeStream(uploadDataEnum.getFilePath(), uploadDataEnum.getValue());
+        return "success";
+
     }
 
     private String getJsonStr() {
