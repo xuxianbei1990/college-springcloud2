@@ -4,16 +4,13 @@ import cn.afterturn.easypoi.excel.entity.TemplateExportParams;
 import college.springcloud.common.utils.*;
 import college.springcloud.common.utils.pageinfo.PageInfoUtil;
 import college.springcloud.student.controller.pdf.UploadDatasDto;
+import college.springcloud.student.dto.*;
 import college.springcloud.student.utils.HtmlPdfUtils;
 import college.springcloud.student.utils.UploadDataEnum;
 import college.springcloud.student.utils.WordToPdfUtil;
 import college.springcloud.student.annotation.TeacherRole;
 import college.springcloud.student.api.StudentApi;
 import college.springcloud.student.controller.pdf.UploadDataDto;
-import college.springcloud.student.dto.ExportCustomVo;
-import college.springcloud.student.dto.ExportMultyMergeVo;
-import college.springcloud.student.dto.ExportVo;
-import college.springcloud.student.dto.StudentDto;
 import college.springcloud.student.po.Student;
 import college.springcloud.student.po.StudentCopy;
 import college.springcloud.student.po.StudentSerialize;
@@ -414,6 +411,31 @@ public class StudentController<T> implements StudentApi {
         return studentService.importData(file);
     }
 
+    @ApiOperation("导入")
+    @GetMapping("/import/dynamic")
+    public List<Map<String, Object>> importDataDynamic(@RequestBody MultipartFile file, HttpServletResponse response) {
+        return studentService.importDataDynamic(file, response);
+    }
+
+    /**
+     * 导入校验
+     * @return
+     */
+    @GetMapping("/import/vertify")
+    public List<ExportVertifyVo> importVertify(@RequestBody MultipartFile file, HttpServletResponse response){
+        return studentService.importVertify(file, response);
+    }
+
+    /**
+     * 导入图片
+     * @param file
+     * @return
+     */
+    @GetMapping("/import/image")
+    public String importImage(@RequestBody MultipartFile file){
+        return studentService.importImage(file);
+    }
+
 
     @GetMapping("/async")
     public String async() {
@@ -453,5 +475,7 @@ public class StudentController<T> implements StudentApi {
         }
         return "success";
     }
+
+
 
 }

@@ -5,10 +5,14 @@ import cn.afterturn.easypoi.excel.ExcelImportUtil;
 import cn.afterturn.easypoi.excel.entity.ExportParams;
 import cn.afterturn.easypoi.excel.entity.ImportParams;
 import cn.afterturn.easypoi.excel.entity.enmus.ExcelType;
+import cn.afterturn.easypoi.excel.entity.result.ExcelImportResult;
 import cn.afterturn.easypoi.handler.inter.IExcelExportServer;
 import college.springcloud.common.utils.ExcelUtils;
+import college.springcloud.student.dto.ExportMultyMergeVo;
+import college.springcloud.student.dto.ExportVertifyVo;
 import college.springcloud.student.dto.ExportVo;
 import college.springcloud.student.dto.StudentDto;
+import college.springcloud.student.service.verify.ExportVerifyHandler;
 import com.google.common.collect.Lists;
 import lombok.SneakyThrows;
 import org.apache.poi.hssf.usermodel.DVConstraint;
@@ -22,10 +26,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Supplier;
 
 /**
@@ -84,6 +90,21 @@ public class StudentServiceImpl implements IExcelExportServer {
     }
 
     @SneakyThrows
+    public List<Map<String, Object>> importDataDynamic(MultipartFile file, HttpServletResponse response) {
+        try (InputStream inputStream = new ByteArrayInputStream(file.getBytes())) {
+            ImportParams importParams = new ImportParams();
+            importParams.setHeadRows(1);
+            List<Map<String, Object>> transportImportVos = ExcelImportUtil.importExcel(inputStream, Map.class, importParams);
+            transportImportVos.stream().forEach(key -> key.put("测试001", "测试001"));
+
+            //失败无法动态导出
+            ExcelUtils.exportExcel(transportImportVos, Map.class, "采购单", response);
+            return transportImportVos;
+        }
+    }
+
+
+    @SneakyThrows
     public List<ExportVo> importData(MultipartFile file) {
         try (InputStream inputStream = new ByteArrayInputStream(file.getBytes())) {
             ImportParams importParams = new ImportParams();
@@ -91,5 +112,35 @@ public class StudentServiceImpl implements IExcelExportServer {
             List<ExportVo> transportImportVos = ExcelImportUtil.importExcel(inputStream, ExportVo.class, importParams);
             return transportImportVos;
         }
+    }
+
+    public String importImage(MultipartFile file) {
+        InputStream inputStream = null;
+        try {
+            inputStream = new ByteArrayInputStream(file.getBytes());
+            ImportParams importParams = new ImportParams();
+            importParams.setNeedSave(false);
+            ExcelImportUtil.importExcel(inputStream, ExportVo.class, importParams);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        return null;
+    }
+
+    @SneakyThrows
+    public List<ExportVertifyVo> importVertify(MultipartFile file, HttpServletResponse response) {
+        try (InputStream inputStream = new ByteArrayInputStream(file.getBytes())) {
+            ImportParams importParams = new ImportParams();
+//            importParams.setHeadRows(1);
+            importParams.setNeedVerify(true);
+            ExportVerifyHandler exportVerifyHandler = new ExportVerifyHandler();
+            importParams.setVerifyHandler(exportVerifyHandler);
+            ExcelImportResult<ExportVertifyVo> result = ExcelImportUtil.importExcelMore(inputStream, ExportVertifyVo.class, importParams);
+            ExcelUtils.downLoadExcel("错误excle.xlsx", response, result.getFailWorkbook());
+            return result.getList();
+        }
+
     }
 }
