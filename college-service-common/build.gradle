@@ -30,6 +30,9 @@ dependencies {
     compile("com.alibaba:transmittable-thread-local:2.11.5")
     compile("com.github.pagehelper:pagehelper:5.1.8")
     compile('io.github.openfeign:feign-core:10.1.0')
+    //easy excel
+//    compile("com.alibaba.easyexcel:2.2.11")
+
     //excel 导出
     compile group: 'cn.afterturn', name: 'easypoi-base', version: '4.1.0'
     compile group: 'cn.afterturn', name: 'easypoi-web', version: '4.1.0'

@@ -430,7 +430,7 @@ public class ExcelUtils {
         }
     }
 
-    private static void downLoadExcel(
+    public static void downLoadExcel(
             String fileName, HttpServletResponse response, Workbook workbook) throws Exception {
 
         try (OutputStream out = response.getOutputStream()) {

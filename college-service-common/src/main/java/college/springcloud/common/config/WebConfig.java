@@ -75,7 +75,7 @@ public class WebConfig implements WebMvcConfigurer {
         SimpleModule simpleModule = new SimpleModule();
         objectMapper.registerModule(simpleModule);
         jackson2HttpMessageConverter.setObjectMapper(objectMapper);
-        converters.add(0, jackson2HttpMessageConverter);
+//        converters.add(0, jackson2HttpMessageConverter);
     }
 
     @Bean

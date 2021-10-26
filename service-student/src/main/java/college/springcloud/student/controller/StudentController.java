@@ -432,7 +432,7 @@ public class StudentController<T> implements StudentApi {
      * @return
      */
     @GetMapping("/import/image")
-    public String importImage(@RequestBody MultipartFile file){
+    public List<ExportImageVo> importImage(@RequestBody MultipartFile file){
         return studentService.importImage(file);
     }
 
