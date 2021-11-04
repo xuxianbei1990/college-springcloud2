@@ -19,6 +19,7 @@ import college.springcloud.student.service.StudentServiceImpl;
 import com.alibaba.fastjson.JSONObject;
 import feign.Request;
 import io.swagger.annotations.ApiOperation;
+import net.coobird.thumbnailator.Thumbnails;
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.Test;
@@ -30,6 +31,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.*;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -42,6 +44,8 @@ import java.util.concurrent.Future;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 /**
  * User: EDZ
@@ -146,7 +150,55 @@ public class StudentController<T> implements StudentApi {
 //        Map<String, Student> countryNameMap = Optional.ofNullable(list).orElse(Lists.newArrayList()).
 //                stream().collect(Collectors.toMap(Student::getName, student1 -> student1, (key1, key2) -> key2));
 //        System.out.println(countryNameMap);
-        BeanCopy();
+//        BeanCopy();
+        imgZip();
+//        fileZip();
+    }
+
+    private static final int BUFFER_SIZE = 2 * 1024;
+
+    private static void fileZip() {
+        File sourceFile = new File("E:\\excel\\upload\\img\\ChooseSpuImportVo\\选款任务商品导入模板.xlsx");
+        String sourcePath = sourceFile.getParentFile().toString();
+        String fileName = sourceFile.getName();
+        ZipOutputStream zos = null;
+        FileOutputStream out = null;
+        try {
+            out = new FileOutputStream(new File(sourcePath + "/" + fileName.substring(0, fileName.lastIndexOf('.')) + ".zip"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        zos = new ZipOutputStream(out);
+
+        try {
+            zos.putNextEntry(new ZipEntry(sourceFile.getName()));
+
+            // copy文件到zip输出流中
+            int len;
+            byte[] buf = new byte[BUFFER_SIZE];
+            FileInputStream in = new FileInputStream(sourceFile);
+            while ((len = in.read(buf)) != -1) {
+                zos.write(buf, 0, len);
+            }
+            // Complete the entry
+            zos.closeEntry();
+            zos.close();
+            in.close();
+            out.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private static void imgZip() {
+        try {
+            Thumbnails.of(new File("E:\\excel\\upload\\img\\ChooseSpuImportVo\\pic97221790272.JPG")).size(190, 190)
+                    .outputQuality(0.5)
+                    .toFile(new File("E:\\excel\\upload\\img\\ChooseSpuImportVo\\copy_pic97221790272.JPG"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private static void BeanCopy() {
@@ -419,20 +471,22 @@ public class StudentController<T> implements StudentApi {
 
     /**
      * 导入校验
+     *
      * @return
      */
     @GetMapping("/import/vertify")
-    public List<ExportVertifyVo> importVertify(@RequestBody MultipartFile file, HttpServletResponse response){
+    public List<ExportVertifyVo> importVertify(@RequestBody MultipartFile file, HttpServletResponse response) {
         return studentService.importVertify(file, response);
     }
 
     /**
      * 导入图片
+     *
      * @param file
      * @return
      */
     @GetMapping("/import/image")
-    public List<ExportImageVo> importImage(@RequestBody MultipartFile file){
+    public List<ExportImageVo> importImage(@RequestBody MultipartFile file) {
         return studentService.importImage(file);
     }
 
@@ -475,7 +529,6 @@ public class StudentController<T> implements StudentApi {
         }
         return "success";
     }
-
 
 
 }

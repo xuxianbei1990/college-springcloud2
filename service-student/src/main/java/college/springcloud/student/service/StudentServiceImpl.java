@@ -107,7 +107,7 @@ public class StudentServiceImpl implements IExcelExportServer {
         try (InputStream inputStream = new ByteArrayInputStream(file.getBytes())) {
             ImportParams importParams = new ImportParams();
             importParams.setHeadRows(1);
-            List<ExportVo> transportImportVos = ExcelImportUtil.importExcel(inputStream, ExportVo.class, importParams);
+            List<ExportVo> transportImportVos = ExcelImportUtil.importExcel(file.getInputStream(), ExportVo.class, importParams);
             return transportImportVos;
         }
     }
@@ -133,8 +133,6 @@ public class StudentServiceImpl implements IExcelExportServer {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
         return null;
     }
 

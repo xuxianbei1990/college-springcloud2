@@ -9,8 +9,8 @@ spring:
       rate: 1
   servlet:
     multipart:
-      max-file-size: 500
-      max-request-size: 500
+      max-file-size: 500MB
+      max-request-size: 500MB
 
 server:
   port: 8583
