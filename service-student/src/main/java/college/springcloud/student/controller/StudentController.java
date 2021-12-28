@@ -18,8 +18,10 @@ import college.springcloud.student.service.AsyncThreadTest;
 import college.springcloud.student.service.StudentServiceImpl;
 import com.alibaba.fastjson.JSONObject;
 import feign.Request;
+import io.netty.buffer.ByteBuf;
 import io.swagger.annotations.ApiOperation;
 import net.coobird.thumbnailator.Thumbnails;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.Test;
@@ -33,6 +35,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.math.BigDecimal;
+import java.nio.ByteBuffer;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -129,7 +132,7 @@ public class StudentController<T> implements StudentApi {
         System.out.println(dateTimeFormatter.format(localDateTime));
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         //怎么说呢，延后创建吧。属于设计范畴。我觉得可以大量使用
         //我觉得这个是好东西啊
 //        Supplier<Student> supplier = Student::new;
@@ -153,6 +156,63 @@ public class StudentController<T> implements StudentApi {
 //        BeanCopy();
         imgZip();
 //        fileZip();
+
+//        fileCut();
+//        fileMerge();
+    }
+
+    private static void fileMerge() throws IOException {
+        int fileIndex = 2;
+        FileOutputStream outFile = new FileOutputStream(new File("E:\\excel\\upload\\img\\ChooseSpuImportVo\\pic97221790272NewCopy.JPG"));
+        int position = 0;
+        for (int i = 0; i < fileIndex; i++) {
+            InputStream in = new FileInputStream("E:\\excel\\upload\\img\\ChooseSpuImportVo\\" + fileIndex + "pic97221790272.JPG");
+            byte[] bytes = IOUtils.toByteArray(in);
+            outFile.write(bytes, position, bytes.length);
+            position = position + bytes.length - 1;
+        }
+        outFile.flush();
+        outFile.close();
+    }
+
+    /**
+     * 文件切割
+     *
+     * @throws IOException
+     */
+    private static void fileCut() throws IOException {
+        File sourceFile = new File("E:\\excel\\upload\\img\\ChooseSpuImportVo\\pic97221790272.JPG");
+        InputStream in = new FileInputStream(sourceFile);
+        ByteBuffer byteBuffer = ByteBuffer.allocate(1024 * 1024);
+        int read;
+        byte[] b = new byte[1024 * 1024];
+        read = in.read(b);
+        int fileSize = 0;
+        int fileIndex = 0;
+        while (read != -1) {
+            fileSize++;
+            byteBuffer.put(b);
+
+//            if (fileSize % 1024 == 0) {
+            fileSize = 0;
+            FileOutputStream outFile = new FileOutputStream("E:\\excel\\upload\\img\\ChooseSpuImportVo\\" + fileIndex + "pic97221790272.JPG");
+            fileIndex++;
+            outFile.write(b, 0, read);
+            byteBuffer.flip();
+            byteBuffer.clear();
+            outFile.flush();
+            outFile.close();
+            read = in.read(b);
+//            }
+        }
+        in.close();
+//        FileOutputStream outFile = new FileOutputStream("E:\\excel\\upload\\img\\ChooseSpuImportVo\\" + fileIndex + "pic97221790272.JPG");
+//        outFile.write(b, 0, read);
+//        byteBuffer.flip();
+//        byteBuffer.clear();
+//        outFile.flush();
+//        outFile.close();
+        byteBuffer.flip();
     }
 
     private static final int BUFFER_SIZE = 2 * 1024;
@@ -188,13 +248,12 @@ public class StudentController<T> implements StudentApi {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
     private static void imgZip() {
         try {
             Thumbnails.of(new File("E:\\excel\\upload\\img\\ChooseSpuImportVo\\pic97221790272.JPG")).size(190, 190)
-                    .outputQuality(0.5)
+                    .outputQuality(1)
                     .toFile(new File("E:\\excel\\upload\\img\\ChooseSpuImportVo\\copy_pic97221790272.JPG"));
         } catch (IOException e) {
             e.printStackTrace();
@@ -497,6 +556,12 @@ public class StudentController<T> implements StudentApi {
         return "";
     }
 
+    @GetMapping("/async/exception")
+    public String asyncException() {
+        asyncThreadTest.threadPoolException();
+        return "";
+    }
+
     /**
      * 异步再同步数据
      * 说明一个问题，在线程处理时候异步时候 future 是先被返回的。所以future无论放在哪里都是没有问题。
@@ -528,6 +593,15 @@ public class StudentController<T> implements StudentApi {
             list.add(student);
         }
         return "success";
+    }
+
+    /**
+     * 模板导出
+     * @param servletResponse
+     */
+    @GetMapping("export/template/file")
+    public void exportTemplate(HttpServletResponse servletResponse) {
+        studentService.exportTemplate(servletResponse);
     }
 
 

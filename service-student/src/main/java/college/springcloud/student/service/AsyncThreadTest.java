@@ -1,5 +1,6 @@
 package college.springcloud.student.service;
 
+import college.springcloud.common.exception.BizException;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Component;
@@ -35,6 +36,11 @@ public class AsyncThreadTest {
         }
         System.out.println(Thread.currentThread().getName() + key + key2 + key3);
         return future;
+    }
+
+    @Async("rpcThreadPool")
+    public Integer threadPoolException() {
+        throw new BizException("dddd");
     }
 
 }

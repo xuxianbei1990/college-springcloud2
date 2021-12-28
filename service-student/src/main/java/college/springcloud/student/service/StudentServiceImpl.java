@@ -4,12 +4,20 @@ import cn.afterturn.easypoi.excel.ExcelExportUtil;
 import cn.afterturn.easypoi.excel.ExcelImportUtil;
 import cn.afterturn.easypoi.excel.entity.ExportParams;
 import cn.afterturn.easypoi.excel.entity.ImportParams;
+import cn.afterturn.easypoi.excel.entity.TemplateExportParams;
 import cn.afterturn.easypoi.excel.entity.enmus.ExcelType;
 import cn.afterturn.easypoi.excel.entity.result.ExcelImportResult;
 import cn.afterturn.easypoi.handler.inter.IExcelExportServer;
 import college.springcloud.common.utils.ExcelUtils;
+import college.springcloud.common.utils.Test;
+import college.springcloud.common.utils.pageinfo.PageInfoUtil;
 import college.springcloud.student.dto.*;
+import college.springcloud.student.service.template.PayReportVendorItemVo;
+import college.springcloud.student.service.template.PayReportVendorSonTotalVo;
+import college.springcloud.student.service.template.PayReportVendorTotalVo;
+import college.springcloud.student.service.template.PayReportVendorVo;
 import college.springcloud.student.service.verify.ExportVerifyHandler;
+import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
 import lombok.SneakyThrows;
 import org.apache.poi.hssf.usermodel.DVConstraint;
@@ -26,10 +34,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Supplier;
 
 /**
@@ -149,5 +154,36 @@ public class StudentServiceImpl implements IExcelExportServer {
             return result.getList();
         }
 
+    }
+
+    public void exportTemplate(HttpServletResponse servletResponse) {
+        TemplateExportParams templateExportParams = new TemplateExportParams("templates/付款申请统计模板.xlsx");
+        PayReportVendorVo payReportVendorVo = new PayReportVendorVo();
+        PageInfo<PayReportVendorItemVo> pageInfo = new PageInfo<>();
+        List<PayReportVendorItemVo> list = new ArrayList<>();
+        PayReportVendorItemVo payReportVendorItemVo = new PayReportVendorItemVo();
+        PayReportVendorTotalVo payReportVendorTotalVo = new PayReportVendorTotalVo();
+        PayReportVendorSonTotalVo payReportVendorSonTotalVo = new PayReportVendorSonTotalVo();
+        Test.randomFillProperty(payReportVendorItemVo, PayReportVendorItemVo.class);
+        Test.randomFillProperty(payReportVendorTotalVo, PayReportVendorTotalVo.class);
+        Test.randomFillProperty(payReportVendorSonTotalVo, PayReportVendorSonTotalVo.class);
+        list.add(payReportVendorItemVo);
+        pageInfo.setList(list);
+        payReportVendorVo.setPayReportVendorItemVos(pageInfo);
+        payReportVendorVo.setPayReportVendorTotalVo(payReportVendorTotalVo);
+        payReportVendorVo.setPayReportVendorSonTotalVo(payReportVendorSonTotalVo);
+        Map<String, Object> map = new HashMap();
+        map.putAll(PageInfoUtil.beanToMap(payReportVendorTotalVo));
+        map.putAll(PageInfoUtil.beanToMap(payReportVendorSonTotalVo));
+        Map<String, Object> mapItem = PageInfoUtil.beanToMap(payReportVendorItemVo);
+        List<Map<String, Object>> listMap = new ArrayList<>();
+        listMap.add(mapItem);
+        map.put("payReportVendorItemVos", listMap);
+        Workbook workbook = ExcelExportUtil.exportExcel(templateExportParams, map);
+        try {
+            ExcelUtils.downLoadExcel("模板打印.xlsx", servletResponse, workbook);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
     }
 }
