@@ -5,6 +5,7 @@ import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
 import java.util.concurrent.Executor;
@@ -37,7 +38,6 @@ public class CustomAsyncConfigurer implements AsyncConfigurer {
         return threadPool;
     }
 
-
     public AsyncUncaughtExceptionHandler getAsyncUncaughtExceptionHandler() {
 
         return new MyAsyncExceptionHandler();
@@ -54,6 +54,7 @@ public class CustomAsyncConfigurer implements AsyncConfigurer {
         @Override
         public void handleUncaughtException(Throwable throwable, Method method, Object... obj) {
             System.out.println("-------------》》》捕获线程异常信息");
+            log.error("堆栈",throwable);
             log.info("Exception message - " + throwable.getMessage());
             log.info("Method name - " + method.getName());
             for (Object param : obj) {
@@ -62,4 +63,5 @@ public class CustomAsyncConfigurer implements AsyncConfigurer {
         }
 
     }
+
 }

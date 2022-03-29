@@ -1,6 +1,8 @@
 package college.springcloud.common.utils.pageinfo;
 
 
+import cn.afterturn.easypoi.excel.entity.TemplateExportParams;
+import cn.afterturn.easypoi.excel.export.template.ExcelExportOfTemplateUtil;
 import college.springcloud.common.rpc.ApiRemoteService;
 import college.springcloud.common.utils.PagerDTO;
 import com.github.pagehelper.PageHelper;
@@ -10,6 +12,7 @@ import feign.Request;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -345,6 +348,10 @@ public class PageInfoUtil {
             throwable.printStackTrace();
         }
         return null;
+    }
+
+    public static Workbook exportExcel(TemplateExportParams params, Map<String, Object> map) {
+        return new ExcelExportOfTemplateUtil().createExcelByTemplate(params, null, null, map);
     }
 
     private Class[] objectToClass(Object[] args) {

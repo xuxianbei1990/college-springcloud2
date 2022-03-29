@@ -4,10 +4,12 @@ import college.springcloud.common.model.vo.PageVo;
 import college.springcloud.common.rpc.BaseApi;
 import college.springcloud.common.utils.Result;
 import college.springcloud.order.api.OrderApi;
+import college.springcloud.order.config.ServerConfig;
 import college.springcloud.order.dto.OrderDto;
 import college.springcloud.order.po.Order;
 import college.springcloud.order.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -17,6 +19,9 @@ public class OrderController extends BaseApi<Order> implements OrderApi {
 
     @Autowired
     OrderService orderService;
+
+    @Autowired
+    ServerConfig serverConfig;
 
     @GetMapping("/query/page")
     public Result<PageVo<Order>> queryOrders(OrderDto orderDto) {
@@ -53,8 +58,9 @@ public class OrderController extends BaseApi<Order> implements OrderApi {
         return Result.success(orderService.query());
     }
 
-    public static void main(String[] args) {
-
+    @GetMapping("/order/id")
+    public Result<Integer> orderId() {
+        return Result.success(serverConfig.getPort());
     }
 
     //测试insertList

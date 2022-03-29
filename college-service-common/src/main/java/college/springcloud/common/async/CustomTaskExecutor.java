@@ -50,8 +50,8 @@ public class CustomTaskExecutor {
         executor.setCorePoolSize(1);
         // 设置最大线程数
         executor.setMaxPoolSize(1);
-        executor.setRejectedExecutionHandler((r, executor1) ->
-                log.info("insertUnusualOrder错误:{} From : {} ", r.toString(), executor1.toString()));
+//        executor.setRejectedExecutionHandler((r, executor1) ->
+//                log.info("insertUnusualOrder错误:{} From : {} ", r.toString(), executor1.toString()));
         // 设置队列容量
         executor.setQueueCapacity(500);
         // 设置线程活跃时间（秒）
@@ -74,7 +74,7 @@ public class CustomTaskExecutor {
      */
     @Bean("rpcThreadPool")
     public AsyncTaskExecutor rpcThreadPool() {
-        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        MyThreadPoolTaskExecutor executor = new MyThreadPoolTaskExecutor();
         // 设置核心线程数
         executor.setCorePoolSize(Runtime.getRuntime().availableProcessors() * 2);
         // 设置最大线程数
@@ -89,6 +89,7 @@ public class CustomTaskExecutor {
         executor.setThreadFactory(new ThreadFactoryImpl("远程调用线程"));
         return executor;
     }
+
 
     /**
      * 本地并发访问sql

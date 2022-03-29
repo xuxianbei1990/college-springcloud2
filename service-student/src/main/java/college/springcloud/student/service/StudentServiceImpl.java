@@ -1,5 +1,6 @@
 package college.springcloud.student.service;
 
+import cn.afterturn.easypoi.entity.ImageEntity;
 import cn.afterturn.easypoi.excel.ExcelExportUtil;
 import cn.afterturn.easypoi.excel.ExcelImportUtil;
 import cn.afterturn.easypoi.excel.entity.ExportParams;
@@ -179,6 +180,22 @@ public class StudentServiceImpl implements IExcelExportServer {
         List<Map<String, Object>> listMap = new ArrayList<>();
         listMap.add(mapItem);
         map.put("payReportVendorItemVos", listMap);
+        ImageEntity imageEntity = new ImageEntity();
+        imageEntity.setWidth(200);
+        imageEntity.setHeight(400);
+        //仅支持路径以图片格式结尾的网址。支持图片文件。
+        imageEntity.setUrl("http://10.228.81.222:19305/chenfan_filestore/file/view/fc68357569dd423db11fd2f2cb54d016.jpg");
+        map.put("mainMap0", imageEntity);
+        ImageEntity imageEntity1 = new ImageEntity();
+        imageEntity1.setWidth(200);
+        imageEntity1.setHeight(400);
+        imageEntity1.setUrl("http://10.228.81.222:19305/chenfan_filestore/file/view/fc68357569dd423db11fd2f2cb54d016.jpg");
+        map.put("mainMap1", imageEntity1);
+        ImageEntity imageEntity2 = new ImageEntity();
+        imageEntity2.setWidth(200);
+        imageEntity2.setHeight(400);
+        imageEntity2.setUrl("http://10.228.81.222:19305/chenfan_filestore/file/view/fc68357569dd423db11fd2f2cb54d016.jpg");
+        map.put("mainMap2", imageEntity2);
         Workbook workbook = ExcelExportUtil.exportExcel(templateExportParams, map);
         try {
             ExcelUtils.downLoadExcel("模板打印.xlsx", servletResponse, workbook);
@@ -186,4 +203,5 @@ public class StudentServiceImpl implements IExcelExportServer {
             exception.printStackTrace();
         }
     }
+
 }

@@ -24,7 +24,9 @@ public class ThreadFactoryImpl implements ThreadFactory {
     public Thread newThread(Runnable r) {
         Thread thread = new Thread(r);
         thread.setName(threadNamePrefix + threadIndex.incrementAndGet());
+        //这种写法在spring注入时候如果是 返回结果时候是无效的，要通过get实现
         thread.setUncaughtExceptionHandler((Thread t, Throwable e) -> {
+            System.out.println("test==============");
             throw new RuntimeException(e);
         });
         return thread;
