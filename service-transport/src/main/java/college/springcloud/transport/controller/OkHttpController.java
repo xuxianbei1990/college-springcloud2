@@ -5,17 +5,32 @@ import college.springcloud.common.utils.OkHttpUtil;
 import college.springcloud.transport.model.OkHttpEntity;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Maps;
+import okhttp3.Request;
+import okhttp3.OkHttpClient;
+import okhttp3.Response;
+import org.springframework.http.HttpMethod;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.cglib.beans.BeanMap;
 import org.springframework.context.annotation.Bean;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.StringHttpMessageConverter;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.Charset;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
@@ -86,6 +101,41 @@ public class OkHttpController {
     @PostMapping("/receiveJson")
     public Object receiveJsonController(@RequestBody OkHttpEntity okHttpEntity) {
         return "receive:" + okHttpEntity.toString();
+    }
+
+    public static void main(String[] args) throws IOException {
+//        OkHttpClient client = new OkHttpClient().newBuilder()
+//                .build();
+//        okhttp3.RequestBody body = new MultipartBody.Builder().setType(MultipartBody.FORM)
+//                .addFormDataPart("file","C:\\Users\\2250\\Downloads\\customerData\\1676332481053360.png",
+//                        okhttp3.RequestBody.create(MediaType.parse("application/octet-stream"),
+//                                new File("C:\\Users\\2250\\Downloads\\customerData\\1676332481053360.png")))
+//                .build();
+//        Request request = new Request.Builder()
+//                .url("http://10.228.81.198:8081/chenfan_api/file/upload")
+//                .method("POST", body)
+//                .build();
+//        Response response = client.newCall(request).execute();
+//
+//        System.out.println(JSONObject.toJSONString(response));
+
+        uploadFile();
+    }
+
+    /**
+     * 上传文件
+     */
+    private static void uploadFile() {
+        RestTemplate restTemplate = new CustomOkHttpRestTemplate();
+        MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
+        headers.add("charset", "UTF-8");
+        String url = "http://10.228.81.198:8081/chenfan_api/file/upload";
+        MultiValueMap<String, FileSystemResource> map = new LinkedMultiValueMap<>();
+        map.add("file", new FileSystemResource("C:\\Users\\2250\\Downloads\\111.xlsx"));
+        HttpEntity<MultiValueMap<String, FileSystemResource>> entity = new HttpEntity<>(map, headers);
+        restTemplate.getMessageConverters().set(1, new StringHttpMessageConverter(Charset.forName("UTF-8")));
+        ResponseEntity responseEntity = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
+        System.out.println(responseEntity.getBody());
     }
 
     public static <T> Map<String, Object> beanToMap(T bean) {

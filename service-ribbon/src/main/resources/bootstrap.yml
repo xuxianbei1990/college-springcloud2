@@ -14,6 +14,11 @@ eureka:
       defaultZone: http://localhost:8571/eureka/
 
 
+college-service-order:
+  ribbon:
+    #配置指定服务的服务提供者列表
+    listOfServers: \localhost:8586,localhost:8585
+
 college-service-student:
   ribbon:
     NFLoadBalancerRuleClassName: com.netflix.loadbalancer.ZoneAvoidanceRule

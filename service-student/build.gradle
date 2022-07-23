@@ -11,15 +11,32 @@ dependencyManagement {
 }
 
 dependencies {
+    //apose word 转pdf
+    compile files("E:\\study\\GitHub\\college-springcloud2\\service-student\\src\\main\\resources\\lib\\aspose-words-16.8.0-jdk16.jar")
+    compile fileTree(dir: 'src/main/java/resources/lib', include: [ '*.jar'])
     compile("org.springframework.boot:spring-boot-starter-web")
     compile("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client")
     compile("org.springframework.cloud:spring-cloud-starter-netflix-hystrix")
     compile("org.springframework.cloud:spring-cloud-config-client")
     //只是在fegin基础上增加了对springmvc支持，简单的说支持rest风格代码
     compile("org.springframework.cloud:spring-cloud-starter-openfeign")
+    compile("net.coobird:thumbnailator:0.4.8")
     compile "org.springframework.cloud:spring-cloud-starter-sleuth"
     compile "org.springframework.cloud:spring-cloud-starter-zipkin"
     compile "org.openjdk.jol:jol-core:0.9"
+    //html 转换pdf
+    compile "com.itextpdf:html2pdf:3.0.5"
+    compile "com.itextpdf:itext-asian:5.2.0"
+    compile "com.itextpdf:itextpdf:5.4.3"
+
+    //word 转换pdf
+//    compile "org.docx4j:docx4j-JAXB-ReferenceImpl:8.2.4"
+//    compile "org.docx4j:docx4j-export-fo:8.2.4"
+
+
+    compile "cn.afterturn:easypoi-base:${easypoiversion}"
+    compile "cn.afterturn:easypoi-web:${easypoiversion}"
+    compile "cn.afterturn:easypoi-annotation:${easypoiversion}"
 
 //    implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.1.0'
 //    runtimeOnly 'mysql:mysql-connector-java'
@@ -28,7 +45,6 @@ dependencies {
 //    compile group: 'javax.mail', name: 'mail', version: '1.5.0-b01'
     compile project(":service-student-api")
     compile project(":college-service-common")
-    testCompile group: 'junit', name: 'junit', version: '4.12'
 }
 
 //jar {

@@ -60,8 +60,8 @@ public class EurekaStateListener {
         msg.setMsgtype("text");
         msg.getText().setContent("服务监控 " + registeredEvent.getInstanceInfo().getIPAddr());
         HttpEntity<Map<String, String>> requestjson = new HttpEntity(beanToMap(msg), httpHeaders);
-//        System.out.println(restTemplate.postForObject(testDingDing, requestjson
-//                , String.class));
+        System.out.println(restTemplate.postForObject(testDingDing, requestjson
+                , String.class));
 
     }
 

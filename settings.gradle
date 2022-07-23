@@ -20,6 +20,7 @@ include 'service-sleuth'
 include 'service-spring'
 include 'service-job'
 include 'service-notify'
+include 'service-sample'
 include 'service-mq'
 include 'service-mq-producer'
 include 'service-mq-consumer'
@@ -33,4 +34,5 @@ include 'service-hystrix'
 include 'service-ribbon'
 include 'college-starter'
 include 'service-log'
+
 

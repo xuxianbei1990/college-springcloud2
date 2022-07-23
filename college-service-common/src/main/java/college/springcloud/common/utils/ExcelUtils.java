@@ -2,25 +2,37 @@ package college.springcloud.common.utils;
 
 import cn.afterturn.easypoi.excel.ExcelExportUtil;
 import cn.afterturn.easypoi.excel.entity.ExportParams;
+import cn.afterturn.easypoi.excel.entity.TemplateExportParams;
+import cn.afterturn.easypoi.excel.entity.enmus.ExcelType;
+import cn.afterturn.easypoi.excel.export.ExcelExportService;
+import cn.afterturn.easypoi.excel.export.template.ExcelExportOfTemplateUtil;
+import cn.afterturn.easypoi.handler.inter.IExcelDataHandler;
 import cn.afterturn.easypoi.handler.inter.IExcelExportServer;
 import college.springcloud.common.dto.PageDto;
 import college.springcloud.common.exception.BizException;
 import college.springcloud.common.exception.CollegeExceptionCode;
+import college.springcloud.common.utils.excel.ExcelDataHandlerDateImpl;
+import college.springcloud.common.utils.excel.ExcelExportCustomService;
+import college.springcloud.common.utils.excel.ExcelExportStatisticStyler;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.net.URLEncoder;
+import java.util.*;
+
+import static cn.afterturn.easypoi.excel.ExcelExportUtil.USE_SXSSF_LIMIT;
 
 @Slf4j
 public class ExcelUtils {
@@ -349,6 +361,93 @@ public class ExcelUtils {
         } catch (Throwable e) {
             log.error("导出{}出错", fileName, e);
             throw new BizException(CollegeExceptionCode.SYSTEM_ERROR);
+        }
+    }
+
+    /**
+     * 导出excel 按照目标类型
+     *
+     * @param list
+     * @param tClass
+     * @param sheetName
+     * @param response
+     * @param <T>
+     */
+    public static <T> void exportExcel(List<?> list, Class<T> tClass, String sheetName, HttpServletResponse response) {
+        try {
+            defaultExport(list, tClass, sheetName + ".xls", response, new ExportParams(null, sheetName));
+        } catch (Exception exception) {
+            throw new RuntimeException(exception);
+        }
+    }
+
+    /**
+     * 模板导出
+     *
+     * @param params
+     * @param map
+     */
+    public static void exportExcel(String fileName, TemplateExportParams params, Map<String, Object> map, HttpServletResponse response) {
+        Workbook workbook = ExcelExportUtil.exportExcel(params, map);
+        if (workbook != null) {
+            try {
+                downLoadExcel(fileName + ".xls", response, workbook);
+            } catch (Exception exception) {
+                throw new RuntimeException(exception);
+            }
+        }
+    }
+
+    private static void defaultExport(
+            List<?> list,
+            Class<?> pojoClass,
+            String fileName,
+            HttpServletResponse response,
+            ExportParams exportParams)
+            throws Exception {
+        exportParams.setDataHandler(new ExcelDataHandlerDateImpl());
+        exportParams.setStyle(ExcelExportStatisticStyler.class);
+        Workbook workbook = exportExcel(exportParams, pojoClass, list);
+        if (workbook != null) {
+            downLoadExcel(fileName, response, workbook);
+        }
+    }
+
+    public static Workbook exportExcel(ExportParams entity, Class<?> pojoClass,
+                                       Collection<?> dataSet) {
+        Workbook workbook = getWorkbook(entity.getType(), dataSet.size());
+        new ExcelExportCustomService().createSheet(workbook, entity, pojoClass, dataSet);
+        return workbook;
+    }
+
+    private static Workbook getWorkbook(ExcelType type, int size) {
+        if (ExcelType.HSSF.equals(type)) {
+            return new HSSFWorkbook();
+        } else if (size < USE_SXSSF_LIMIT) {
+            return new XSSFWorkbook();
+        } else {
+            return new SXSSFWorkbook();
+        }
+    }
+
+    public static void downLoadExcel(
+            String fileName, HttpServletResponse response, Workbook workbook) throws Exception {
+
+        try (OutputStream out = response.getOutputStream()) {
+            response.setCharacterEncoding("UTF-8");
+            response.setHeader("content-Type", "application/vnd.ms-excel");
+            response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode(fileName, "UTF-8"));
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            workbook.write(baos);
+            response.setHeader("Content-Length", String.valueOf(baos.size()));
+            out.write(baos.toByteArray());
+        } catch (IOException e) {
+            try {
+                throw new Exception(e.getMessage());
+            } catch (Exception e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
         }
     }
 

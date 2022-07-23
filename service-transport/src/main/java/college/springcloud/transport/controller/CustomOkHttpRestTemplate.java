@@ -15,6 +15,10 @@ public class CustomOkHttpRestTemplate extends RestTemplate {
 
     private ClientHttpRequestFactory requestFactory = new OkHttp3ClientHttpRequestFactory();
 
+    {
+        ((OkHttp3ClientHttpRequestFactory) requestFactory).setReadTimeout(1000 * 30);
+    }
+
     public void setRequestFactory(ClientHttpRequestFactory requestFactory) {
         Assert.notNull(requestFactory, "ClientHttpRequestFactory must not be null");
         this.requestFactory = requestFactory;

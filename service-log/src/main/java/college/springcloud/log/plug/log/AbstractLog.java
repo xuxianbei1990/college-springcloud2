@@ -104,21 +104,17 @@ public abstract class AbstractLog {
         if (className == null || className.isEmpty() || format == null || format.length() == 0) {
             return;
         }
-
         if (level().toInt() < LEVEL_FLAG.toInt()) {
             return;
         }
-
         record(getFormatLog(className.substring(className.lastIndexOf(PACKAGE_LINK) + 1), format), arguments);
     }
 
     public void log(Level level, String loggerName, String format, Object... arguments) {
-
         if (level == null || format == null || format.length() == 0) {
             return;
         }
-        record(level, getFormatLog(loggerName == null ? logger.getName()
-                : loggerName, format), arguments);
+        record(level, getFormatLog(loggerName == null ? logger.getName() : loggerName, format), arguments);
     }
 
     private void record(Level level, String format, Object... arguments) {
