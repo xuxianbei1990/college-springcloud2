@@ -56,7 +56,7 @@ import java.util.zip.ZipOutputStream;
  * Time: 14:16
  * Version:V1.0
  */
-
+@CrossOrigin
 @RestController
 @RequestMapping("/student")
 public class StudentController<T> implements StudentApi {
@@ -81,7 +81,10 @@ public class StudentController<T> implements StudentApi {
     @Override
     @GetMapping("/get")
     public Result get() {
-        return Result.success(new Student());
+        Student student = new Student();
+        student.setName("XXB");
+        student.setAge(12);
+        return Result.success(student);
     }
 
     @Override

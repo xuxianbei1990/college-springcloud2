@@ -1,8 +1,0 @@
-server:
-  port: 6031
-
-spring:
-  application:
-    name: college-service-sample
-
-
