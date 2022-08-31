@@ -176,7 +176,7 @@ public class OkHttpController {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add(HttpHeaders.CONTENT_TYPE, "application/json");
         HttpEntity<Map<String, String>> requestjson = new HttpEntity(params, httpHeaders);
-        String ipaddr = "http://192.168.2.165:6032";
+        String ipaddr = "http://localhost:6032";
 
         long start = System.currentTimeMillis();
         for (int i = 0; i < count; i++) {
@@ -214,7 +214,7 @@ public class OkHttpController {
         System.out.println("spring  Http:" + (System.currentTimeMillis() - start));
         System.out.println(httpRestTemplate.postForObject(ipaddr + "/okHttp/receiveJson",
                 requestjson, String.class));
-        return "";
+        return "succes";
     }
 
 }
